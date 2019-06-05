@@ -1,0 +1,35 @@
+sudo: false
+dist: trusty
+language: python
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "nightly"
+  - "pypy-5.4.1"
+  - "pypy-5.6.0"
+  - "pypy-5.7.1"
+  - "pypy2.7-5.8.0"
+  - "pypy3.5-5.8.0"
+matrix:
+  include:
+  - python: 3.7
+    dist: xenial
+    sudo: true
+before_install:
+  - pip install --upgrade pip setuptools
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+script: coverage run --source=ripe_rainbow setup.py test
+after_success: coveralls
+deploy:
+  provider: pypi
+  user: platforme
+  password:
+    secure: U9R9qyqS1cJTAec/BWqx2P7nWG4c8Vv4rdhikBgk/5Q05pOu1XQGIQTeSivxAR4ZIY8wGXitISUyJf2CAwuhN8hR7X0UHOaEq0JpPQxPuhd95tf9+BbwCNxKxkt5Z6fpV74HgmInJWiNK85doenju0BT9tscnlNdKY9HE8XT7TS8TtOqkwQfRF0nSWH1/m9xkQ2kxWzdVcbYAMY3W+GkLf0z2TFFnp0mcarnIrtzfM/UOuuQLUFPVqZv26tlBb2lxZdYCjpTKs9Xyv70nAsjhmD1sL7u7Sg23LTuOu39ZblpdHgUjic0wzBARXtK4tKccCRmOxW2r00JS5baGUXpthWXD0Z9Vs/mBMzwNiS/jBcj8cC/R1fMs6XQAL4UgLcZcVqDZ1hjVWmh51eHZZ2tBSPL3/Vp7cWcF9CCpf28r7vVfrDF1phBtjiGv+7G3Den9yMeyg3QQ0WM1aGiLnLF09EMhBDLEq2E8bvhF32MZ2MK7hPpVPbo/cQB0YPmSbwNsR3BJLppaVk4kxGLGllQDaqzFkV0ivg0ErUnBThx3jcX3GLCiPKCdN0N2wnOdpCMKfuap33mg1yHbVwcsyfPC7EyqFIWbRg6ux8xLIyotVfpIlVvwHg2B3joWxEYgLONl+OdYsDSWdMYkR94vRBEQD4NeQyR/EfL/FIdYHtaQ34=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    python: "2.7"
