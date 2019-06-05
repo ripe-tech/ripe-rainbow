@@ -1,7 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException
+try: from selenium.common.exceptions import ElementClickInterceptedException
+except ImportError: ElementClickInterceptedException = None
+
+try: from selenium.common.exceptions import ElementNotVisibleException
+except ImportError: ElementNotVisibleException = None
 
 from .. import parts
 

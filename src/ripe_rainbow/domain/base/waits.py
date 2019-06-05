@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from selenium.webdriver.support.ui import WebDriverWait
+try: from selenium.webdriver.support.ui import WebDriverWait
+except ImportError: WebDriverWait = None
 
 from .. import parts
 

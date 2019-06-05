@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from selenium.webdriver.common.keys import Keys
+try: from selenium.webdriver.common.keys import Keys
+except ImportError: Keys = None
 
 from .. import parts
 

@@ -3,7 +3,8 @@
 
 import appier
 
-from selenium.common.exceptions import NoSuchElementException
+try: from selenium.common.exceptions import NoSuchElementException
+except ImportError: NoSuchElementException = None
 
 from .. import parts
 
