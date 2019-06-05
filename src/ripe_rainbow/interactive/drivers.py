@@ -19,23 +19,15 @@ class InteractiveDriver(object):
     def find_element(self, selector):
         raise appier.NotImplementedError()
 
+    @property
+    def current_url(self):
+        raise appier.NotImplementedError()
+
 class SeleniumDriver(InteractiveDriver):
 
     def __init__(self):
         InteractiveDriver.__init__(self)
-        self.instance = None
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
-
-    def start(self):
-        InteractiveDriver.start(self)
-        import selenium.webdriver
-        self.instance = selenium.webdriver.Chrome(
-            chrome_options = self._selenium_options()
-        )
-
-    def stop(self):
-        self.instance = None
-        InteractiveDriver.stop(self)
 
     def get(self, url):
         return self.instance.get(url)
@@ -45,6 +37,20 @@ class SeleniumDriver(InteractiveDriver):
 
     def find_element_by_css_selector(self, selector):
         return self.find_element(selector)
+
+    @property
+    def current_url(self):
+        return self.instance.current_url
+
+    @property
+    def instance(self):
+        cls = self.__class__
+        if hasattr(cls, "_instance"): return cls._instance
+        import selenium.webdriver
+        cls._instance = selenium.webdriver.Chrome(
+            chrome_options = self._selenium_options()
+        )
+        return cls._instance
 
     def _selenium_options(self):
         import selenium.webdriver
