@@ -25,13 +25,13 @@ class RetailPart(parts.Part):
         self.waits.redirected_to(self.base_url)
 
     @property
+    def base_url(self):
+        return appier.conf("RETAIL_URL", "https://ripe-retail-test.platforme.com")
+
+    @property
     def login_url(self):
-        return "%s/login" % self.retail_url
+        return "%s/login" % self.base_url
 
     @property
     def logout_url(self):
-        return "%s/logout" % self.retail_url
-
-    @property
-    def retail_url(self):
-        return appier.conf("RETAIL_URL", "https://ripe-retail-test.platforme.com")
+        return "%s/logout" % self.base_url

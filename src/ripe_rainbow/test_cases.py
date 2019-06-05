@@ -1,7 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import logging
+
 class TestCase(object):
+
+    def __init__(self, *args, **kwargs):
+        object.__init__(self, *args, **kwargs)
+        self.logger = kwargs.get("logger", logging.getLogger("test"))
 
     def before(self):
         pass
