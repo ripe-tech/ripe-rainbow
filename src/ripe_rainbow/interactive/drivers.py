@@ -16,15 +16,15 @@ class InteractiveDriver(object):
     def get(self, url):
         raise appier.NotImplementedError()
 
+    def find_element(self, selector):
+        raise appier.NotImplementedError()
+
 class SeleniumDriver(InteractiveDriver):
 
     def __init__(self):
         InteractiveDriver.__init__(self)
         self.instance = None
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
-
-    def get(self, url):
-        return self.instance.get(url)
 
     def start(self):
         InteractiveDriver.start(self)
@@ -36,6 +36,15 @@ class SeleniumDriver(InteractiveDriver):
     def stop(self):
         self.instance = None
         InteractiveDriver.stop(self)
+
+    def get(self, url):
+        return self.instance.get(url)
+
+    def find_element(self, selector):
+        return self.instance.find_element_by_css_selector(selector)
+
+    def find_element_by_css_selector(self, selector):
+        return self.find_element(selector)
 
     def _selenium_options(self):
         import selenium.webdriver
