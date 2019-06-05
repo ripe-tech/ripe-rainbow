@@ -3,7 +3,10 @@
 
 import ripe_rainbow
 
-if __name__ == "__main__":
+def main():
     ripe_rainbow.ConsoleRunner().run()
+
+if __name__ == "__main__":
+    main()
 else:
     __path__ = []

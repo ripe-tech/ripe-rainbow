@@ -26,6 +26,11 @@ setuptools.setup(
     package_dir = {
         "" : os.path.normpath("src")
     },
+    entry_points = {
+        "console_scripts" : [
+            "rainbow = ripe_rainbow.main:main"
+        ]
+    },
     install_requires = [
         "appier"
     ],
