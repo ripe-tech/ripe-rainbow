@@ -44,3 +44,9 @@ class WaitsPart(parts.Part):
             lambda _: self.assertions.has_text(selector, text),
             "Element '%s' with text '%s' not found after '%s' seconds." % (selector, text, self.timeout)
         )
+
+    def is_not_visible(self, selector):
+        return self.until(
+            lambda _: not self.assertions.is_visible(selector),
+            "Element '%s' is still visible after '%s' seconds." % (selector, self.timeout)
+        )

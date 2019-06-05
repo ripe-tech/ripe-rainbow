@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import appier
+
 from selenium.common.exceptions import NoSuchElementException
 
 from .. import parts
@@ -18,9 +20,12 @@ class AssertionsPart(parts.Part):
         return False
 
     def has_text(self, selector, text):
+        selector = appier.legacy.u(selector)
+        text = appier.legacy.u(text)
+
         element = self.exists(selector)
 
-        if element and element.text != text:
+        if element and not element.text == text:
             self.logger.debug("Element '%s' found but has text '%s' instead of '%s'." % (
                 selector,
                 element.text,
@@ -66,3 +71,7 @@ class AssertionsPart(parts.Part):
             self.logger.debug("Could not find element with '%s'." % selector)
 
             return None
+
+    def is_visible(self, selector):
+        element = self.exists(selector)
+        return element.is_displayed()
