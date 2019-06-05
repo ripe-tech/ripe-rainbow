@@ -3,6 +3,7 @@
 	<name>ripe-rainbow</name>
 	<comment></comment>
 	<projects>
+		<project>appier</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
