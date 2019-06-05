@@ -88,3 +88,7 @@ class SeleniumDriver(InteractiveDriver):
         if sys.platform.startswith("linux"):
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--no-sandbox")
+
+        # returns the options to the calling method as expected
+        # by the current infrastructure
+        return options
