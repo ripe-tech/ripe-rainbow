@@ -1,4 +1,4 @@
-# RIPE Rainbow
+# RIPE Rainbow 🌈
 
 **Bringing happiness to the RIPE world through testing**
 
