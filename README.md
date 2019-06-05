@@ -10,6 +10,12 @@ RIPE Rainbow is a simple automation test framework for the RIPE world.
 pip install ripe-rainbow
 ```
 
+## Execution
+
+```bash
+ripe-rainbow
+```
+
 ## License
 
 RIPE Rainbow is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
