@@ -20,7 +20,6 @@ class DomainWrapper(object):
     @classmethod
     def wrap_base(cls, instance):
         for name, cls in BASE_TUPLES:
-            print(cls)
             part = cls(instance)
             setattr(instance, name, part)
 
