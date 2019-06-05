@@ -7,12 +7,6 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def __init__(self, driver, timeout, logger, waits):
-        self.driver = driver
-        self.timeout = timeout
-        self.logger = logger
-        self.waits = waits
-
     def try_click(self, element):
         try:
             element.click()

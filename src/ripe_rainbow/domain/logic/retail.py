@@ -7,11 +7,6 @@ from .. import parts
 
 class RetailPart(parts.Part):
 
-    def __init__(self, base_url, driver, waits):
-        self.inner_base_url = base_url
-        self.driver = driver
-        self.waits = waits
-
     def base_url(self):
         return "%s" % self.inner_base_url
 

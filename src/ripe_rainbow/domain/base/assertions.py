@@ -7,11 +7,6 @@ from .. import parts
 
 class AssertionsPart(parts.Part):
 
-    def __init__(self, driver, timeout, logger):
-        self.driver = driver
-        self.timeout = timeout
-        self.logger = logger
-
     def at_url(self, url):
         current_url = self.driver.current_url
 

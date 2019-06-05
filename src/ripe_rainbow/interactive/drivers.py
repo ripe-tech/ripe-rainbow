@@ -3,6 +3,8 @@
 
 import sys
 
+import appier
+
 class InteractiveDriver(object):
 
     def start(self):
@@ -11,11 +13,35 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def get(self, url):
+        raise appier.NotImplementedError()
+
 class SeleniumDriver(InteractiveDriver):
+
+    def __init__(self):
+        InteractiveDriver.__init__(self)
+        self.instance = None
+        self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
+
+    def get(self, url):
+        return self.instance.get(url)
+
+    def start(self):
+        InteractiveDriver.start(self)
+        import selenium.webdriver
+        self.instance = selenium.webdriver.Chrome(
+            chrome_options = self._selenium_options()
+        )
+
+    def stop(self):
+        self.instance = None
+        InteractiveDriver.stop(self)
 
     def _selenium_options(self):
         import selenium.webdriver
 
+        # crates the base object for the options to be used by
+        # the Google Chrome browser
         options = selenium.webdriver.ChromeOptions()
 
         # in case the headless mode was selected then an

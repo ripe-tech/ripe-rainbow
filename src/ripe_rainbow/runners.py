@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+import traceback
+
 import appier
 
 from . import loaders
@@ -33,6 +36,10 @@ class ConsoleRunner(Runner):
                     print("There was an error: %s" % str(exception))
                 except Exception as exception:
                     print("There was an exception: %s" % str(exception))
+                    print("Exception in user code:")
+                    print("-" * 60)
+                    traceback.print_exc(file = sys.stdout)
+                    print("-" * 60)
 
     @property
     def loader_default(self):

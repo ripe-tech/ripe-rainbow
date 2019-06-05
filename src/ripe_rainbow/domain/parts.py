@@ -7,5 +7,9 @@ class Part(object):
         self.owner = owner
 
     @property
+    def timeout(self):
+        return self.owner.timeout
+
+    @property
     def driver(self):
         return self.owner.driver

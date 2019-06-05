@@ -7,7 +7,8 @@ from .. import parts
 
 class WaitsPart(parts.Part):
 
-    def __init__(self):
+    def __init__(self, owner):
+        parts.Part.__init__(self, owner)
         self.wait = WebDriverWait(self.driver, self.timeout)
 
     def until(self, method, message = None):
