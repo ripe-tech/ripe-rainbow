@@ -13,6 +13,7 @@ class Runner(object):
     def run(self):
         raise appier.NotImplementedError()
 
+    @property
     def test_suite(self):
         return self.loader.test_suite()
 
@@ -23,14 +24,15 @@ class Runner(object):
 class ConsoleRunner(Runner):
 
     def run(self):
-        for test in self.test_suite:
-            try:
+        for test_case in self.test_suite:
+            for test in test_case.tests:
                 print("Running test: %s" % str(test))
-                test.run()
-            except appier.AssertionError as exception:
-                print("There was an error: %s" % str(exception))
-            except Exception as exception:
-                print("There was an exception: %s" % str(exception))
+                try:
+                    test_case.run_test(test)
+                except appier.AssertionError as exception:
+                    print("There was an error: %s" % str(exception))
+                except Exception as exception:
+                    print("There was an exception: %s" % str(exception))
 
     @property
     def loader_default(self):

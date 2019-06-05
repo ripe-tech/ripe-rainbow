@@ -3,6 +3,23 @@
 
 class TestCase(object):
 
+    def before(self):
+        pass
+
+    def after(self):
+        pass
+
+    def run_all(self):
+        for test in self.tests():
+            self.run_test(test)
+
+    def run_test(self, test):
+        self.before()
+        try:
+            test()
+        finally:
+            self.after()
+
     def error(self, message):
         if not self.logger: return
         self.logger.error(message)
@@ -22,18 +39,6 @@ class TestCase(object):
     def log_stack(self, method = None):
         pass
 
-class InteractiveTestCase(TestCase):
-
-    def get_driver(self):
-        pass
-
-class InteractiveDriver(object):
-
-    def start(self):
-        pass
-
-    def stop(self):
-        pass
-
-class SeleniumTestCase(InteractiveDriver):
-    pass
+    @property
+    def tests(self):
+        return [getattr(self, name) for name in dir(self) if not name == "tests" and hasattr(getattr(self, name), "test")]
