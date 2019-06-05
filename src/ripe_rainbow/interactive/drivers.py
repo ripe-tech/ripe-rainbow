@@ -7,6 +7,9 @@ import appier
 
 class InteractiveDriver(object):
 
+    def __init__(self, owner):
+        self.owner = owner
+
     def start(self):
         pass
 
@@ -31,8 +34,8 @@ class InteractiveDriver(object):
 
 class SeleniumDriver(InteractiveDriver):
 
-    def __init__(self):
-        InteractiveDriver.__init__(self)
+    def __init__(self, owner):
+        InteractiveDriver.__init__(self, owner)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
 
     def get(self, url):
@@ -63,12 +66,21 @@ class SeleniumDriver(InteractiveDriver):
     @property
     def instance(self):
         cls = self.__class__
-        if hasattr(cls, "_instance"): return cls._instance
+        if hasattr(cls, "_instance") and cls._instance:
+            return cls._instance
         import selenium.webdriver
         cls._instance = selenium.webdriver.Chrome(
             chrome_options = self._selenium_options()
         )
+        self.owner.runner.add_on_finish(self._destroy_instance)
         return cls._instance
+
+    def _destroy_instance(self):
+        cls = self.__class__
+        if not hasattr(cls, "_instance") or not self._instance:
+            return
+        cls._instance.close()
+        cls._instance = None
 
     def _selenium_options(self):
         import selenium.webdriver

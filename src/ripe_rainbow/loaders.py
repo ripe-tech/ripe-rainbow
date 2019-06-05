@@ -19,8 +19,8 @@ class PathLoader(Loader):
     def __init__(self, path = "."):
         self.path = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
 
-    def test_suite(self):
-        return [test_cls() for test_cls in self._load_classes(self.path)]
+    def test_suite(self, **kwargs):
+        return [test_cls(loader = self, **kwargs) for test_cls in self._load_classes(self.path)]
 
     def _load_classes(self, path, recursive = True):
         classes = []

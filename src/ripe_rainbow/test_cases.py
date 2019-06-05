@@ -6,7 +6,9 @@ import logging
 class TestCase(object):
 
     def __init__(self, *args, **kwargs):
-        object.__init__(self, *args, **kwargs)
+        object.__init__(self)
+        self.runner = kwargs.get("runner", None)
+        self.loader = kwargs.get("loader", None)
         self.logger = kwargs.get("logger", logging.getLogger("test"))
 
     def before(self):
