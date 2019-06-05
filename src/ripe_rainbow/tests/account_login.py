@@ -3,7 +3,9 @@
 
 import ripe_rainbow
 
-class AccountLoginTest(ripe_rainbow.InteractiveTestCase):
+class AccountLoginTest(
+    ripe_rainbow.InteractiveTestCase
+):
 
     @ripe_rainbow.test
     def valid_login(self):

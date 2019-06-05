@@ -4,5 +4,5 @@
 from . import admin
 from . import retail
 
-from .admin import AdminMixin
-from .retail import RetailMixin
+from .admin import AdminPart
+from .retail import RetailPart

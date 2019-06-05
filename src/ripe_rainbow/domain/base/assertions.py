@@ -3,7 +3,9 @@
 
 from selenium.common.exceptions import NoSuchElementException
 
-class AssertionsMixin(object):
+from .. import parts
+
+class AssertionsPart(parts.Part):
 
     def __init__(self, driver, timeout, logger):
         self.driver = driver

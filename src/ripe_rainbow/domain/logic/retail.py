@@ -3,7 +3,9 @@
 
 from selenium.webdriver.common.keys import Keys
 
-class RetailMixin(object):
+from .. import parts
+
+class RetailPart(parts.Part):
 
     def __init__(self, base_url, driver, waits):
         self.inner_base_url = base_url

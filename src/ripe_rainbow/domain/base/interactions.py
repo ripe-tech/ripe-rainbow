@@ -3,7 +3,9 @@
 
 from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException
 
-class Interactions(object):
+from .. import parts
+
+class InteractionsPart(parts.Part):
 
     def __init__(self, driver, timeout, logger, waits):
         self.driver = driver
@@ -17,7 +19,6 @@ class Interactions(object):
             return element
         except (ElementClickInterceptedException, ElementNotVisibleException) as exception:
             self.logger.debug("Element is not \"clickable\" because: %s" % exception)
-
             return None
 
     def click_when_possible(self, selector):
