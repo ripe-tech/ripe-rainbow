@@ -19,6 +19,9 @@ class InteractiveDriver(object):
     def find_element(self, selector):
         raise appier.NotImplementedError()
 
+    def find_elements(self, selector):
+        raise appier.NotImplementedError()
+
     def find_by_name(self, name):
         raise appier.NotImplementedError()
 
@@ -38,11 +41,17 @@ class SeleniumDriver(InteractiveDriver):
     def find_element(self, selector):
         return self.instance.find_element_by_css_selector(selector)
 
+    def find_elements(self, selector):
+        return self.instance.find_elements_by_css_selector(selector)
+
     def find_by_name(self, name):
         return self.instance.find_element_by_name(name)
 
     def find_element_by_css_selector(self, selector):
         return self.find_element(selector)
+
+    def find_elements_by_css_selector(self, selector):
+        return self.find_elements(selector)
 
     def find_element_by_name(self, name):
         return self.find_by_name(name)
