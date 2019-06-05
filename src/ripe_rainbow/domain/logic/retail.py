@@ -27,7 +27,8 @@ class RetailPart(parts.Part):
 
     @property
     def base_url(self):
-        return appier.conf("RETAIL_URL", "https://ripe-retail-test.platforme.com")
+        base_url = appier.conf("BASE_URL", "https://ripe-retail-test.platforme.com")
+        return appier.conf("RETAIL_URL", base_url)
 
     @property
     def login_url(self):
