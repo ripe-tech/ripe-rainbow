@@ -42,7 +42,7 @@ class ConsoleRunner(Runner):
         try:
             for test_case in self.test_suite:
                 for test in test_case.tests:
-                    print("Running test: %s" % str(test))
+                    print("Running test: %s" % self._fullname(test))
                     try:
                         test_case.run_test(test)
                     except appier.AssertionError as exception:
@@ -63,3 +63,10 @@ class ConsoleRunner(Runner):
     @property
     def loader_default(self):
         return loaders.PathLoader(".")
+
+    def _fullname(self, method):
+        instance = method.__self__
+        module = instance.__class__.__module__
+        if module == None or module == str.__class__.__module__:
+            return instance.__class__.__name__ + "." + method.__name__
+        return module + "." + instance.__class__.__name__ + "." + method.__name__
