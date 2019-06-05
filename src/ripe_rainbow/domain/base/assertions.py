@@ -3,10 +3,10 @@
 
 import appier
 
+from .. import parts
+
 try: from selenium.common.exceptions import NoSuchElementException
 except ImportError: NoSuchElementException = None
-
-from .. import parts
 
 class AssertionsPart(parts.Part):
 

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from .. import parts
+
 try: from selenium.webdriver.support.ui import WebDriverWait
 except ImportError: WebDriverWait = None
-
-from .. import parts
 
 class WaitsPart(parts.Part):
 

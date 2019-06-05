@@ -3,10 +3,10 @@
 
 import appier
 
+from .. import parts
+
 try: from selenium.webdriver.common.keys import Keys
 except ImportError: Keys = None
-
-from .. import parts
 
 class RetailPart(parts.Part):
 

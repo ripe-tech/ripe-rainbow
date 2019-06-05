@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from .. import parts
+
 try: from selenium.common.exceptions import ElementClickInterceptedException
 except ImportError: ElementClickInterceptedException = None
 
 try: from selenium.common.exceptions import ElementNotVisibleException
 except ImportError: ElementNotVisibleException = None
 
-from .. import parts
+try: from selenium.common.exceptions import WebDriverException
+except ImportError: WebDriverException = None
 
 class InteractionsPart(parts.Part):
 
@@ -15,7 +18,11 @@ class InteractionsPart(parts.Part):
         try:
             element.click()
             return element
-        except (ElementClickInterceptedException, ElementNotVisibleException) as exception:
+        except (
+            ElementClickInterceptedException,
+            ElementNotVisibleException,
+            WebDriverException
+        ) as exception:
             self.logger.debug("Element is not \"clickable\" because: %s" % exception)
             return None
 
