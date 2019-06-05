@@ -5,7 +5,7 @@ import ripe_rainbow
 
 import base
 
-class AccountLoginTest(base.RetailTestCase):
+class AccountLoginTest(base.RetailTest):
 
     @ripe_rainbow.test
     def valid_login(self):

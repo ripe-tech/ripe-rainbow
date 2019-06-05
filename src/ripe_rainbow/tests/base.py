@@ -3,7 +3,7 @@
 
 import ripe_rainbow
 
-class RetailTestCase(ripe_rainbow.InteractiveTestCase):
+class RetailTest(ripe_rainbow.InteractiveTestCase):
 
     def __init__(self, *args, **kwargs):
         ripe_rainbow.InteractiveTestCase.__init__(self, *args, **kwargs)
