@@ -29,6 +29,6 @@ class InteractionsPart(parts.Part):
     def click_when_possible(self, selector):
         element = self.waits.element(selector)
         return self.waits.until(
-            lambda _: self.try_click(element),
+            lambda d: self.try_click(element),
             "Element '%s' found but never became clickable" % selector
         )
