@@ -36,6 +36,7 @@ class SeleniumDriver(InteractiveDriver):
 
     def __init__(self, owner):
         InteractiveDriver.__init__(self, owner)
+        self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
 
     def get(self, url):
@@ -88,6 +89,16 @@ class SeleniumDriver(InteractiveDriver):
         # crates the base object for the options to be used by
         # the Google Chrome browser
         options = selenium.webdriver.ChromeOptions()
+
+        # adds some of the default arguments to be used for the
+        # execution of the Google Chrome instance
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+
+        # in case the browser should be started maximized, then
+        # a new argument is added to the list of options
+        if self.maximized:
+            options.add_argument("start-maximized")
 
         # in case the headless mode was selected then an
         # extra argument is added to the set of options
