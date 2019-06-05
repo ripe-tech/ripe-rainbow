@@ -92,7 +92,6 @@ class SeleniumDriver(InteractiveDriver):
 
         # adds some of the default arguments to be used for the
         # execution of the Google Chrome instance
-        options.add_argument("disable-infobars")
         options.add_argument("--disable-extensions")
 
         # in case the browser should be started maximized, then
