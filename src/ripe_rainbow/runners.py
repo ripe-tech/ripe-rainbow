@@ -92,7 +92,7 @@ class ConsoleRunner(Runner):
                         with appier_console.ctx_loader(
                             spinner = "dots3",
                             template = "        %s {{spinner}}" % test_name,
-                            end_newline = False,
+                            single = True
                         ):
                             test_case.run_test(test)
 
