@@ -19,7 +19,8 @@ setuptools.setup(
         "ripe_rainbow.domain",
         "ripe_rainbow.domain.base",
         "ripe_rainbow.domain.logic",
-        "ripe_rainbow.interactive"
+        "ripe_rainbow.interactive",
+        "ripe_rainbow.test"
     ],
     test_suite = "ripe_rainbow.test",
     package_dir = {
