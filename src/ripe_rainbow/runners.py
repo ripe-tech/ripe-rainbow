@@ -52,6 +52,7 @@ class ConsoleRunner(Runner):
         result = True
         passed = 0
         failed = 0
+        passes = []
         failures = []
 
         # prints the header information on the product to be used to indicate
@@ -100,17 +101,19 @@ class ConsoleRunner(Runner):
 
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_GRAY)
                         print("        %s ✔️" % test_name_s)
+                        result = results.Result.build_success(test)
+                        passes.append(result)
                         passed += 1
                     except appier.AssertionError as exception:
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         print("        %s ❌️" % test_name_s)
-                        result = results.Result.build_error(test, exception)
+                        result = results.Result.build_failure(test, exception)
                         failures.append(result)
                         failed += 1
                     except Exception as exception:
                         result = False
-                        result = results.Result.build_error(test, exception)
+                        result = results.Result.build_failure(test, exception)
                         failures.append(result)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         print("        %s ❌️" % test_name_s)
@@ -142,7 +145,6 @@ class ConsoleRunner(Runner):
             print("The sky is blue and the sun is shining ☀️")
         else:
             print("There are some clouds in the sky 🌧️")
-
 
         return result
 

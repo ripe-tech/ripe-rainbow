@@ -24,17 +24,20 @@ class Result(object):
         self.stacktrace = stacktrace
 
     @classmethod
-    def build_error(cls, test, exception):
+    def build_success(cls, test):
+        return cls(test, result = "success")
+
+    @classmethod
+    def build_failure(cls, test, exception):
         lines = traceback.format_exc().splitlines()
         lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
             line for line in lines]
-        result = cls(
+        return cls(
             test,
             result = "failure",
             exception = exception,
             stacktrace = lines
         )
-        return result
 
     def print_result(self, file = sys.stdout):
         file.write("----------------------------\n")
