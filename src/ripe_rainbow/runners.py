@@ -150,7 +150,12 @@ class ConsoleRunner(Runner):
         else:
             print("There are some clouds in the sky 🌧️")
 
+        # iterates over the complete set of errors to print
+        # their description for better understanding of the
+        # the underlying issues
         for error in errors:
+            print("----------------------------")
+            print(self._fullname(error["test"]))
             print(error["exception"])
             for line in error["stacktrace"]:
                 print(line)
