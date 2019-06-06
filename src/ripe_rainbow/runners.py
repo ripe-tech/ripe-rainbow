@@ -52,8 +52,8 @@ class ConsoleRunner(Runner):
         passed = 0
         failed = 0
 
-        # prints the hader information on the product to be used to indicate
-        # the proper exeuction of then console
+        # prints the header information on the product to be used to indicate
+        # the proper execution of then console
         print("RIPE Rainbow 🌈")
         print("")
 
@@ -90,8 +90,9 @@ class ConsoleRunner(Runner):
 
                     try:
                         with appier_console.ctx_loader(
+                            spinner = "dots3",
                             template = "        %s {{spinner}}" % test_name,
-                            end_newline = False
+                            end_newline = False,
                         ):
                             test_case.run_test(test)
 
