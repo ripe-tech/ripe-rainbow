@@ -20,40 +20,39 @@ class WaitsPart(parts.Part):
 
     def redirected_to(self, url):
         return self.until(
-            lambda d: url in self.driver.current_url,
-            message = "Expecting the page to be '%s' but is '%s', even after waiting '%s' seconds." % (
+           lambda d: self.assertions.at_url(url),
+            message = "Expecting the page to be '%s' but is '%s'" % (
                 url,
-                self.driver.current_url,
-                self.timeout
+                self.driver.current_url
             )
         )
 
-    def element(self, selector):
+    def element(self, selector, condition = None):
         return self.until(
-            lambda d: self.assertions.exists(selector),
-            "Element '%s' not found after '%s' seconds." % (selector, self.timeout)
+            lambda d: self.assertions.exists(selector, condition = condition),
+            "Element '%s' not found" % selector
         )
 
     def elements(self, selector, condition = None):
         return self.until(
             lambda d: self.assertions.exists_multiple(selector, condition = condition),
-            "Elements '%s' not found after '%s' seconds." % (selector, self.timeout)
+            "Elements '%s' not found" % selector
         )
 
     def text(self, selector, text):
         return self.until(
             lambda d: self.assertions.has_text(selector, text),
-            "Element '%s' with text '%s' not found after '%s' seconds." % (selector, text, self.timeout)
+            "Element '%s' with text '%s' not found" % (selector, text)
         )
 
     def is_visible(self, selector):
         return self.until(
             lambda d: self.assertions.is_visible(selector),
-            "Element '%s' is still not visible after '%s' seconds." % (selector, self.timeout)
+            "Element '%s' is not visible" % selector
         )
 
     def is_not_visible(self, selector):
         return self.until(
             lambda d: not self.assertions.is_visible(selector),
-            "Element '%s' is still visible after '%s' seconds." % (selector, self.timeout)
+            "Element '%s' is visible" % selector
         )

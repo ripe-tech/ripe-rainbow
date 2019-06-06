@@ -42,9 +42,10 @@ class ConsoleRunner(Runner):
         try:
             for test_case in self.test_suite:
                 for test in test_case.tests:
-                    # flushes the stdout so that the pending messages
-                    # are properly handled by the output channel
+                    # flushes the stdout and stderr so that the pending
+                    # messages are properly handled by the output channels
                     sys.stdout.flush()
+                    sys.stderr.flush()
 
                     print("Running test: %s" % self._fullname(test))
                     try:
