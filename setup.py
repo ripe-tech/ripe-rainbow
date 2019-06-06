@@ -28,7 +28,8 @@ setuptools.setup(
     },
     entry_points = {
         "console_scripts" : [
-            "rainbow = ripe_rainbow.main:main"
+            "rainbow = ripe_rainbow.main:main",
+            "ripe-rainbow = ripe_rainbow.main:main"
         ]
     },
     install_requires = [
