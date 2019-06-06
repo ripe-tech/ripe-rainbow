@@ -13,7 +13,7 @@ setuptools.setup(
     license = "Apache License, Version 2.0",
     keywords = "ripe rainbow test",
     url = "http://www.platforme.com",
-    zip_safe = False, 
+    zip_safe = False,
     packages = [
         "ripe_rainbow",
         "ripe_rainbow.domain",
