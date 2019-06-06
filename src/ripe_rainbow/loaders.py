@@ -16,8 +16,11 @@ class Loader(object):
 
 class PathLoader(Loader):
 
-    def __init__(self, path = "."):
-        self.path = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+    def __init__(self, path = None):
+        self.path = path or "."
+        self.path = os.path.expanduser(self.path)
+        self.path = os.path.abspath(self.path)
+        self.path = os.path.normpath(self.path)
 
     def test_suite(self, **kwargs):
         return [test_cls(loader = self, **kwargs) for test_cls in self._load_classes(self.path)]
@@ -50,7 +53,6 @@ class PathLoader(Loader):
 
         names = os.listdir(path)
         for name in names:
-            base_name = os.path.splitext(name)[0]
             full_path = os.path.join(path, name)
             if os.path.isdir(full_path) and recursive:
                 packages += self._load_packages(full_path, recursive = recursive)

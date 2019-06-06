@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
 import sys
 import traceback
 
@@ -10,9 +11,15 @@ from . import loaders
 
 class Runner(object):
 
-    def __init__(self, loader = None):
+    def __init__(self, loader = None, filter = None):
         self.loader = loader or self.loader_default
+        self.filter = appier.conf("FILTER", filter)
         self.on_finish = []
+
+        # creates the regular expression object that is going to
+        # be used for test (method) name matching at runtime
+        if self.filter: self.regex = re.compile("^.*%s.*$" % self.filter)
+        else: self.regec = None
 
     def run(self):
         raise appier.NotImplementedError()
@@ -38,16 +45,32 @@ class Runner(object):
 class ConsoleRunner(Runner):
 
     def run(self):
+        # sets the default result flag value to valid as the execution
+        # is considered to be valid by default
         result = True
+
         try:
+            # iterates over the complete set of test cases for the test
+            # suite that has been provided by the current loader to run
+            # their respective tests, under the current runner
             for test_case in self.test_suite:
+
+                # iterates over the complete set of test (methods) in the
+                # test case to run then (if they are required)
                 for test in test_case.tests:
+
+                    # "gathers" the complete name for the test and verifies
+                    # that it represents a valid one, against the regex
+                    test_name = self._fullname(test)
+                    if self.regex and not self.regex.match(test_name):
+                        continue
+
                     # flushes the stdout and stderr so that the pending
                     # messages are properly handled by the output channels
                     sys.stdout.flush()
                     sys.stderr.flush()
 
-                    print("Running test: %s" % self._fullname(test))
+                    print("Running test: %s" % test_name)
                     try:
                         test_case.run_test(test)
                     except appier.AssertionError as exception:
