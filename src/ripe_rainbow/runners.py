@@ -20,7 +20,7 @@ class Runner(object):
         # creates the regular expression object that is going to
         # be used for test (method) name matching at runtime
         if self.filter: self.regex = re.compile("^.*%s.*$" % self.filter)
-        else: self.regec = None
+        else: self.regex = None
 
     def run(self):
         raise appier.NotImplementedError()
