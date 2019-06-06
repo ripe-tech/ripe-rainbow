@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import appier
+
 import logging
 
 class TestCase(object):
@@ -9,7 +11,21 @@ class TestCase(object):
         object.__init__(self)
         self.runner = kwargs.get("runner", None)
         self.loader = kwargs.get("loader", None)
-        self.logger = kwargs.get("logger", logging.getLogger("test"))
+        self.logger = kwargs.get("logger", self.__class__._build_logger())
+
+    @classmethod
+    def _build_logger(cls, level = "DEBUG"):
+        if hasattr(TestCase, "_logger"): return TestCase._logger
+        level = appier.conf("LEVEL", level)
+        level = appier.conf("RAINBOW_LEVEL", level)
+        level = logging.getLevelName(level)
+        logger = logging.getLogger("ripe-rainbow")
+        handler = logging.StreamHandler()
+        logger.addHandler(handler)
+        handler.setLevel(level)
+        logger.setLevel(level)
+        TestCase._logger = logger
+        return logger
 
     def before(self):
         pass
@@ -49,4 +65,7 @@ class TestCase(object):
 
     @property
     def tests(self):
-        return [getattr(self, name) for name in dir(self) if not name == "tests" and hasattr(getattr(self, name), "test")]
+        return [
+            getattr(self, name) for name in dir(self)
+            if not name == "tests" and hasattr(getattr(self, name), "test")
+        ]
