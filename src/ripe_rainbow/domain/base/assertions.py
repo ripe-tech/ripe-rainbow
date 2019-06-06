@@ -55,19 +55,26 @@ class AssertionsPart(parts.Part):
         if len(matching_elements) == 0:
             self.logger.debug("Found elements with '%s' but none matches the condition." % selector)
         elif condition:
-            self.logger.debug("Found elements with '%s' that match the condition." % selector)
+            self.logger.debug("Found elements with '%s' that matches the condition." % selector)
         else:
             self.logger.debug("Found elements with '%s'." % selector)
 
         return matching_elements
 
-    def exists(self, selector):
+    def exists(self, selector, condition = None):
         try:
             element = self.driver.find_element_by_css_selector(selector)
 
-            self.logger.debug("Found element with '%s'." % selector)
-
-            return element
+            if condition:
+                if condition(element):
+                    self.logger.debug("Found element with '%s' that matches the condition." % selector)
+                    return element
+                else:
+                    self.logger.debug("Found element with '%s' but doesn't match the condition." % selector)
+                    return None
+            else:
+                self.logger.debug("Found element with '%s'." % selector)
+                return element
         except NoSuchElementException:
             self.logger.debug("Could not find element with '%s'." % selector)
 

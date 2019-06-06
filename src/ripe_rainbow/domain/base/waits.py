@@ -28,9 +28,9 @@ class WaitsPart(parts.Part):
             )
         )
 
-    def element(self, selector):
+    def element(self, selector, condition = None):
         return self.until(
-            lambda d: self.assertions.exists(selector),
+            lambda d: self.assertions.exists(selector, condition = condition),
             "Element '%s' not found after '%s' seconds." % (selector, self.timeout)
         )
 
