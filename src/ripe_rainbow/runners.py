@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
 import sys
 import traceback
 
@@ -10,7 +11,8 @@ from . import loaders
 
 class Runner(object):
 
-    def __init__(self, loader = None):
+    def __init__(self, loader = None, class_filter = None):
+        self.class_filter = class_filter
         self.loader = loader or self.loader_default
         self.on_finish = []
 
@@ -27,6 +29,16 @@ class Runner(object):
         for method in self.on_finish:
             method()
 
+    def should_run(self, test):
+        return self.class_filter.match(self._fullname(test)) if self.class_filter else True
+
+    def _fullname(self, method):
+        instance = method.__self__
+        module = instance.__class__.__module__
+        if module == None or module == str.__class__.__module__:
+            return instance.__class__.__name__ + "." + method.__name__
+        return module + "." + instance.__class__.__name__ + "." + method.__name__
+
     @property
     def test_suite(self):
         return self.loader.test_suite(runner = self)
@@ -42,6 +54,8 @@ class ConsoleRunner(Runner):
         try:
             for test_case in self.test_suite:
                 for test in test_case.tests:
+                    if not self.should_run(test): continue
+
                     # flushes the stdout so that the pending messages
                     # are properly handled by the output channel
                     sys.stdout.flush()
@@ -67,10 +81,3 @@ class ConsoleRunner(Runner):
     @property
     def loader_default(self):
         return loaders.PathLoader(".")
-
-    def _fullname(self, method):
-        instance = method.__self__
-        module = instance.__class__.__module__
-        if module == None or module == str.__class__.__module__:
-            return instance.__class__.__name__ + "." + method.__name__
-        return module + "." + instance.__class__.__name__ + "." + method.__name__

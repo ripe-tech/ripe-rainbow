@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import sys
 import inspect
 
@@ -50,7 +51,6 @@ class PathLoader(Loader):
 
         names = os.listdir(path)
         for name in names:
-            base_name = os.path.splitext(name)[0]
             full_path = os.path.join(path, name)
             if os.path.isdir(full_path) and recursive:
                 packages += self._load_packages(full_path, recursive = recursive)

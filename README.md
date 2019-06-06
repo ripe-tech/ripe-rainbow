@@ -16,6 +16,12 @@ pip install ripe-rainbow
 ripe-rainbow
 ```
 
+### Selecting tests
+
+It's also possible to run only certain tests. To do so, you can use `rainbow ${REGEX}`, where the regex will be tested against `file_name:test_class:test_method` (e.g.: `account_login.AccountLoginTest.invalid_empty_login`) and the test will only run if it passes.
+
+For instance, if you want to run all the tests in `AccountLoginTest` you can `rainbow .*AccountLoginTest.*`.
+
 ## License
 
 RIPE Rainbow is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
