@@ -13,7 +13,7 @@ pip install ripe-rainbow
 ## Execution
 
 ```bash
-ripe-rainbow
+rainbow
 ```
 
 ## License
