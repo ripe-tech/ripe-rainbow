@@ -14,7 +14,7 @@ class TestCase(object):
         self.logger = kwargs.get("logger", self.__class__._build_logger())
 
     @classmethod
-    def _build_logger(cls, level = "DEBUG"):
+    def _build_logger(cls, level = "INFO"):
         if hasattr(TestCase, "_logger"): return TestCase._logger
         level = appier.conf("LEVEL", level)
         level = appier.conf("RAINBOW_LEVEL", level)
