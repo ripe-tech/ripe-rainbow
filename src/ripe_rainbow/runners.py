@@ -3,12 +3,13 @@
 
 import re
 import sys
-import traceback
 
 import appier
 import appier_console
 
+from . import util
 from . import loaders
+from . import results
 
 class Runner(object):
 
@@ -51,7 +52,7 @@ class ConsoleRunner(Runner):
         result = True
         passed = 0
         failed = 0
-        errors = []
+        failures = []
 
         # prints the header information on the product to be used to indicate
         # the proper execution of then console
@@ -74,7 +75,7 @@ class ConsoleRunner(Runner):
 
                     # "gathers" the complete name for the test and verifies
                     # that it represents a valid one, against the regex
-                    test_name = self._fullname(test)
+                    test_name = util.test_fullname(test)
                     if self.regex and not self.regex.match(test_name):
                         continue
 
@@ -104,27 +105,13 @@ class ConsoleRunner(Runner):
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         print("        %s ❌️" % test_name_s)
-                        lines = traceback.format_exc().splitlines()
-                        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
-                            line for line in lines]
-                        error = dict(
-                            test = test,
-                            exception = exception,
-                            stacktrace = lines
-                        )
-                        errors.append(error)
+                        result = results.Result.build_error(test, exception)
+                        failures.append(result)
                         failed += 1
                     except Exception as exception:
                         result = False
-                        lines = traceback.format_exc().splitlines()
-                        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
-                            line for line in lines]
-                        error = dict(
-                            test = test,
-                            exception = exception,
-                            stacktrace = lines
-                        )
-                        errors.append(error)
+                        result = results.Result.build_error(test, exception)
+                        failures.append(result)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         print("        %s ❌️" % test_name_s)
                         failed += 1
@@ -143,6 +130,12 @@ class ConsoleRunner(Runner):
         ) if failed else ""
         print("  %s %s" % (passed_s, failed_s))
 
+        # iterates over the complete set of failures to print
+        # their description for better understanding of the
+        # the underlying issues
+        if failures: print("")
+        for failure in failures: failure.print_result()
+
         print("")
 
         if result:
@@ -150,25 +143,9 @@ class ConsoleRunner(Runner):
         else:
             print("There are some clouds in the sky 🌧️")
 
-        # iterates over the complete set of errors to print
-        # their description for better understanding of the
-        # the underlying issues
-        for error in errors:
-            print("----------------------------")
-            print(self._fullname(error["test"]))
-            print(error["exception"])
-            for line in error["stacktrace"]:
-                print(line)
 
         return result
 
     @property
     def loader_default(self):
         return loaders.PathLoader(".")
-
-    def _fullname(self, method):
-        instance = method.__self__
-        module = instance.__class__.__module__
-        if module == None or module == str.__class__.__module__:
-            return instance.__class__.__name__ + "." + method.__name__
-        return module + "." + instance.__class__.__name__ + "." + method.__name__
