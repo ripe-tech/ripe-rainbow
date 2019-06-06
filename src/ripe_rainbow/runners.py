@@ -51,6 +51,7 @@ class ConsoleRunner(Runner):
         result = True
         passed = 0
         failed = 0
+        errors = []
 
         # prints the header information on the product to be used to indicate
         # the proper execution of then console
@@ -103,15 +104,27 @@ class ConsoleRunner(Runner):
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         print("        %s ❌️" % test_name_s)
-                        #print("There was an error: %s" % str(exception))
+                        lines = traceback.format_exc().splitlines()
+                        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
+                            line for line in lines]
+                        error = dict(
+                            test = test,
+                            exception = exception,
+                            stacktrace = lines
+                        )
+                        errors.append(error)
                         failed += 1
                     except Exception as exception:
                         result = False
-                        #print("There was an exception: %s" % str(exception))
-                       # print("Exception in user code:")
-                       # print("-" * 60)
-                       # traceback.print_exc(file = sys.stdout)
-                       # print("-" * 60)
+                        lines = traceback.format_exc().splitlines()
+                        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
+                            line for line in lines]
+                        error = dict(
+                            test = test,
+                            exception = exception,
+                            stacktrace = lines
+                        )
+                        errors.append(error)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         print("        %s ❌️" % test_name_s)
                         failed += 1
@@ -133,9 +146,14 @@ class ConsoleRunner(Runner):
         print("")
 
         if result:
-            print("The sky is blue and the sun shining ☀️")
+            print("The sky is blue and the sun is shining ☀️")
         else:
             print("There are some clouds in the sky 🌧️")
+
+        for error in errors:
+            print(error["exception"])
+            for line in error["stacktrace"]:
+                print(line)
 
         return result
 
