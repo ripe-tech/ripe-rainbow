@@ -6,6 +6,7 @@ import sys
 import traceback
 
 import appier
+import appier_console
 
 from . import loaders
 
@@ -70,9 +71,11 @@ class ConsoleRunner(Runner):
                     sys.stdout.flush()
                     sys.stderr.flush()
 
-                    print("Running test: %s" % test_name)
                     try:
-                        test_case.run_test(test)
+                        with appier_console.ctx_loader(
+                            template = "{{spinner}} Running test: %s" % test_name
+                        ):
+                            test_case.run_test(test)
                     except appier.AssertionError as exception:
                         result = False
                         print("There was an error: %s" % str(exception))
