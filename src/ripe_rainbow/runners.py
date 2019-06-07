@@ -98,7 +98,8 @@ class ConsoleRunner(Runner):
                             template = "        %s {{spinner}}" % test_name,
                             single = True
                         ):
-
+                            # executes the concrete logic of the test, making sure
+                            # that an overall spinner is making the UI interactive
                             test_case.run_test(test)
 
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
