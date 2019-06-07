@@ -103,14 +103,16 @@ class ConsoleRunner(Runner):
                             test_case.run_test(test)
 
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
-                        print("        %s ✔️%s" % (test_name_s, self._duration(start)))
+                        mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
+                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
                         success = results.Result.build_success(test)
                         passes.append(success)
                         passed += 1
                     except appier.AssertionError as exception:
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                        print("        %s ❌️%s" % (test_name_s, self._duration(start)))
+                        mark_s = appier_console.colored("✕", color = appier_console.COLOR_RED)
+                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
                         failure = results.Result.build_failure(test, exception)
                         failures.append(failure)
                         failed += 1
@@ -119,7 +121,8 @@ class ConsoleRunner(Runner):
                         failure = results.Result.build_failure(test, exception)
                         failures.append(failure)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                        print("        %s ❌️%s" % (test_name_s, self._duration(start)))
+                        mark_s = appier_console.colored("✕", color = appier_console.COLOR_RED)
+                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
                         failed += 1
 
                     # flushes the stdout and stderr so that the pending
