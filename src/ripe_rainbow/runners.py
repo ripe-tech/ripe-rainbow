@@ -3,6 +3,7 @@
 
 import re
 import sys
+import time
 
 import appier
 import appier_console
@@ -49,6 +50,7 @@ class ConsoleRunner(Runner):
     def run(self):
         # sets the default result flag value to valid as the execution
         # is considered to be valid by default
+        start_g = time.time()
         result = True
         passed = 0
         failed = 0
@@ -86,10 +88,9 @@ class ConsoleRunner(Runner):
                         print("    %s" % test_case.__class__.__name__)
                         printed = True
 
-                    # flushes the stdout and stderr so that the pending
-                    # messages are properly handled by the output channels
-                    sys.stdout.flush()
-                    sys.stderr.flush()
+                    # stores the starting time for the execution so that it's
+                    # latter possible to calculate the duration of the test
+                    start = time.time()
 
                     try:
                         with appier_console.ctx_loader(
@@ -97,27 +98,33 @@ class ConsoleRunner(Runner):
                             template = "        %s {{spinner}}" % test_name,
                             single = True
                         ):
+
                             test_case.run_test(test)
 
-                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_GRAY)
-                        print("        %s ✔️" % test_name_s)
-                        result = results.Result.build_success(test)
-                        passes.append(result)
+                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
+                        print("        %s ✔️%s" % (test_name_s, self._duration(start)))
+                        success = results.Result.build_success(test)
+                        passes.append(success)
                         passed += 1
                     except appier.AssertionError as exception:
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                        print("        %s ❌️" % test_name_s)
-                        result = results.Result.build_failure(test, exception)
-                        failures.append(result)
+                        print("        %s ❌️%s" % (test_name_s, self._duration(start)))
+                        failure = results.Result.build_failure(test, exception)
+                        failures.append(failure)
                         failed += 1
                     except Exception as exception:
                         result = False
-                        result = results.Result.build_failure(test, exception)
-                        failures.append(result)
+                        failure = results.Result.build_failure(test, exception)
+                        failures.append(failure)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                        print("        %s ❌️" % test_name_s)
+                        print("        %s ❌️%s" % (test_name_s, self._duration(start)))
                         failed += 1
+
+                    # flushes the stdout and stderr so that the pending
+                    # messages are properly handled by the output channels
+                    sys.stdout.flush()
+                    sys.stderr.flush()
 
                 if printed: print("")
         finally:
@@ -131,7 +138,8 @@ class ConsoleRunner(Runner):
             "%d failing" % failed,
             color = appier_console.COLOR_RED
         ) if failed else ""
-        print("  %s %s" % (passed_s, failed_s))
+        duration_s = self._duration(start_g, info = 0.0, warning = 3600.0, error = 14400.0)
+        print("  %s %s%s" % (passed_s, failed_s, duration_s))
 
         # iterates over the complete set of failures to print
         # their description for better understanding of the
@@ -147,6 +155,14 @@ class ConsoleRunner(Runner):
             print("There are some clouds in the sky 🌧️")
 
         return result
+
+    def _duration(self, start, info = 5.0, warning = 5.0, error = 10.0):
+        duration = time.time() - start
+        if duration < info: return ""
+        if duration >= error: color = appier_console.COLOR_RED
+        elif duration >= warning: color = appier_console.COLOR_YELLOW
+        else: color = appier_console.COLOR_CYAN
+        return appier_console.colored(" (%.02fs)" % duration, color = color)
 
     @property
     def loader_default(self):
