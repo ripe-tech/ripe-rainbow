@@ -20,9 +20,9 @@ setuptools.setup(
         "ripe_rainbow.domain.base",
         "ripe_rainbow.domain.logic",
         "ripe_rainbow.interactive",
-        "ripe_rainbow.test"
+        "ripe_rainbow.unit"
     ],
-    test_suite = "ripe_rainbow.test",
+    test_suite = "ripe_rainbow.unit",
     package_dir = {
         "" : os.path.normpath("src")
     },
