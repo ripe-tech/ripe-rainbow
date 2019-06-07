@@ -143,9 +143,10 @@ class ConsoleRunner(Runner):
             color = appier_console.COLOR_RED
         ) if failed else ""
         duration_s = self._duration(start_g, info = 0.0, warning = 3600.0, error = 14400.0)
-        print("  %s%s%s" % (
+        print("  %s%s%s%s" % (
                 " " + passed_s if passed_s else "",
                 " " + failed_s if failed_s else "",
+                "No tests executed" + failed_s if not passed_s and not failed_s else "",
                 duration_s
             )
         )
