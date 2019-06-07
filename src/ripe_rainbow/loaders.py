@@ -11,7 +11,7 @@ from . import test_cases
 
 class Loader(object):
 
-    def test_suite(self):
+    def test_suite(self, **kwargs):
         raise appier.NotImplementedError()
 
 class PathLoader(Loader):
