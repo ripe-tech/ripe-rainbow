@@ -13,7 +13,7 @@ class InteractiveTestCase(test_cases.TestCase):
         test_cases.TestCase.__init__(self, *args, **kwargs)
         self.options = kwargs
         self.driver = None
-        self.timeout = appier.conf("TIMEOUT", 60, cast = int)
+        self.timeout = appier.conf("TIMEOUT", 15, cast = int)
         self.timeout = self.options.get("timeout", self.timeout)
 
     def before(self):

@@ -23,7 +23,7 @@ rainbow
 | **LEVEL** | `str` | Controls the verbosity level of the attached logger (defaults to `INFO`). |
 | **FILTER** | `str` | The filter regex to be used by some of the loaders (defaults to `None`). |
 | **DRIVER** | `str` | The driver to be used for the interactive mode (defaults to `selenium`). |
-| **TIMEOUT** | `int` | The timeout in seconds to be used by default for interactions under the interactive testing mode (defaults to `60`). |
+| **TIMEOUT** | `int` | The timeout in seconds to be used by default for interactions under the interactive testing mode (defaults to `15`). |
 | **SEL_MAXIMIZED** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode (defaults to `False`). |
 | **SEL_HEADLESS** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode (defaults to `False`). |
 
