@@ -143,7 +143,12 @@ class ConsoleRunner(Runner):
             color = appier_console.COLOR_RED
         ) if failed else ""
         duration_s = self._duration(start_g, info = 0.0, warning = 3600.0, error = 14400.0)
-        print("  %s %s%s" % (passed_s, failed_s, duration_s))
+        print("  %s%s%s" % (
+                " " + passed_s if passed_s else "",
+                " " + failed_s if failed_s else "",
+                duration_s
+            )
+        )
 
         # iterates over the complete set of failures to print
         # their description for better understanding of the
