@@ -18,7 +18,7 @@ class TestCase(object):
         if hasattr(TestCase, "_logger"): return TestCase._logger
         level = appier.conf("LEVEL", level)
         level = appier.conf("RAINBOW_LEVEL", level)
-        level = logging.getLevelName(level)
+        level = logging.getLevelName(level.upper())
         logger = logging.getLogger("ripe-rainbow")
         handler = logging.StreamHandler()
         logger.addHandler(handler)
