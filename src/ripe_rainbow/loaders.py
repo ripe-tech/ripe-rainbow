@@ -71,7 +71,7 @@ class PathLoader(Loader):
                 sys.path.insert(0, path)
                 try:
                     modules.append(__import__(base_name))
-                except ImportError:
+                except (ImportError, ValueError):
                     pass
                 finally:
                     sys.path.remove(path)
