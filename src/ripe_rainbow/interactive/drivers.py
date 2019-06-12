@@ -80,8 +80,10 @@ class SeleniumDriver(InteractiveDriver):
         if self.maximized:
             cls._instance.fullscreen_window()
 
+        # in case the browser should have a specific window size
+        # then splits the window size around the specific values
         if self.window_size:
-            width, height = map(int, self.window_size.split("x"))
+            width, height = (int(value) for value in self.window_size.split("x"))
             cls._instance.set_window_size(width, height)
 
         self.owner.runner.add_on_finish(self._destroy_instance)
