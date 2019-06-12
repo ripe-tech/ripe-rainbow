@@ -26,6 +26,7 @@ rainbow
 | **TIMEOUT** | `int` | The timeout in seconds to be used by default for interactions under the interactive testing mode (defaults to `15`). |
 | **SEL_MAXIMIZED** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode (defaults to `False`). |
 | **SEL_HEADLESS** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode (defaults to `False`). |
+| **SEL_WINDOW_SIZE** | `str` | Resolution that the [Selenium](https://www.seleniumhq.org) driver will use (defaults to `1920x1080`). |
 
 ## License
 

@@ -38,6 +38,7 @@ class SeleniumDriver(InteractiveDriver):
         InteractiveDriver.__init__(self, owner)
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
+        self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
 
     def get(self, url):
         return self.instance.get(url)
@@ -73,6 +74,16 @@ class SeleniumDriver(InteractiveDriver):
         cls._instance = selenium.webdriver.Chrome(
             chrome_options = self._selenium_options()
         )
+
+        # in case the browser should be started maximized, then
+        # a new argument is added to the list of options
+        if self.maximized:
+            cls._instance.fullscreen_window()
+
+        if self.window_size:
+            width, height = map(int, self.window_size.split("x"))
+            cls._instance.set_window_size(width, height)
+
         self.owner.runner.add_on_finish(self._destroy_instance)
         return cls._instance
 
@@ -93,11 +104,6 @@ class SeleniumDriver(InteractiveDriver):
         # adds some of the default arguments to be used for the
         # execution of the Google Chrome instance
         options.add_argument("--disable-extensions")
-
-        # in case the browser should be started maximized, then
-        # a new argument is added to the list of options
-        if self.maximized:
-            options.add_argument("start-maximized")
 
         # in case the headless mode was selected then an
         # extra argument is added to the set of options
