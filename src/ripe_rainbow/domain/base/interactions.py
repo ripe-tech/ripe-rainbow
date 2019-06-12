@@ -16,8 +16,7 @@ class InteractionsPart(parts.Part):
 
     def try_click(self, element):
         try:
-            element.click()
-            return element
+            return self.driver.click_element(element)
         except (
             ElementClickInterceptedException,
             ElementNotVisibleException,

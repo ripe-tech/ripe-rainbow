@@ -28,6 +28,9 @@ class InteractiveDriver(object):
     def find_by_name(self, name):
         raise appier.NotImplementedError()
 
+    def click_element(self, element):
+        raise appier.NotImplementedError()
+
     @property
     def current_url(self):
         raise appier.NotImplementedError()
@@ -60,6 +63,14 @@ class SeleniumDriver(InteractiveDriver):
 
     def find_element_by_name(self, name):
         return self.find_by_name(name)
+
+    def click_element(self, element):
+        try: from selenium.webdriver.common.action_chains import ActionChains
+        except ImportError: ActionChains = None
+
+        ActionChains(self.instance).move_to_element(element).click(element).perform()
+
+        return element
 
     @property
     def current_url(self):
