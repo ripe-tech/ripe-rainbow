@@ -96,7 +96,8 @@ class ConsoleRunner(Runner):
                         with appier_console.ctx_loader(
                             spinner = "dots3",
                             template = "        %s {{spinner}}" % test_name,
-                            single = True
+                            single = True,
+                            eol = ""
                         ):
                             # executes the concrete logic of the test, making sure
                             # that an overall spinner is making the UI interactive
@@ -104,7 +105,6 @@ class ConsoleRunner(Runner):
 
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
                         mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
-                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
                         success = results.Result.build_success(test)
                         passes.append(success)
                         passed += 1
@@ -112,7 +112,6 @@ class ConsoleRunner(Runner):
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
                         failure = results.Result.build_failure(test, exception)
                         failures.append(failure)
                         failed += 1
@@ -122,8 +121,18 @@ class ConsoleRunner(Runner):
                         failures.append(failure)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
                         failed += 1
+
+                    # determines the kind of environment we're running on and taking that
+                    # into account prints the proper output, standard is tty environment
+                    # meaning that proper interaction is allowed
+                    if appier_console.is_tty():
+                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
+
+                    # otherwise we're in a textual environment and only the extra part of
+                    # the line is expected to be printed (not possible to go back in the line)
+                    else:
+                        print("%s%s" % (mark_s, self._duration(start)))
 
                     # flushes the stdout and stderr so that the pending
                     # messages are properly handled by the output channels
