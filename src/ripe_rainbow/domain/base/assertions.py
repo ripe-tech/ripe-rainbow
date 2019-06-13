@@ -13,6 +13,8 @@ class AssertionsPart(parts.Part):
     def at_url(self, url):
         current_url = self.driver.current_url
 
+        # in case the current URL of the driver is the expected one
+        # returns a valid value immediately
         if url in current_url:
             return True
 
