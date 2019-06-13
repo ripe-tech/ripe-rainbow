@@ -14,9 +14,9 @@ except ImportError: WebDriverException = None
 
 class InteractionsPart(parts.Part):
 
-    def try_click(self, element):
+    def try_click(self, element, focus = True):
         try:
-            element.click()
+            self.driver.click(element, focus = focus)
             return element
         except (
             ElementClickInterceptedException,

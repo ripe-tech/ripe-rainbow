@@ -28,6 +28,12 @@ class InteractiveDriver(object):
     def find_by_name(self, name):
         raise appier.NotImplementedError()
 
+    def focus(self, element):
+        raise appier.NotImplementedError()
+
+    def click(self, element, focus = True):
+        raise appier.NotImplementedError()
+
     @property
     def current_url(self):
         raise appier.NotImplementedError()
@@ -61,6 +67,22 @@ class SeleniumDriver(InteractiveDriver):
     def find_element_by_name(self, name):
         return self.find_by_name(name)
 
+    def focus(self, element):
+        from selenium.webdriver.common.action_chains import ActionChains
+        actions = ActionChains(self.instance)
+        actions.move_to_element(element)
+        actions.perform()
+
+    def click(self, element, focus = True):
+        from selenium.webdriver.common.action_chains import ActionChains
+        if focus:
+            actions = ActionChains(self.instance)
+            actions.move_to_element(element)
+            actions.click(element)
+            actions.perform()
+        else:
+            element.click()
+
     @property
     def current_url(self):
         return self.instance.current_url
@@ -70,7 +92,11 @@ class SeleniumDriver(InteractiveDriver):
         cls = self.__class__
         if hasattr(cls, "_instance") and cls._instance:
             return cls._instance
+
         import selenium.webdriver
+
+        # creates the underlying instance of the Chomde driver
+        # that is going to be used in the concrete exeuction
         cls._instance = selenium.webdriver.Chrome(
             chrome_options = self._selenium_options()
         )
