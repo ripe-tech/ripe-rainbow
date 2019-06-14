@@ -44,6 +44,13 @@ class AssertionsPart(parts.Part):
 
         return element
 
+    def exists(self, selector, condition = None):
+        # tries to retrieve the complete set of elements that match
+        # the provided selector and fullfill the condition if there's
+        # at least one valid returns it otherwise returns invalid
+        matching = self.exists_multiple(selector, condition = condition)
+        return matching[0] if len(matching) > 0 else None
+
     def exists_multiple(self, selector, condition = None):
         # determines if there's a valid condition provided and if that's
         # not the case sets the default condition value
@@ -71,11 +78,6 @@ class AssertionsPart(parts.Part):
             self.logger.debug("Found elements with '%s'" % selector)
 
         return elements
-
-    def exists(self, selector, condition = None):
-        matching = self.exists_multiple(selector, condition = condition)
-
-        return matching[0] if len(matching) > 0 else None
 
     def is_visible(self, selector):
         element = self.exists(selector)
