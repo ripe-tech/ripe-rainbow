@@ -26,8 +26,8 @@ class InteractionsPart(parts.Part):
             self.logger.debug("Element is not \"clickable\" because: %s" % exception)
             return None
 
-    def click_when_possible(self, selector):
-        element = self.waits.element(selector)
+    def click_when_possible(self, selector, condition = None):
+        element = self.waits.element(selector, condition = condition)
         return self.waits.until(
             lambda d: self.try_click(element),
             "Element '%s' found but never became clickable" % selector
