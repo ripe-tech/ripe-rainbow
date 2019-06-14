@@ -25,7 +25,15 @@ class RetailPart(parts.Part):
 
         self.waits.redirected_to(self.base_url)
 
-    def select_size(self, size, scale):
+    def select_size(self, scale, size):
+        """
+        Opens the size selection window, selects the proper scale and size and applies that configuration.
+
+        :param scale: The scale to pick.
+        :param size: The size to pick.
+        :return: Nothing.
+        """
+
         self.interactions.click_when_possible(".size:not(.disabled) .button-size")
 
         self.interactions.click_when_possible(
