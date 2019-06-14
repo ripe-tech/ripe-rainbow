@@ -25,6 +25,36 @@ class RetailPart(parts.Part):
 
         self.waits.redirected_to(self.base_url)
 
+    def select_size(self, scale, size):
+        """
+        Opens the size selection window, selects the proper scale and size and
+        applies that configuration by clicking 'Apply' and closing the window.
+
+        :type scale: String
+        :param scale: The scale that is going to be picked.
+        :type size: String
+        :param size: The size (in provided scale) to be picked.
+        """
+
+        self.interactions.click_when_possible(".size:not(.disabled) .button-size")
+
+        self.interactions.click_when_possible(
+            ".size .button-scale",
+            condition = lambda element: element.text == str(scale)
+        )
+        self.waits.element(
+            ".size .button-scale.active",
+            condition = lambda element: element.text == str(scale)
+        )
+
+        self.interactions.click_when_possible(
+            ".size .button-size",
+            condition = lambda element: element.text == str(size)
+        )
+
+        self.interactions.click_when_possible(".size .button.button-primary.button-apply")
+        self.waits.is_not_visible(".size .modal-container")
+
     @property
     def base_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-retail-test.platforme.com")
