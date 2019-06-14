@@ -27,12 +27,13 @@ class RetailPart(parts.Part):
 
     def select_size(self, scale, size):
         """
-        Opens the size selection window, selects the proper scale and size and applies that configuration by clicking
-        'Apply' and closing the window.
+        Opens the size selection window, selects the proper scale and size and
+        applies that configuration by clicking 'Apply' and closing the window.
 
-        :param scale: The scale to pick.
-        :param size: The size to pick.
-        :return: Nothing.
+        :type scale: String
+        :param scale: The scale that is going to be picked.
+        :type size: String
+        :param size: The size (in provided scale) to be picked.
         """
 
         self.interactions.click_when_possible(".size:not(.disabled) .button-size")
