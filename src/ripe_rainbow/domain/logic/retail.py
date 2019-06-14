@@ -25,6 +25,26 @@ class RetailPart(parts.Part):
 
         self.waits.redirected_to(self.base_url)
 
+    def select_size(self, size, scale):
+        self.interactions.click_when_possible(".size:not(.disabled) .button-size")
+
+        self.interactions.click_when_possible(
+            ".size .button-scale",
+            condition = lambda element: element.text == str(scale)
+        )
+        self.waits.element(
+            ".size .button-scale.active",
+            condition = lambda element: element.text == str(scale)
+        )
+
+        self.interactions.click_when_possible(
+            ".size .button-size",
+            condition = lambda element: element.text == str(size)
+        )
+
+        self.interactions.click_when_possible(".size .button.button-primary.button-apply")
+        self.waits.is_not_visible(".size .modal-container")
+
     @property
     def base_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-retail-test.platforme.com")
