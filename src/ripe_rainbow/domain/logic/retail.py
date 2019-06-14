@@ -27,7 +27,8 @@ class RetailPart(parts.Part):
 
     def select_size(self, scale, size):
         """
-        Opens the size selection window, selects the proper scale and size and applies that configuration.
+        Opens the size selection window, selects the proper scale and size and applies that configuration by clicking
+        'Apply' and closing the window.
 
         :param scale: The scale to pick.
         :param size: The size to pick.
