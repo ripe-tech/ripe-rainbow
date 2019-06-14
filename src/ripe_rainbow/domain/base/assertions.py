@@ -73,25 +73,9 @@ class AssertionsPart(parts.Part):
         return elements
 
     def exists(self, selector, condition = None):
-        has_condition = True if condition else False
-        if not condition: condition = lambda e: True
+        matching = self.exists_multiple(selector, condition = condition)
 
-        try:
-            element = self.driver.find_element_by_css_selector(selector)
-        except NoSuchElementException:
-            self.logger.debug("Could not find element with '%s'" % selector)
-            return None
-
-        if not condition(element):
-            self.logger.debug("Found element with '%s' but doesn't match condition" % selector)
-            return None
-
-        if has_condition:
-            self.logger.debug("Found element with '%s' that matches the condition" % selector)
-        else:
-            self.logger.debug("Found element with '%s'" % selector)
-
-        return element
+        return matching[0] if len(matching) > 0 else None
 
     def is_visible(self, selector):
         element = self.exists(selector)
