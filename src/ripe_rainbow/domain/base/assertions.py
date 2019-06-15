@@ -46,7 +46,7 @@ class AssertionsPart(parts.Part):
 
     def exists(self, selector, condition = None):
         # tries to retrieve the complete set of elements that match
-        # the provided selector and fullfill the condition if there's
+        # the provided selector and fulfill the condition if there's
         # at least one valid returns it otherwise returns invalid
         matching = self.exists_multiple(selector, condition = condition)
         return matching[0] if len(matching) > 0 else None
