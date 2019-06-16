@@ -17,11 +17,15 @@ class WaitsPart(parts.Part):
 
     def wrap_method(self, method, *args):
         """
-        Wraps the method being waited on to tolerate some exceptions since in most cases these are transitory conditions
-        that shouldn't break the test.
+        Wraps the method being waited on to tolerate some exceptions since
+        in most cases these are transitory conditions that shouldn't break
+        the test.
 
+        :type method: Function
         :param method: The method being ran.
+        :type args: List
         :param args: The arguments provided to the method.
+        :rtype Function
         :return: The method wrapped on a try-catch for StaleElementReferenceException.
         """
 
