@@ -57,15 +57,20 @@ class RetailPart(parts.Part):
 
     def change_customization(self, brand, model, part, material, color):
         """
-        Makes a change to the customization of a part and checks that the pages mutates correctly, picking the right
-        active parts, materials and colors, as well as properly switching the swatches.
+        Makes a change to the customization of a part and checks that the pages
+        mutates correctly, picking the right active parts, materials and colors,
+        as well as properly switching the swatches.
 
+        :type brand: String
         :param brand: The brand of the model.
+        :type model: String
         :param model: The model being customized.
+        :type part: String
         :param part: The part being changed.
+        :type material: String
         :param material: The material to use for the part.
+        :type color: String
         :param color: The color to use for the part.
-        :return: Nothing.
         """
 
         self.interactions.click_when_possible(".pickers .button-part", condition = lambda e: e.text == part.upper())
