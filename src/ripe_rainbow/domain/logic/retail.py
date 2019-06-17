@@ -55,7 +55,7 @@ class RetailPart(parts.Part):
         self.interactions.click_when_possible(".size .button.button-primary.button-apply")
         self.waits.is_not_visible(".size .modal-container")
 
-    def change_customization(self, brand, model, part, material, color):
+    def set_part(self, brand, model, part, material, color):
         """
         Makes a change to the customization of a part and checks that the pages
         mutates correctly, picking the right active parts, materials and colors,
@@ -86,11 +86,11 @@ class RetailPart(parts.Part):
 
         self.waits.text(".button-color.active", color.capitalize())
         self.waits.until(
-            lambda d: self.swatch_is_correct(".pickers .button-color.active .swatch > img", brand, model, material, color),
+            lambda d: self.assert_swatch(".pickers .button-color.active .swatch > img", brand, model, material, color),
             "Color swatch didn't have the expected image."
         )
 
-    def swatch_is_correct(self, selector, brand, model, material, color):
+    def assert_swatch(self, selector, brand, model, material, color):
         """
         Checks that the img element identified by the selector points to the correct swatch.
 
