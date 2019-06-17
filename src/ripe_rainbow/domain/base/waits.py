@@ -6,15 +6,38 @@ from .. import parts
 try: from selenium.webdriver.support.ui import WebDriverWait
 except ImportError: WebDriverWait = None
 
+try: from selenium.common.exceptions import StaleElementReferenceException
+except ImportError: StaleElementReferenceException = None
+
 class WaitsPart(parts.Part):
 
     def __init__(self, owner):
         parts.Part.__init__(self, owner)
         self.wait = WebDriverWait(self.driver, self.timeout)
 
+    def wrap_method(self, method, *args):
+        """
+        Wraps the method being waited on to tolerate some exceptions since
+        in most cases these are transitory conditions that shouldn't break
+        the test.
+
+        :type method: Function
+        :param method: The method being ran.
+        :type args: List
+        :param args: The arguments provided to the method.
+        :rtype Function
+        :return: The method wrapped on a try-catch for StaleElementReferenceException.
+        """
+
+        try:
+            return method(*args)
+        except (StaleElementReferenceException, AssertionError) as e:
+            self.logger.debug("Got exception while waiting: %s" % e)
+            return None
+
     def until(self, method, message = None):
         return self.wait.until(
-            method,
+            lambda *args: self.wrap_method(method, *args),
             message = message
         )
 
