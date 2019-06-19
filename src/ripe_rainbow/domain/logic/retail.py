@@ -80,6 +80,9 @@ class RetailPart(parts.Part):
         mutates correctly, picking the right active parts, materials and colors,
         as well as properly switching the swatches.
 
+        If the text parameters are passed an extra set of assertions are going
+        to be performed to validate expected behaviour.
+
         :type brand: String
         :param brand: The brand of the model.
         :type model: String
@@ -146,12 +149,19 @@ class RetailPart(parts.Part):
 
         element = self.waits.element(selector)
         src = element.get_attribute("src")
-        expected_params = ["brand=%s" % brand, "model=%s" % model, "material=%s" % material, "color=%s" % color]
+        expected_params = [
+            "brand=%s" % brand, "model=%s" % model,
+            "material=%s" % material,
+            "color=%s" % color
+        ]
 
         is_correct = all(expected_param in src for expected_param in expected_params)
 
         if not is_correct:
-            raise AssertionError("Expected '%s' (src of '%s') to contain '%s'." % (src, selector, expected_params))
+            raise AssertionError(
+                "Expected '%s' (src of '%s') to contain '%s'." %\
+                (src, selector, expected_params)
+            )
 
     @property
     def base_url(self):
