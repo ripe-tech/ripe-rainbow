@@ -130,7 +130,8 @@ class RetailPart(parts.Part):
     def assert_swatch(self, selector, brand, model, material, color):
         """
         Checks that the img element identified by the selector points to the
-        correct swatch.
+        correct swatch. The correctness verification is performed by checking
+        the "src" attribute of the element.
 
         This kind of assertion is critical to ensure proper responsiveness of
         the UI in accordance with part selection.
