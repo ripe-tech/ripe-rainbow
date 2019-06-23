@@ -34,6 +34,15 @@ class InteractiveDriver(object):
     def click(self, element, focus = True):
         raise appier.NotImplementedError()
 
+    def scroll_into_view(self, element):
+        """
+        Scrolls the element on which it's called into the visible area of the browser window.
+
+        :type element: Element
+        :param element: The element to scroll into view.
+        """
+        raise appier.NotImplementedError()
+
     @property
     def current_url(self):
         raise appier.NotImplementedError()
@@ -77,11 +86,17 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.common.action_chains import ActionChains
         if focus:
             actions = ActionChains(self.instance)
+
             actions.move_to_element(element)
             actions.click(element)
+
+            self.scroll_into_view(element)
             actions.perform()
         else:
             element.click()
+
+    def scroll_into_view(self, element):
+        self.instance.execute_script("arguments[0].scrollIntoView();", element)
 
     @property
     def current_url(self):
