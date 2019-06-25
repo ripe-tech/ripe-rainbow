@@ -89,12 +89,10 @@ class SeleniumDriver(InteractiveDriver):
     def click(self, element, focus = True):
         from selenium.webdriver.common.action_chains import ActionChains
         if focus:
+            self.scroll_to(element)
             actions = ActionChains(self.instance)
-
             actions.move_to_element(element)
             actions.click(element)
-
-            self.scroll_to(element)
             actions.perform()
         else:
             element.click()
