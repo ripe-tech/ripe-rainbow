@@ -34,6 +34,19 @@ class InteractiveDriver(object):
     def click(self, element, focus = True):
         raise appier.NotImplementedError()
 
+    def scroll_to(self, element):
+        """
+        Scrolls the element on which it's called into the visible area
+        of the browser window.
+
+        This operation should be performed in a deterministic way.
+
+        :type element: Element
+        :param element: The element to scroll into view.
+        """
+
+        raise appier.NotImplementedError()
+
     @property
     def current_url(self):
         raise appier.NotImplementedError()
@@ -76,12 +89,20 @@ class SeleniumDriver(InteractiveDriver):
     def click(self, element, focus = True):
         from selenium.webdriver.common.action_chains import ActionChains
         if focus:
+            self.scroll_to(element)
             actions = ActionChains(self.instance)
             actions.move_to_element(element)
             actions.click(element)
             actions.perform()
         else:
             element.click()
+
+    def scroll_to(self, element):
+        # as Selenium doesn't automatically support automatically scrolling
+        # in elements inside the page, such as when using an iframe or
+        # overflow scroll, therefore we must rely on Web API Element.scrollIntoView()
+        # that allows proper scroll operation into element
+        self.instance.execute_script("arguments[0].scrollIntoView();", element)
 
     @property
     def current_url(self):
