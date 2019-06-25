@@ -79,6 +79,27 @@ class AssertionsPart(parts.Part):
 
         return elements
 
-    def is_visible(self, selector):
-        element = self.exists(selector)
-        return element.is_displayed()
+    def is_visible(self, selector, condition = None):
+        return self.has_visibility(selector, True, condition = condition)
+
+    def is_not_visible(self, selector, condition = None):
+        return self.has_visibility(selector, False, condition = condition)
+
+    def has_visibility(self, selector, visible, condition = None):
+        element = self.exists(selector, condition = condition)
+
+        if not element: return None
+
+        displayed = element.is_displayed()
+
+        if displayed == visible:
+            self.logger.debug("Found element with '%s' with the correct visibility (%s)." % (selector, visible))
+
+            return element
+        else:
+            self.logger.debug(
+                "Found visible element with '%s' but has the wrong visibility (expected '%s' but got '%s')." %
+                (selector, visible, displayed)
+            )
+
+            return None
