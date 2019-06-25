@@ -40,6 +40,8 @@ class InteractiveDriver(object):
 
         :type element: Element
         :param element: The element to scroll into view.
+        :rtype None
+        :return Nothing.
         """
         raise appier.NotImplementedError()
 
@@ -96,6 +98,9 @@ class SeleniumDriver(InteractiveDriver):
             element.click()
 
     def scroll_into_view(self, element):
+        # Selenium doesn't automatically support automatically scrolling in elements inside the page,
+        # such as when using an iframe or overflow scroll, therefore we must rely on Web API
+        # Element.scrollIntoView() (https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView)
         self.instance.execute_script("arguments[0].scrollIntoView();", element)
 
     @property

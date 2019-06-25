@@ -35,8 +35,11 @@ class InteractionsPart(parts.Part):
         :param selector: The selector for the element to click.
         :type condition: Function
         :param condition: The filter the selected element mustpass to be clickable.
+        :rtype Element
+        :return The clicked element.
         """
 
+        # gets the element to be clicked
         element = self.waits.element(selector, condition = condition)
         return self.waits.until(
             lambda d: self.try_click(element),
