@@ -19,9 +19,9 @@ class InteractionsPart(parts.Part):
             self.driver.click(element, focus = focus)
             return element
         except (
-                ElementClickInterceptedException,
-                ElementNotVisibleException,
-                WebDriverException
+            ElementClickInterceptedException,
+            ElementNotVisibleException,
+            WebDriverException
         ) as exception:
             self.logger.debug("Element is not \"clickable\" because: %s" % exception)
             return None
@@ -36,10 +36,9 @@ class InteractionsPart(parts.Part):
         :type condition: Function
         :param condition: The filter the selected element mustpass to be clickable.
         :rtype Element
-        :return The clicked element.
+        :return The clicked element if there's any othewise an invalid value.
         """
 
-        # gets the element to be clicked
         element = self.waits.element(selector, condition = condition)
         return self.waits.until(
             lambda d: self.try_click(element),
