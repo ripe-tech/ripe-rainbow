@@ -77,29 +77,26 @@ class AssertionsPart(parts.Part):
         else:
             self.logger.debug("Found elements with '%s'" % selector)
 
+        # returns the complete set of element that exist in the current context
+        # and that match the requested condition
         return elements
 
     def is_visible(self, selector, condition = None):
-        return self.has_visibility(selector, True, condition = condition)
-
-    def is_not_visible(self, selector, condition = None):
-        return self.has_visibility(selector, False, condition = condition)
-
-    def has_visibility(self, selector, visible, condition = None):
+        # runs the selector with the requested condition to retrieve a possible
+        # element and returns invalid if there's none
         element = self.exists(selector, condition = condition)
-
         if not element: return None
 
-        displayed = element.is_displayed()
+        # verifies that the element is currently displayed in the screen (visible)
+        # and if not returns an invalid value
+        return element if element.is_displayed() else None
 
-        if displayed == visible:
-            self.logger.debug("Found element with '%s' with the correct visibility (%s)." % (selector, visible))
+    def is_not_visible(self, selector, condition = None):
+        # runs the selector with the requested condition to retrieve a possible
+        # element and returns invalid if there's none
+        element = self.exists(selector, condition = condition)
+        if not element: return None
 
-            return element
-        else:
-            self.logger.debug(
-                "Found visible element with '%s' but has the wrong visibility (expected '%s' but got '%s')." %
-                (selector, visible, displayed)
-            )
-
-            return None
+        # verifies that the element is not currently displayed in the screen
+        # (invisible) and if not returns an invalid value
+        return None if element.is_displayed() else element
