@@ -68,14 +68,14 @@ class WaitsPart(parts.Part):
             "Element '%s' with text '%s' not found" % (selector, text)
         )
 
-    def is_visible(self, selector):
+    def is_visible(self, selector, condition = None):
         return self.until(
-            lambda d: self.assertions.is_visible(selector),
+            lambda d: self.assertions.is_visible(selector, condition = condition),
             "Element '%s' is not visible" % selector
         )
 
-    def is_not_visible(self, selector):
+    def is_not_visible(self, selector, condition = None):
         return self.until(
-            lambda d: not self.assertions.is_visible(selector),
+            lambda d: self.assertions.is_not_visible(selector, condition = condition),
             "Element '%s' is visible" % selector
         )

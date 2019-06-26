@@ -39,7 +39,7 @@ class InteractionsPart(parts.Part):
         :return The clicked element if there's any othewise an invalid value.
         """
 
-        element = self.waits.element(selector, condition = condition)
+        element = self.waits.is_visible(selector, condition = condition)
         return self.waits.until(
             lambda d: self.try_click(element),
             "Element '%s' found but never became clickable" % selector

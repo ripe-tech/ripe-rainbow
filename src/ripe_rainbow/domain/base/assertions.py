@@ -77,8 +77,26 @@ class AssertionsPart(parts.Part):
         else:
             self.logger.debug("Found elements with '%s'" % selector)
 
+        # returns the complete set of element that exist in the current context
+        # and that match the requested condition
         return elements
 
-    def is_visible(self, selector):
-        element = self.exists(selector)
-        return element.is_displayed()
+    def is_visible(self, selector, condition = None):
+        # runs the selector with the requested condition to retrieve a possible
+        # element and returns invalid if there's none
+        element = self.exists(selector, condition = condition)
+        if not element: return None
+
+        # verifies that the element is currently displayed in the screen (visible)
+        # and if not returns an invalid value
+        return element if element.is_displayed() else None
+
+    def is_not_visible(self, selector, condition = None):
+        # runs the selector with the requested condition to retrieve a possible
+        # element and returns invalid if there's none
+        element = self.exists(selector, condition = condition)
+        if not element: return None
+
+        # verifies that the element is not currently displayed in the screen
+        # (invisible) and if not returns an invalid value
+        return None if element.is_displayed() else element
