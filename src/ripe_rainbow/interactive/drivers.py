@@ -116,8 +116,8 @@ class SeleniumDriver(InteractiveDriver):
 
         import selenium.webdriver
 
-        # creates the underlying instance of the Chomde driver
-        # that is going to be used in the concrete exeuction
+        # creates the underlying instance of the Chrome driver
+        # that is going to be used in the concrete execution
         cls._instance = selenium.webdriver.Chrome(
             chrome_options = self._selenium_options()
         )
