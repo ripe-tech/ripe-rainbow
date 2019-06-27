@@ -151,7 +151,8 @@ class RetailPart(parts.Part):
         element = self.waits.element(selector)
         src = element.get_attribute("src")
         expected_params = [
-            "brand=%s" % brand, "model=%s" % model,
+            "brand=%s" % brand,
+            "model=%s" % model,
             "material=%s" % material,
             "color=%s" % color
         ]
