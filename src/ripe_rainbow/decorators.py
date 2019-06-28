@@ -1,7 +1,24 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-def test(function):
-    function.test = True
-    function.description = function.__name__
-    return function
+import functools
+
+def test(
+    script_url = None,
+    bugs = []
+):
+
+    def decorator(function):
+
+        function.test = True
+        function.description = function.__name__
+        function.script_url = script_url
+        function.bugs = bugs
+
+        @functools.wraps(function)
+        def interceptor(*args, **kwargs):
+            return function(*args, **kwargs)
+
+        return interceptor
+
+    return decorator
