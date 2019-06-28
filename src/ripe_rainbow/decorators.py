@@ -4,6 +4,7 @@
 import functools
 
 def test(
+    description = None,
     script_url = None,
     bugs = []
 ):
@@ -11,7 +12,7 @@ def test(
     def decorator(function):
 
         function.test = True
-        function.description = function.__name__
+        function.description = description or function.__name__
         function.script_url = script_url
         function.bugs = bugs
 
