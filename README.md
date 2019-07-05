@@ -1,4 +1,4 @@
-# RIPE Rainbow
+# [![RIPE Rainbow](res/logo.png)](https://tech.platforme.com)
 
 **Bringing happiness to the RIPE world through testing 🌈**
 
