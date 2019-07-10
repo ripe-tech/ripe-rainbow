@@ -8,7 +8,8 @@ from .. import parts
 try: from selenium.webdriver.common.keys import Keys
 except ImportError: Keys = None
 
-class IdPart(parts.Part):
+class RipeIdPart(parts.Part):
+
     def login(self, username, password):
         self.driver.get(self.base_url)
         self.interactions.click_when_possible(".button-platforme")

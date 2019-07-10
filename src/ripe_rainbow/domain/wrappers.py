@@ -11,16 +11,16 @@ BASE_TUPLES = (
 )
 
 COPPER_TUPLES = (
-    ("id", logic.IdPart),
+    ("id", logic.RipeIdPart),
 )
 
 PULSE_TUPLES = (
-    ("id", logic.IdPart),
+    ("id", logic.RipeIdPart),
 )
 
 RETAIL_TUPLES = (
     ("admin", logic.AdminPart),
-    ("retail", logic.RetailPart)
+    ("retail", logic.RipeRetailPart)
 )
 
 class DomainWrapper(object):

@@ -8,7 +8,7 @@ from .. import parts
 try: from selenium.webdriver.common.keys import Keys
 except ImportError: Keys = None
 
-class RetailPart(parts.Part):
+class RipeRetailPart(parts.Part):
 
     def login(self, username, password):
         self.driver.get(self.login_url)
