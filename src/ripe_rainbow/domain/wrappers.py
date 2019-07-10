@@ -10,21 +10,39 @@ BASE_TUPLES = (
     ("waits", base.WaitsPart)
 )
 
+COPPER_TUPLES = (
+    ("id", logic.RipeIdPart),
+)
+
+PULSE_TUPLES = (
+    ("id", logic.RipeIdPart),
+)
+
 RETAIL_TUPLES = (
     ("admin", logic.AdminPart),
-    ("retail", logic.RetailPart)
+    ("retail", logic.RipeRetailPart)
 )
 
 class DomainWrapper(object):
 
     @classmethod
-    def wrap_base(cls, instance):
-        for name, cls in BASE_TUPLES:
-            part = cls(instance)
+    def wrap(cls, instance, tuples):
+        for name, _cls in tuples:
+            part = _cls(instance)
             setattr(instance, name, part)
 
     @classmethod
+    def wrap_base(cls, instance):
+        cls.wrap(instance, BASE_TUPLES)
+
+    @classmethod
+    def wrap_copper(cls, instance):
+        cls.wrap(instance, COPPER_TUPLES)
+
+    @classmethod
+    def wrap_pulse(cls, instance):
+        cls.wrap(instance, PULSE_TUPLES)
+
+    @classmethod
     def wrap_retail(cls, instance):
-        for name, cls in RETAIL_TUPLES:
-            part = cls(instance)
-            setattr(instance, name, part)
+        cls.wrap(instance, RETAIL_TUPLES)
