@@ -129,8 +129,10 @@ class SeleniumDriver(InteractiveDriver):
 
     def wrap_outer(self, method, *args, **kwargs):
         from selenium.common.exceptions import TimeoutException
-        try: return method(*args, **kwargs)
-        except TimeoutException: raise errors.TimeoutError()
+        try:
+            return method(*args, **kwargs)
+        except TimeoutException as exception:
+            raise errors.TimeoutError(message = exception.msg)
 
     def wrap_inner(self, method, *args, **kwargs):
         """
