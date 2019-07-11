@@ -12,8 +12,8 @@ class RipeIdPart(parts.Part):
 
     def login(self, username, password):
         self.driver.get(self.base_url)
-        self.interactions.click_when_possible(".button-platforme")
 
+        self.interactions.click_when_possible(".button-platforme")
         self.waits.redirected_to(self.id_url)
 
         form = self.driver.find_element_by_css_selector(".form")
@@ -23,9 +23,11 @@ class RipeIdPart(parts.Part):
         password_input.send_keys(password)
         password_input.send_keys(Keys.ENTER)
 
+        self.interactions.click_when_possible(".form .button-blue")
+
     def login_and_redirect(self, username, password):
         self.login(username, password)
-        self.waits.redirected_to(self.base_url)
+        self.waits.redirected_to(self.home_url)
 
     @property
     def id_url(self):
