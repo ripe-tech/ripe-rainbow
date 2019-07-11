@@ -5,6 +5,9 @@ import appier
 
 from .. import parts
 
+try: from selenium.webdriver.common.keys import Keys
+except ImportError: Keys = None
+
 class RipeIdPart(parts.Part):
 
     def login(self, username = None, password = None, redirect_url = None):
@@ -25,8 +28,7 @@ class RipeIdPart(parts.Part):
         username_input.send_keys(username)
         password_input = form.find_element_by_name("password")
         password_input.send_keys(password)
-
-        self.interactions.click_when_possible(".form .button-blue")
+        password_input.send_keys(Keys.ENTER)
 
         self.waits.redirected_to((self.login_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
