@@ -36,6 +36,8 @@ class InteractionsPart(parts.Part):
         # by having the element "inside" the current browser viewport
         element = self.waits.is_visible(selector, condition = condition)
 
+        # waits until the try click operation is possible meaning that a
+        # proper click has been "done" by the driver
         return self.waits.until(
             lambda d: self.try_click(element),
             "Element '%s' found but never became clickable" % selector
