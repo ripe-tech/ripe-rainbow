@@ -19,7 +19,7 @@ class RipeIdPart(parts.Part):
         self.driver.get(self.base_url)
 
         self.interactions.click_when_possible(".button-platforme")
-        self.waits.redirected_to(self.id_url)
+        self.waits.redirected_to(self.login_url)
 
         form = self.driver.find_element_by_css_selector(".form")
         username_input = form.find_element_by_name("username")
@@ -37,3 +37,7 @@ class RipeIdPart(parts.Part):
     @property
     def id_url(self):
         return appier.conf("ID_URL", "https://id.platforme.com")
+
+    @property
+    def login_url(self):
+        return "%s/admin/signin" % self.id_url
