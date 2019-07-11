@@ -32,6 +32,8 @@ class InteractionsPart(parts.Part):
         element = self.waits.element(selector, condition = condition)
         if scroll: self.driver.scroll_to(element)
 
+        # waits for the proper visibility of the element, should be ensured
+        # by having the element "inside" the current browser viewport
         element = self.waits.is_visible(selector, condition = condition)
 
         return self.waits.until(
