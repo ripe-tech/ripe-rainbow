@@ -11,14 +11,21 @@ except ImportError: NoSuchElementException = None
 class AssertionsPart(parts.Part):
 
     def at_url(self, url):
+        # retrieves the current URL as a string from the underlying
+        # driver so that it can be verified
         current_url = self.driver.current_url
+        
+        # in case the provided URL is not a sequence converts it into
+        # one so that it can be used in the underlying algorithm
+        if not isinstance(url, (list, tuple)): url = (url,)
 
-        # in case the current URL of the driver is the expected one
-        # returns a valid value immediately
-        if url in current_url:
+        # iterates over the complete set of URLs to be tested and sees
+        # if at least one of them validates as a prefix
+        for _url in url:
+            if not current_url.startswith(_url): continue
             return True
 
-        self.logger.debug("Current page is '%s' and not '%s'" % (current_url, url))
+        self.logger.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
 
         return False
 

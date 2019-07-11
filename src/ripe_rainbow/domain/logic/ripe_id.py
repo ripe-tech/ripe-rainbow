@@ -5,14 +5,12 @@ import appier
 
 from .. import parts
 
-from ... import errors
-
 try: from selenium.webdriver.common.keys import Keys
 except ImportError: Keys = None
 
 class RipeIdPart(parts.Part):
 
-    def login(self, username = None, password = None):
+    def login(self, username = None, password = None, redirect_url = None):
         username = appier.conf("RIPE_ID_USERNAME", username)
         password = appier.conf("RIPE_ID_PASSWORD", password)
         if not username or not password:
@@ -22,10 +20,8 @@ class RipeIdPart(parts.Part):
 
         self.interactions.click_when_possible(".button-platforme")
 
-        try:
-            self.waits.redirected_to(self.login_url, timeout = 2.5)
-        except errors.TimeoutError:
-            return
+        self.waits.redirected_to((self.login_url, redirect_url))
+        if self.driver.current_url.startswith(redirect_url): return
 
         form = self.driver.find_element_by_css_selector(".form")
         username_input = form.find_element_by_name("username")
@@ -36,16 +32,15 @@ class RipeIdPart(parts.Part):
 
         self.interactions.click_when_possible(".form .button-blue")
 
-        try:
-            self.waits.redirected_to(self.oauth_authorize_url, timeout = 2.5)
-        except errors.TimeoutError:
-            return
+        self.waits.redirected_to((self.login_url, redirect_url))
+        if self.driver.current_url.startswith(redirect_url): return
 
         self.interactions.click_when_possible(".form .button-blue")
 
     def login_and_redirect(self, username = None, password = None, redirect_url = None):
-        self.login(username = username, password = password)
-        self.waits.redirected_to(redirect_url or self.home_url)
+        redirect_url = redirect_url or self.home_url
+        self.login(username = username, password = password, redirect_url = redirect_url)
+        self.waits.redirected_to(redirect_url)
 
     @property
     def id_url(self):
