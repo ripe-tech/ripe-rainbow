@@ -21,7 +21,11 @@ class RipeIdPart(parts.Part):
         self.driver.get(self.base_url)
 
         self.interactions.click_when_possible(".button-platforme")
-        self.waits.redirected_to(self.login_url)
+
+        try:
+            self.waits.redirected_to(self.login_url, timeout = 2.5)
+        except errors.TimeoutError:
+            return
 
         form = self.driver.find_element_by_css_selector(".form")
         username_input = form.find_element_by_name("username")
@@ -39,9 +43,9 @@ class RipeIdPart(parts.Part):
 
         self.interactions.click_when_possible(".form .button-blue")
 
-    def login_and_redirect(self, username = None, password = None):
+    def login_and_redirect(self, username = None, password = None, redirect_url = None):
         self.login(username = username, password = password)
-        self.waits.redirected_to(self.home_url)
+        self.waits.redirected_to(redirect_url or self.home_url)
 
     @property
     def id_url(self):
