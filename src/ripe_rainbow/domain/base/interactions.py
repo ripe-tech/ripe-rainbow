@@ -3,28 +3,10 @@
 
 from .. import parts
 
-try: from selenium.common.exceptions import ElementClickInterceptedException
-except ImportError: ElementClickInterceptedException = None
-
-try: from selenium.common.exceptions import ElementNotVisibleException
-except ImportError: ElementNotVisibleException = None
-
-try: from selenium.common.exceptions import WebDriverException
-except ImportError: WebDriverException = None
-
 class InteractionsPart(parts.Part):
 
     def try_click(self, element, focus = True):
-        try:
-            self.driver.click(element, focus = focus)
-            return element
-        except (
-            ElementClickInterceptedException,
-            ElementNotVisibleException,
-            WebDriverException
-        ) as exception:
-            self.logger.debug("Element is not \"clickable\" because: %s" % exception)
-            return None
+        return self.driver.click(element, focus = focus)
 
     def click_when_possible(self, selector, condition = None):
         """
@@ -34,12 +16,16 @@ class InteractionsPart(parts.Part):
         :type selector: String
         :param selector: The selector for the element to click.
         :type condition: Function
-        :param condition: The filter the selected element mustpass to be clickable.
+        :param condition: The filter the selected element must pass to be clickable.
         :rtype Element
-        :return The clicked element if there's any othewise an invalid value.
+        :return The clicked element if there's any otherwise an invalid value.
         """
 
+        element = self.waits.element(selector, condition = condition)
+        self.driver.scroll_to(element)
+
         element = self.waits.is_visible(selector, condition = condition)
+
         return self.waits.until(
             lambda d: self.try_click(element),
             "Element '%s' found but never became clickable" % selector
