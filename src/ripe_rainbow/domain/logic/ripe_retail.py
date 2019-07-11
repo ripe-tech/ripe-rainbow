@@ -165,6 +165,8 @@ class RipeRetailPart(parts.Part):
                 (src, selector, expected_params)
             )
 
+        return element
+
     @property
     def base_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-retail-test.platforme.com")
