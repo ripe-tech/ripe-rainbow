@@ -34,12 +34,16 @@ class InteractionsPart(parts.Part):
         :type selector: String
         :param selector: The selector for the element to click.
         :type condition: Function
-        :param condition: The filter the selected element mustpass to be clickable.
+        :param condition: The filter the selected element must pass to be clickable.
         :rtype Element
-        :return The clicked element if there's any othewise an invalid value.
+        :return The clicked element if there's any otherwise an invalid value.
         """
 
+        element = self.waits.element(selector, condition = condition)
+        self.driver.scroll_to(element)
+
         element = self.waits.is_visible(selector, condition = condition)
+
         return self.waits.until(
             lambda d: self.try_click(element),
             "Element '%s' found but never became clickable" % selector
