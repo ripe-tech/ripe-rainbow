@@ -30,7 +30,7 @@ class RipeIdPart(parts.Part):
         password_input.send_keys(password)
         password_input.send_keys(Keys.ENTER)
 
-        self.waits.redirected_to((self.login_url, redirect_url))
+        self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
 
         self.interactions.click_when_possible(".form .button-blue")
