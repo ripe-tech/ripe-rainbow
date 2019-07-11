@@ -146,6 +146,8 @@ class RipeRetailPart(parts.Part):
         :param material: The material the swatch should represent.
         :type color: String
         :param color: The color being shown in the shown.
+        :rtype: Element
+        :return: The element with the swatch image.
         """
 
         element = self.waits.element(selector)
