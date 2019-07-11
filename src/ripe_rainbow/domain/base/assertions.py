@@ -35,14 +35,17 @@ class AssertionsPart(parts.Part):
 
         element = self.exists(selector)
 
-        if element and not element.text == text:
-            self.logger.debug("Element '%s' found but has text '%s' instead of '%s'" % (
-                selector,
-                element.text,
-                text
-            ))
+        if element:
+            self.driver.scroll_to(element)
 
-            return None
+            if not element.text == text:
+                self.logger.debug("Element '%s' found but has text '%s' instead of '%s'" % (
+                    selector,
+                    element.text,
+                    text
+                ))
+
+                return None
 
         self.logger.debug("Found element '%s' with text '%s'" % (
             selector,
