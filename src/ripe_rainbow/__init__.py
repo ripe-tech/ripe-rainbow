@@ -13,6 +13,7 @@ from . import util
 from .domain import *
 from .interactive import *
 from .decorators import test
+from .errors import SkipError
 from .loaders import Loader, PathLoader
 from .results import Result
 from .runners import Runner, ConsoleRunner

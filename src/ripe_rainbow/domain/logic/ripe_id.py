@@ -10,7 +10,12 @@ except ImportError: Keys = None
 
 class RipeIdPart(parts.Part):
 
-    def login(self, username, password):
+    def login(self, username = None, password = None):
+        username = appier.conf("RIPE_ID_USERNAME", username)
+        password = appier.conf("RIPE_ID_PASSWORD", password)
+        if not username or not password:
+            self.owner.skip(message = "No RIPE ID credentials available")
+
         self.driver.get(self.base_url)
 
         self.interactions.click_when_possible(".button-platforme")
@@ -25,8 +30,8 @@ class RipeIdPart(parts.Part):
 
         self.interactions.click_when_possible(".form .button-blue")
 
-    def login_and_redirect(self, username, password):
-        self.login(username, password)
+    def login_and_redirect(self, username = None, password = None):
+        self.login(username = username, password = password)
         self.waits.redirected_to(self.home_url)
 
     @property

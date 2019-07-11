@@ -9,6 +9,7 @@ import appier
 import appier_console
 
 from . import util
+from . import errors
 from . import loaders
 from . import results
 
@@ -53,8 +54,10 @@ class ConsoleRunner(Runner):
         start_g = time.time()
         result = True
         passed = 0
+        skipped = 0
         failed = 0
         passes = []
+        skips = []
         failures = []
 
         # prints the header information on the product to be used to indicate
@@ -108,6 +111,12 @@ class ConsoleRunner(Runner):
                         success = results.Result.build_success(test)
                         passes.append(success)
                         passed += 1
+                    except errors.SkipError as exception:
+                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
+                        mark_s = appier_console.colored("~", color = appier_console.COLOR_CYAN)
+                        skip = results.Result.build_skip(test)
+                        skips.append(skip)
+                        skipped += 1
                     except appier.AssertionError as exception:
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
@@ -147,15 +156,20 @@ class ConsoleRunner(Runner):
             "%d passing" % passed,
             color = appier_console.COLOR_GREEN
         ) if passed else ""
+        skipped_s = appier_console.colored(
+            "%d skipped" % skipped,
+            color = appier_console.COLOR_CYAN
+        ) if skipped else ""
         failed_s = appier_console.colored(
             "%d failing" % failed,
             color = appier_console.COLOR_RED
         ) if failed else ""
         duration_s = self._duration(start_g, info = 0.0, warning = 3600.0, error = 14400.0)
-        print("  %s%s%s%s" % (
+        print("  %s%s%s%s%s" % (
                 " " + passed_s if passed_s else "",
+                " " + skipped_s if skipped_s else "",
                 " " + failed_s if failed_s else "",
-                "No tests executed" + failed_s if not passed_s and not failed_s else "",
+                "No tests executed" + failed_s if not passed_s and not skipped_s and not failed_s else "",
                 duration_s
             )
         )

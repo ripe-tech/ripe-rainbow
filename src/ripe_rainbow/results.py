@@ -28,6 +28,10 @@ class Result(object):
         return cls(test, result = "success")
 
     @classmethod
+    def build_skip(cls, test):
+        return cls(test, result = "skip")
+
+    @classmethod
     def build_failure(cls, test, exception):
         lines = traceback.format_exc().splitlines()
         lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\

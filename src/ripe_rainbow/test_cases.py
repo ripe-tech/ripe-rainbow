@@ -5,10 +5,12 @@ import appier
 
 import logging
 
-class TestCase(object):
+from . import errors
+
+class TestCase(appier.Observable):
 
     def __init__(self, *args, **kwargs):
-        object.__init__(self)
+        appier.Observable.__init__(self, *args, **kwargs)
         self.runner = kwargs.get("runner", None)
         self.loader = kwargs.get("loader", None)
         self.logger = kwargs.get("logger", self.__class__._build_logger())
@@ -62,6 +64,9 @@ class TestCase(object):
 
     def log_stack(self, method = None):
         pass
+
+    def skip(self, message = None):
+        raise errors.SkipError(message = message)
 
     @property
     def tests(self):
