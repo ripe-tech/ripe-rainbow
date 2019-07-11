@@ -8,21 +8,29 @@ class InteractionsPart(parts.Part):
     def try_click(self, element, focus = True):
         return self.driver.click(element, focus = focus)
 
-    def click_when_possible(self, selector, condition = None):
+    def click_when_possible(self, selector, condition = None, scroll = True):
         """
         Clicks an element when possible, which happens when that element is both
-        visible and clickable.
+        visible and "clickable".
+
+        Optionally the browser viewport is "scrolled" to the visual position
+        of the element, enabling proper "clicking".
 
         :type selector: String
         :param selector: The selector for the element to click.
         :type condition: Function
-        :param condition: The filter the selected element must pass to be clickable.
+        :param condition: The filter the selected element must pass to be "clickable".
+        :type scroll: bool
+        :param scroll: If the browser viewport should be scrolled to the element
+        before the click operation is performed.
         :rtype Element
         :return The clicked element if there's any otherwise an invalid value.
         """
 
+        # waits for the element to be available at the DOM and then
+        # optionally runs the scroll operation to the element
         element = self.waits.element(selector, condition = condition)
-        self.driver.scroll_to(element)
+        if scroll: self.driver.scroll_to(element)
 
         element = self.waits.is_visible(selector, condition = condition)
 

@@ -29,14 +29,16 @@ class AssertionsPart(parts.Part):
 
         return False
 
-    def has_text(self, selector, text):
+    def has_text(self, selector, text, scroll = True):
         selector = appier.legacy.u(selector)
         text = appier.legacy.u(text)
 
         element = self.exists(selector)
 
         if element:
-            self.driver.scroll_to(element)
+            # scroll the browser to the element, this may change the
+            # value of the text found for the element
+            if scroll: self.driver.scroll_to(element)
 
             if not element.text == text:
                 self.logger.debug("Element '%s' found but has text '%s' instead of '%s'" % (
