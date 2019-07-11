@@ -3,79 +3,57 @@
 
 from .. import parts
 
-try: from selenium.webdriver.support.ui import WebDriverWait
-except ImportError: WebDriverWait = None
-
-try: from selenium.common.exceptions import StaleElementReferenceException
-except ImportError: StaleElementReferenceException = None
-
 class WaitsPart(parts.Part):
 
-    def __init__(self, owner):
-        parts.Part.__init__(self, owner)
-        self.wait = WebDriverWait(self.driver, self.timeout)
-
-    def wrap_method(self, method, *args):
-        """
-        Wraps the method being waited on to tolerate some exceptions since
-        in most cases these are transitory conditions that shouldn't break
-        the test.
-
-        :type method: Function
-        :param method: The method being ran.
-        :type args: List
-        :param args: The arguments provided to the method.
-        :rtype Function
-        :return: The method wrapped on a try-catch for StaleElementReferenceException.
-        """
-
-        try:
-            return method(*args)
-        except (StaleElementReferenceException, AssertionError) as e:
-            self.logger.debug("Got exception while waiting: %s" % e)
-            return None
-
-    def until(self, method, message = None):
-        return self.wait.until(
-            lambda *args: self.wrap_method(method, *args),
-            message = message
-        )
-
-    def redirected_to(self, url):
-        return self.until(
-           lambda d: self.assertions.at_url(url),
-            message = "Expecting the page to be '%s' but is '%s'" % (
-                url,
-                self.driver.current_url
+    def until(self, method, message = None, timeout = None):
+        return self.driver.wrap_outer(
+            lambda: self.driver._wait(timeout = timeout).until(
+                lambda *args: self.driver.wrap_inner(method, *args),
+                message = message
             )
         )
 
-    def element(self, selector, condition = None):
+    def redirected_to(self, url, timeout = None):
+        return self.until(
+            lambda d: self.assertions.at_url(url),
+            message = "Expecting the page to be '%s' but is '%s'" % (
+                url,
+                self.driver.current_url
+            ),
+            timeout = timeout
+        )
+
+    def element(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.exists(selector, condition = condition),
-            "Element '%s' not found" % selector
+            message = "Element '%s' not found" % selector,
+            timeout = timeout
         )
 
-    def elements(self, selector, condition = None):
+    def elements(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.exists_multiple(selector, condition = condition),
-            "Elements '%s' not found" % selector
+            message = "Elements '%s' not found" % selector,
+            timeout = timeout
         )
 
-    def text(self, selector, text):
+    def text(self, selector, text, timeout = None):
         return self.until(
             lambda d: self.assertions.has_text(selector, text),
-            "Element '%s' with text '%s' not found" % (selector, text)
+            message = "Element '%s' with text '%s' not found" % (selector, text),
+            timeout = timeout
         )
 
-    def is_visible(self, selector, condition = None):
+    def is_visible(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.is_visible(selector, condition = condition),
-            "Element '%s' is not visible" % selector
+            message = "Element '%s' is not visible" % selector,
+            timeout = timeout
         )
 
-    def is_not_visible(self, selector, condition = None):
+    def is_not_visible(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.is_not_visible(selector, condition = condition),
-            "Element '%s' is visible" % selector
+            message = "Element '%s' is visible" % selector,
+            timeout = timeout
         )

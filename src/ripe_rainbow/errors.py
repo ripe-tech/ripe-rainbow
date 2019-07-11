@@ -5,3 +5,6 @@ import appier
 
 class SkipError(appier.AppierException):
     pass
+
+class TimeoutError(appier.AppierException):
+    pass

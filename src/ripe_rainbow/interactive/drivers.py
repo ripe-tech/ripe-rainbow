@@ -5,6 +5,8 @@ import sys
 
 import appier
 
+from .. import errors
+
 class InteractiveDriver(object):
 
     def __init__(self, owner):
@@ -47,8 +49,17 @@ class InteractiveDriver(object):
 
         raise appier.NotImplementedError()
 
+    def wrap_outer(self, method, *args, **kwargs):
+        return method(*args, **kwargs)
+
+    def wrap_inner(self, method, *args, **kwargs):
+        return method(*args, **kwargs)
+
     @property
     def current_url(self):
+        raise appier.NotImplementedError()
+
+    def _wait(self, timeout = None):
         raise appier.NotImplementedError()
 
 class SeleniumDriver(InteractiveDriver):
@@ -103,6 +114,30 @@ class SeleniumDriver(InteractiveDriver):
         # overflow scroll, therefore we must rely on Web API Element.scrollIntoView()
         # that allows proper scroll operation into element
         self.instance.execute_script("arguments[0].scrollIntoView();", element)
+
+    def wrap_outer(self, method, *args, **kwargs):
+        from selenium.common.exceptions import TimeoutException
+        try: return method(*args, **kwargs)
+        except TimeoutException: raise errors.TimeoutError()
+
+    def wrap_inner(self, method, *args, **kwargs):
+        """
+        Wraps the method being waited on to tolerate some exceptions since
+        in most cases these are transitory conditions that shouldn't break
+        the test.
+
+        :type method: Function
+        :param method: The method that is going to be executed in a wrapped
+        fashion to properly handle exceptions.
+        :rtype Function
+        :return: The method wrapped on a try-catch for exceptions.
+        """
+
+        from selenium.common.exceptions import StaleElementReferenceException
+        try: return method(*args, **kwargs)
+        except (StaleElementReferenceException, AssertionError) as exception:
+            self.owner.logger.debug("Got exception while waiting: %s" % exception)
+            return None
 
     @property
     def current_url(self):
@@ -169,3 +204,8 @@ class SeleniumDriver(InteractiveDriver):
         # returns the options to the calling method as expected
         # by the current infrastructure
         return options
+
+    def _wait(self, timeout = None):
+        from selenium.webdriver.support.ui import WebDriverWait
+        if timeout == None: timeout = self.owner.timeout
+        return WebDriverWait(self.instance, timeout)

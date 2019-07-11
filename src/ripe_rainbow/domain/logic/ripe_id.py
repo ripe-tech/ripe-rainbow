@@ -5,6 +5,8 @@ import appier
 
 from .. import parts
 
+from ... import errors
+
 try: from selenium.webdriver.common.keys import Keys
 except ImportError: Keys = None
 
@@ -30,6 +32,13 @@ class RipeIdPart(parts.Part):
 
         self.interactions.click_when_possible(".form .button-blue")
 
+        try:
+            self.waits.redirected_to(self.oauth_authorize_url, timeout = 2.5)
+        except errors.TimeoutError:
+            return
+
+        self.interactions.click_when_possible(".form .button-blue")
+
     def login_and_redirect(self, username = None, password = None):
         self.login(username = username, password = password)
         self.waits.redirected_to(self.home_url)
@@ -41,3 +50,7 @@ class RipeIdPart(parts.Part):
     @property
     def login_url(self):
         return "%s/admin/signin" % self.id_url
+
+    @property
+    def oauth_authorize_url(self):
+        return "%s/admin/oauth/authorize" % self.id_url
