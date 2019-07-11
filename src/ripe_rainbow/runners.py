@@ -88,7 +88,7 @@ class ConsoleRunner(Runner):
                     # in case the name of the test case class is not printed
                     # runs the printing operation and unsets the flag
                     if not printed:
-                        print("    %s" % test_case.__class__.__name__)
+                        print("    %s" % util.test_case_fullname(test_case))
                         printed = True
 
                     # stores the starting time for the execution so that it's

@@ -18,4 +18,4 @@ from .loaders import Loader, PathLoader
 from .results import Result
 from .runners import Runner, ConsoleRunner
 from .test_cases import TestCase
-from .util import test_fullname
+from .util import test_case_fullname, test_fullname
