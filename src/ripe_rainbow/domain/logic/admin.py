@@ -44,7 +44,7 @@ class AdminPart(parts.Part):
 
     @property
     def base_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-retail-test.platforme.com")
+        base_url = appier.conf("BASE_URL", "https://ripe-retail-ci.platforme.com")
         return appier.conf("ADMIN_URL", base_url)
 
     @property

@@ -12,10 +12,12 @@ BASE_TUPLES = (
 
 COPPER_TUPLES = (
     ("id", logic.RipeIdPart),
+    ("copper", logic.RipeCopperPart)
 )
 
 PULSE_TUPLES = (
     ("id", logic.RipeIdPart),
+    ("pulse", logic.RipePulsePart)
 )
 
 RETAIL_TUPLES = (

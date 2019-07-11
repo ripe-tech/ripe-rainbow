@@ -171,8 +171,10 @@ class RipeRetailPart(parts.Part):
 
     @property
     def base_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-retail-test.platforme.com")
-        return appier.conf("RETAIL_URL", base_url)
+        base_url = appier.conf("BASE_URL", "https://ripe-retail-ci.platforme.com")
+        base_url = appier.conf("RETAIL_URL", base_url)
+        base_url = appier.conf("RIPE_RETAIL_URL", base_url)
+        return base_url
 
     @property
     def login_url(self):

@@ -44,7 +44,9 @@ class RipeIdPart(parts.Part):
 
     @property
     def id_url(self):
-        return appier.conf("ID_URL", "https://id.platforme.com")
+        id_url = appier.conf("ID_URL", "https://id.platforme.com")
+        id_url = appier.conf("RIPE_ID_URL", id_url)
+        return id_url
 
     @property
     def login_url(self):

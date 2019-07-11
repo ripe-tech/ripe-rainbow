@@ -14,7 +14,7 @@ class AssertionsPart(parts.Part):
         # retrieves the current URL as a string from the underlying
         # driver so that it can be verified
         current_url = self.driver.current_url
-        
+
         # in case the provided URL is not a sequence converts it into
         # one so that it can be used in the underlying algorithm
         if not isinstance(url, (list, tuple)): url = (url,)
