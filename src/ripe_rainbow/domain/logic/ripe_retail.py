@@ -64,25 +64,89 @@ class RipeRetailPart(parts.Part):
         self.interactions.click_when_possible(".size .button.button-primary.button-apply")
         self.waits.is_not_visible(".size .modal")
 
-    def has_part(
-            self,
-            brand,
-            model,
-            part,
-            material,
-            color,
-            part_text = None,
-            material_text = None,
-            color_text = None
+    def set_part(
+        self,
+        brand,
+        model,
+        part,
+        material,
+        color,
+        part_text = None,
+        material_text = None,
+        color_text = None,
+        verify = True
     ):
         """
-        Checks that the part pickers have the expected state.
+        Makes a change to the customization of a part and checks that the pages
+        mutates correctly, picking the right active parts, materials and colors,
+        as well as properly switching the swatches.
 
         If the text parameters are passed an extra set of assertions are going
         to be performed to validate expected behaviour.
 
         :type brand: String
-        :param brand: The brand of the model.
+        :param brand: The brand of the model being customized.
+        :type model: String
+        :param model: The model being customized.
+        :type part: String
+        :param part: The technical name of the part being changed.
+        :type material: String
+        :param material: The technical name of the material to use for the part.
+        :type color: String
+        :param color: The technical name of the color to use for the part.
+        :type part_text: String
+        :param part_text: The expected label for the part after clicking.
+        :type material_text: String
+        :param material_text: The expected label for the material after clicking.
+        :type color_text: String
+        :param color_text: The expected label for the color after clicking.
+        :type verify: bool
+        :param verify: If a final assertion should be performed after the selection
+        has been done (to verify the final status).
+        """
+
+        self.interactions.click_when_possible(
+            ".pickers .button-part > p:not(.no-part)",
+            condition = lambda e: e.text == part.upper()
+        )
+        self.interactions.click_when_possible(".pickers .button-color[data-color='%s']" % color)
+
+        if verify:
+            self.assert_part(
+                brand,
+                model,
+                part,
+                material,
+                color,
+                part_text = part_text,
+                material_text = material_text,
+                color_text = color_text
+            )
+
+    def assert_part(
+        self,
+        brand,
+        model,
+        part,
+        material,
+        color,
+        part_text = None,
+        material_text = None,
+        color_text = None
+    ):
+        """
+        Checks that the part pickers have the expected state, meaning that the
+        complete set of assertions are properly filled.
+
+        If the text parameters are passed an extra set of assertions are going
+        to be performed to validate expected behaviour.
+
+        Notice that this assertion requires the changing of the current visual
+        state, in the sense that the part tab is going to be switched to the
+        one that is going to be asserted.
+
+        :type brand: String
+        :param brand: The brand of the model being customized.
         :type model: String
         :param model: The model being customized.
         :type part: String
@@ -121,60 +185,6 @@ class RipeRetailPart(parts.Part):
                 brand, model, material, color
             ),
             "Color swatch didn't have the expected image."
-        )
-
-    def set_part(
-        self,
-        brand,
-        model,
-        part,
-        material,
-        color,
-        part_text = None,
-        material_text = None,
-        color_text = None
-    ):
-        """
-        Makes a change to the customization of a part and checks that the pages
-        mutates correctly, picking the right active parts, materials and colors,
-        as well as properly switching the swatches.
-
-        If the text parameters are passed an extra set of assertions are going
-        to be performed to validate expected behaviour.
-
-        :type brand: String
-        :param brand: The brand of the model.
-        :type model: String
-        :param model: The model being customized.
-        :type part: String
-        :param part: The technical name of the part being changed.
-        :type material: String
-        :param material: The technical name of the material to use for the part.
-        :type color: String
-        :param color: The technical name of the color to use for the part.
-        :type part_text: String
-        :param part_text: The expected label for the part after clicking.
-        :type material_text: String
-        :param material_text: The expected label for the material after clicking.
-        :type color_text: String
-        :param color_text: The expected label for the color after clicking.
-        """
-
-        self.interactions.click_when_possible(
-            ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.text == part.upper()
-        )
-        self.interactions.click_when_possible(".pickers .button-color[data-color='%s']" % color)
-
-        self.has_part(
-            brand,
-            model,
-            part,
-            material,
-            color,
-            part_text = part_text,
-            material_text = material_text,
-            color_text = color_text
         )
 
     def assert_swatch(self, selector, brand, model, material, color):
