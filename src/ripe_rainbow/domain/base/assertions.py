@@ -22,7 +22,7 @@ class AssertionsPart(parts.Part):
             if not current_url.startswith(_url): continue
             return True
 
-        self.logger.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
+        self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
 
         return False
 
@@ -38,7 +38,7 @@ class AssertionsPart(parts.Part):
             if scroll: self.driver.scroll_to(element)
 
             if not element.text == text:
-                self.logger.debug("Element '%s' found but has text '%s' instead of '%s'" % (
+                self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
                     selector,
                     element.text,
                     text
@@ -46,7 +46,7 @@ class AssertionsPart(parts.Part):
 
                 return None
 
-        self.logger.debug("Found element '%s' with text '%s'" % (
+        self.breadcrumbs.debug("Found element '%s' with text '%s'" % (
             selector,
             text
         ))
@@ -72,7 +72,7 @@ class AssertionsPart(parts.Part):
         # in case no elements match the provided selector then returns the
         # empty sequence immediately
         if len(elements) == 0:
-            self.logger.debug("Could not find elements with '%s'" % selector)
+            self.breadcrumbs.debug("Could not find elements with '%s'" % selector)
             return elements
 
         # runs the filtering operation so that only the elements that match
@@ -80,11 +80,11 @@ class AssertionsPart(parts.Part):
         elements = [element for element in elements if condition(element)]
 
         if len(elements) == 0:
-            self.logger.debug("Found elements with '%s' but none matches the condition" % selector)
+            self.breadcrumbs.debug("Found elements with '%s' but none matches the condition" % selector)
         elif has_condition:
-            self.logger.debug("Found elements with '%s' that match the condition" % selector)
+            self.breadcrumbs.debug("Found elements with '%s' that match the condition" % selector)
         else:
-            self.logger.debug("Found elements with '%s'" % selector)
+            self.breadcrumbs.debug("Found elements with '%s'" % selector)
 
         # returns the complete set of element that exist in the current context
         # and that match the requested condition

@@ -147,7 +147,7 @@ class SeleniumDriver(InteractiveDriver):
             ElementNotVisibleException,
             WebDriverException
         ) as exception:
-            self.owner.logger.debug("Element is not \"clickable\" because: %s" % exception)
+            self.owner.breadcrumbs.debug("Element is not \"clickable\" because: %s" % exception)
             return None
 
     def scroll_to(self, element, sleep = None):
@@ -158,7 +158,7 @@ class SeleniumDriver(InteractiveDriver):
         self.instance.execute_script("arguments[0].scrollIntoView();", element)
 
         # when triggering a smooth scroll, the element may take some time to
-        # be displayed in the desired position, ence the optional sleep
+        # be displayed in the desired position, hence the optional sleep
         if sleep: time.sleep(sleep)
 
     def wrap_outer(self, method, *args, **kwargs):
@@ -184,7 +184,7 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.common.exceptions import StaleElementReferenceException
         try: return method(*args, **kwargs)
         except (StaleElementReferenceException, AssertionError) as exception:
-            self.owner.logger.debug("Got exception while waiting: %s" % exception)
+            self.owner.breadcrumbs.debug("Got exception while waiting: %s" % exception)
             return None
 
     @property

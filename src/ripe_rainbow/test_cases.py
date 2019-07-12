@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import time
+
 import appier
 
 import logging
@@ -14,14 +16,20 @@ class TestCase(appier.Observable):
         self.runner = kwargs.get("runner", None)
         self.loader = kwargs.get("loader", None)
         self.logger = kwargs.get("logger", self.__class__._build_logger())
+        self.breadcrumbs = kwargs.get(
+            "breadcrumbs",
+            self.__class__._build_logger(
+                name = "ripe-rainbow-breadcrumbs"
+            )
+        )
 
     @classmethod
-    def _build_logger(cls, level = "INFO"):
+    def _build_logger(cls, name = "ripe-rainbow", level = "INFO"):
         if hasattr(TestCase, "_logger"): return TestCase._logger
         level = appier.conf("LEVEL", level)
         level = appier.conf("RAINBOW_LEVEL", level)
         level = logging.getLevelName(level.upper())
-        logger = logging.getLogger("ripe-rainbow")
+        logger = logging.getLogger(name)
         handler = logging.StreamHandler()
         logger.addHandler(handler)
         handler.setLevel(level)
@@ -64,6 +72,9 @@ class TestCase(appier.Observable):
 
     def log_stack(self, method = None):
         pass
+
+    def pause(self, timeout = 86400):
+        time.sleep(timeout)
 
     def skip(self, message = None):
         raise errors.SkipError(message = message)
