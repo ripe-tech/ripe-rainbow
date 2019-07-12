@@ -19,6 +19,9 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def get_key(self, name):
+        raise appier.NotImplementedError()
+
     def get(self, url):
         raise appier.NotImplementedError()
 
@@ -34,26 +37,10 @@ class InteractiveDriver(object):
     def focus(self, element):
         raise appier.NotImplementedError()
 
-    def press_enter(self, element):
-        """
-        Presses the enter key on a certain element.
-
-        :type element: Element
-        :param element: The element to focus when pressing enter.
-        """
-
+    def press_key(self, element, key):
         raise appier.NotImplementedError()
 
     def write_text(self, element, text):
-        """
-        Writes the text in the given element.
-
-        :type element: Element
-        :param element: The element to write the text in.
-        :type text: str
-        :param text: The text to write.
-        """
-
         raise appier.NotImplementedError()
 
     def click(self, element, scroll = True, scroll_sleep = None):
@@ -123,9 +110,10 @@ class SeleniumDriver(InteractiveDriver):
         actions.move_to_element(element)
         actions.perform()
 
-    def press_enter(self, element):
-        from selenium.webdriver.common.keys import Keys
-        element.send_keys(Keys.ENTER)
+    def press_key(self, element, key):
+        key = self._resolve_key(key)
+        element.send_keys(key)
+        return element
 
     def write_text(self, element, text):
         element.send_keys(text)
@@ -266,3 +254,12 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.support.ui import WebDriverWait
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout)
+
+    def _resolve_key(self, name):
+        from selenium.webdriver.common.keys import Keys
+        KEYS = dict(
+            enter = Keys.ENTER,
+            space = Keys.SPACE,
+            backspace = Keys.BACKSPACE
+        )
+        return KEYS[name]

@@ -7,27 +7,46 @@ class InteractionsPart(parts.Part):
 
     def write_text(self, selector, text):
         """
-        Writes the text in the given element.
+        Writes the text in the given element, this means having
+        it typed like in a physical keyboard.
 
-        :type selector: str
+        :type selector: String
         :param selector: The selector for the element to write the text in.
-        :type text: str
-        :param text: The text to write.
+        :type text: String
+        :param text: The text to write "using the keyboard".
         """
 
         element = self.waits.element(selector)
         self.driver.write_text(element, text)
 
-    def press_enter(self, selector):
+    def press_key(self, selector, key):
         """
-        Presses the enter key on a certain element.
+        Presses the provided key on a certain element, pressed like having
+        the proper enter key pressed.
 
-        :type selector: str
-        :param selector: The selector for the element to focus when pressing enter.
+        :type selector: String
+        :param selector: The selector for the element to focus when
+        pressing enter.
+        :type key: String
+        :param key: The name of the key that is going to be pressed by
+        the keyboard, this name is set on an agnostic way.
         """
 
         element = self.waits.element(selector)
-        self.driver.press_enter(element)
+        self.driver.press_key(element, key)
+
+    def press_enter(self, selector):
+        """
+        Presses the enter key on a certain element, pressed like having
+        the proper enter key pressed.
+
+        :type selector: String
+        :param selector: The selector for the element to focus when
+        pressing enter.
+        """
+
+        element = self.waits.element(selector)
+        self.driver.press_key(element, "enter")
 
     def click_when_possible(
         self,
