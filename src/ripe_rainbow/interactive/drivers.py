@@ -43,6 +43,9 @@ class InteractiveDriver(object):
     def write_text(self, element, text):
         raise appier.NotImplementedError()
 
+    def press_enter(self, element):
+        return self.press_key(element, "enter")
+
     def click(self, element, scroll = True, scroll_sleep = None):
         raise appier.NotImplementedError()
 

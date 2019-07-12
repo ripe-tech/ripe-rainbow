@@ -46,7 +46,7 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.press_key(element, "enter")
+        self.driver.press_enter(element)
 
     def click_when_possible(
         self,
