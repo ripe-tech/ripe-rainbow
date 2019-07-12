@@ -5,10 +5,20 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def try_click(self, element, focus = True, focus_sleep = None):
-        return self.driver.click(element, focus = focus, focus_sleep = focus_sleep)
+    def try_click(self, element, scroll = True, scroll_sleep = None):
+        return self.driver.click(
+            element,
+            scroll = scroll,
+            scroll_sleep = scroll_sleep
+        )
 
-    def click_when_possible(self, selector, condition = None, scroll = True, scroll_sleep = None):
+    def click_when_possible(
+        self,
+        selector,
+        condition = None,
+        scroll = True,
+        scroll_sleep = None
+    ):
         """
         Clicks an element when possible, which happens when that element is both
         visible and "clickable".
@@ -42,6 +52,6 @@ class InteractionsPart(parts.Part):
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
         return self.waits.until(
-            lambda d: self.try_click(element, focus = scroll, focus_sleep = scroll_sleep),
+            lambda d: self.try_click(element, scroll = scroll, scroll_sleep = scroll_sleep),
             "Element '%s' found but never became clickable" % selector
         )
