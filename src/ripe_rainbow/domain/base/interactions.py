@@ -5,12 +5,48 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def try_click(self, element, scroll = True, scroll_sleep = None):
-        return self.driver.click(
-            element,
-            scroll = scroll,
-            scroll_sleep = scroll_sleep
-        )
+    def write_text(self, selector, text):
+        """
+        Writes the text in the given element, this means having
+        it typed like in a physical keyboard.
+
+        :type selector: String
+        :param selector: The selector for the element to write the text in.
+        :type text: String
+        :param text: The text to write "using the keyboard".
+        """
+
+        element = self.waits.element(selector)
+        self.driver.write_text(element, text)
+
+    def press_key(self, selector, key):
+        """
+        Presses the provided key on a certain element, pressed like having
+        the proper enter key pressed.
+
+        :type selector: String
+        :param selector: The selector for the element to focus when
+        pressing enter.
+        :type key: String
+        :param key: The name of the key that is going to be pressed by
+        the keyboard, this name is set on an agnostic way.
+        """
+
+        element = self.waits.element(selector)
+        self.driver.press_key(element, key)
+
+    def press_enter(self, selector):
+        """
+        Presses the enter key on a certain element, pressed like having
+        the proper enter key pressed.
+
+        :type selector: String
+        :param selector: The selector for the element to focus when
+        pressing enter.
+        """
+
+        element = self.waits.element(selector)
+        self.driver.press_key(element, "enter")
 
     def click_when_possible(
         self,
@@ -52,6 +88,13 @@ class InteractionsPart(parts.Part):
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
         return self.waits.until(
-            lambda d: self.try_click(element, scroll = scroll, scroll_sleep = scroll_sleep),
+            lambda d: self._try_click(element, scroll = scroll, scroll_sleep = scroll_sleep),
             "Element '%s' found but never became clickable" % selector
+        )
+
+    def _try_click(self, element, scroll = True, scroll_sleep = None):
+        return self.driver.click(
+            element,
+            scroll = scroll,
+            scroll_sleep = scroll_sleep
         )
