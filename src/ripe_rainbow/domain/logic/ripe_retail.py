@@ -38,8 +38,8 @@ class RipeRetailPart(parts.Part):
         :param gender: The gender that is going to be picked.
         :type scale: String
         :param scale: The scale that is going to be picked.
-        :type already_open: Boolean
-        :param already_open: Whether the size modal is already open.
+        :type open: Boolean
+        :param open: If the size modal window should be opened before selection.
         """
 
         if open: self.interactions.click_when_possible(".size:not(.disabled) .button-size")
