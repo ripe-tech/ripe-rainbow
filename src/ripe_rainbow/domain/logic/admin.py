@@ -5,9 +5,6 @@ import appier
 
 from .. import parts
 
-try: from selenium.webdriver.common.keys import Keys
-except ImportError: Keys = None
-
 class AdminPart(parts.Part):
 
     def login(self, username, password):
@@ -15,10 +12,10 @@ class AdminPart(parts.Part):
 
         form = self.driver.find_element_by_css_selector(".form")
         username_input = form.find_element_by_name("username")
-        username_input.send_keys(username)
+        self.driver.write_text(username_input, username)
         password_input = form.find_element_by_name("password")
-        password_input.send_keys(password)
-        password_input.send_keys(Keys.ENTER)
+        self.driver.write_text(password_input, password)
+        self.driver.press_enter(password_input)
 
     def login_and_redirect(self, username, password):
         self.login(username, password)
@@ -29,16 +26,16 @@ class AdminPart(parts.Part):
         self.driver.get(self.signin_url)
 
         forgot = self.driver.find_element_by_css_selector(".forgot a")
-        forgot.click()
+        self.driver.click(forgot)
 
     def forgot(self, email):
         self.driver.get(self.recover_url)
 
         email_input = self.driver.find_element_by_name("identifier")
-        email_input.send_keys(email)
+        self.driver.write_text(email_input, email)
 
         recover_button = self.driver.find_element_by_css_selector(".base")
-        recover_button.click()
+        self.driver.click(recover_button)
 
         self.waits.redirected_to(self.base_url)
 

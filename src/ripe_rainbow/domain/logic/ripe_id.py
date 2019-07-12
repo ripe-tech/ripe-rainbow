@@ -5,9 +5,6 @@ import appier
 
 from .. import parts
 
-try: from selenium.webdriver.common.keys import Keys
-except ImportError: Keys = None
-
 class RipeIdPart(parts.Part):
 
     def login(self, username = None, password = None, redirect_url = None):
@@ -25,10 +22,10 @@ class RipeIdPart(parts.Part):
 
         form = self.driver.find_element_by_css_selector(".form")
         username_input = form.find_element_by_name("username")
-        username_input.send_keys(username)
+        self.driver.write_text(username_input, username)
         password_input = form.find_element_by_name("password")
-        password_input.send_keys(password)
-        password_input.send_keys(Keys.ENTER)
+        self.driver.write_text(password_input, password)
+        self.driver.press_enter(password_input)
 
         self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
