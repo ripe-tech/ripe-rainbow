@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import time
 
 import appier
 
@@ -33,10 +34,10 @@ class InteractiveDriver(object):
     def focus(self, element):
         raise appier.NotImplementedError()
 
-    def click(self, element, focus = True):
+    def click(self, element, scroll = True, scroll_sleep = None):
         raise appier.NotImplementedError()
 
-    def scroll_to(self, element):
+    def scroll_to(self, element, sleep = None):
         """
         Scrolls the element on which it's called into the visible area
         of the browser window.
@@ -45,6 +46,9 @@ class InteractiveDriver(object):
 
         :type element: Element
         :param element: The element to scroll into view.
+        :type sleep: int
+        :param sleep: The number of seconds to sleep after the scroll
+        operation, important for smooth scrolls.
         """
 
         raise appier.NotImplementedError()
@@ -97,13 +101,18 @@ class SeleniumDriver(InteractiveDriver):
         actions.move_to_element(element)
         actions.perform()
 
-    def click(self, element, focus = True):
+    def click(self, element, scroll = True, scroll_sleep = None):
         from selenium.webdriver.common.action_chains import ActionChains
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
         try:
-            if focus:
-                self.scroll_to(element)
+            if scroll:
+                # runs the scroll operation with the request amount of sleep time
+                # for the scroll operation (important to guarantee visibility)
+                self.scroll_to(element, sleep = scroll_sleep)
+
+                # a new object for the chain of actions of the current instance and
+                # then moves to the target element and runs the click operation
                 actions = ActionChains(self.instance)
                 actions.move_to_element(element)
                 actions.click(element)
@@ -120,12 +129,16 @@ class SeleniumDriver(InteractiveDriver):
             self.owner.logger.debug("Element is not \"clickable\" because: %s" % exception)
             return None
 
-    def scroll_to(self, element):
+    def scroll_to(self, element, sleep = None):
         # as Selenium doesn't automatically support automatically scrolling
         # in elements inside the page, such as when using an iframe or
         # overflow scroll, therefore we must rely on Web API Element.scrollIntoView()
         # that allows proper scroll operation into element
         self.instance.execute_script("arguments[0].scrollIntoView();", element)
+
+        # when triggering a smooth scroll, the element may take some time to
+        # be displayed in the desired position, ence the optional sleep
+        if sleep: time.sleep(sleep)
 
     def wrap_outer(self, method, *args, **kwargs):
         from selenium.common.exceptions import TimeoutException
