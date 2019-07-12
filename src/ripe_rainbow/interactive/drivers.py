@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import time
 
 import appier
 
@@ -33,7 +34,7 @@ class InteractiveDriver(object):
     def focus(self, element):
         raise appier.NotImplementedError()
 
-    def click(self, element, focus = True):
+    def click(self, element, focus = True, focus_sleep = None):
         raise appier.NotImplementedError()
 
     def scroll_to(self, element):
@@ -97,13 +98,18 @@ class SeleniumDriver(InteractiveDriver):
         actions.move_to_element(element)
         actions.perform()
 
-    def click(self, element, focus = True):
+    def click(self, element, focus = True, focus_sleep = None):
         from selenium.webdriver.common.action_chains import ActionChains
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
         try:
             if focus:
                 self.scroll_to(element)
+
+                # when triggering a smooth scroll, the element to be clicked might
+                # take some time to appear in the desired position
+                if focus_sleep: time.sleep(focus_sleep)
+
                 actions = ActionChains(self.instance)
                 actions.move_to_element(element)
                 actions.click(element)

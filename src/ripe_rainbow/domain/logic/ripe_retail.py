@@ -74,7 +74,8 @@ class RipeRetailPart(parts.Part):
         part_text = None,
         material_text = None,
         color_text = None,
-        verify = True
+        verify = True,
+        color_scroll_sleep = None
     ):
         """
         Makes a change to the customization of a part and checks that the pages
@@ -103,13 +104,21 @@ class RipeRetailPart(parts.Part):
         :type verify: bool
         :param verify: If a final assertion should be performed after the selection
         has been done (to verify the final status).
+        :type color_scroll_sleep: int
+        :param color_scroll_sleep: The number of seconds to wait when scrolling to
+        the color to click. Since the scrolling is smooth, and not immediate,
+        sometimes we have to wait when picking a new color that is far apart the
+        current scroll position.
         """
 
         self.interactions.click_when_possible(
             ".pickers .button-part > p:not(.no-part)",
             condition = lambda e: e.text == part.upper()
         )
-        self.interactions.click_when_possible(".pickers .button-color[data-color='%s']" % color)
+        self.interactions.click_when_possible(
+            ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
+            scroll_sleep = color_scroll_sleep
+        )
 
         if verify:
             self.assert_part(
