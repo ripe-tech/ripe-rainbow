@@ -108,12 +108,14 @@ class ConsoleRunner(Runner):
 
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
                         mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
+                        extra_s = ""
                         success = results.Result.build_success(test)
                         passes.append(success)
                         passed += 1
                     except errors.SkipError as exception:
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
                         mark_s = appier_console.colored("~", color = appier_console.COLOR_CYAN)
+                        extra_s = " (" + exception.reason + ")" if exception.reason else ""
                         skip = results.Result.build_skip(test)
                         skips.append(skip)
                         skipped += 1
@@ -121,6 +123,7 @@ class ConsoleRunner(Runner):
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
+                        extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
                         failure = results.Result.build_failure(test, exception)
                         failures.append(failure)
                         failed += 1
@@ -130,18 +133,19 @@ class ConsoleRunner(Runner):
                         failures.append(failure)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
+                        extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
                         failed += 1
 
                     # determines the kind of environment we're running on and taking that
                     # into account prints the proper output, standard is tty environment
                     # meaning that proper interaction is allowed
                     if appier_console.is_tty():
-                        print("        %s %s%s" % (test_name_s, mark_s, self._duration(start)))
+                        print("        %s %s%s%s" % (test_name_s, mark_s, extra_s, self._duration(start)))
 
                     # otherwise we're in a textual environment and only the extra part of
                     # the line is expected to be printed (not possible to go back in the line)
                     else:
-                        print("%s%s" % (mark_s, self._duration(start)))
+                        print("%s%s%s" % (mark_s, extra_s, self._duration(start)))
 
                     # flushes the stdout and stderr so that the pending
                     # messages are properly handled by the output channels

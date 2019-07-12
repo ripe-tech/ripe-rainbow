@@ -76,8 +76,11 @@ class TestCase(appier.Observable):
     def pause(self, timeout = 86400):
         time.sleep(timeout)
 
-    def skip(self, message = None):
-        raise errors.SkipError(message = message)
+    def skip(self, message = None, reason = None):
+        raise errors.SkipError(
+            message = message,
+            reason = reason or message
+        )
 
     @property
     def tests(self):
