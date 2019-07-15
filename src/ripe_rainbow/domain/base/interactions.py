@@ -35,6 +35,32 @@ class InteractionsPart(parts.Part):
         element = self.waits.element(selector)
         self.driver.press_key(element, key)
 
+    def press_space(self, selector):
+        """
+        Presses the space key on a certain element, pressed like having
+        the proper space key pressed.
+
+        :type selector: String
+        :param selector: The selector for the element to focus when
+        pressing space.
+        """
+
+        element = self.waits.element(selector)
+        self.driver.press_space(element)
+
+    def press_backspace(self, selector):
+        """
+        Presses the backspace key on a certain element, pressed like having
+        the proper backspace key pressed.
+
+        :type selector: String
+        :param selector: The selector for the element to focus when
+        pressing backspace.
+        """
+
+        element = self.waits.element(selector)
+        self.driver.press_backspace(element)
+
     def press_enter(self, selector):
         """
         Presses the enter key on a certain element, pressed like having

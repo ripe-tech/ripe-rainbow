@@ -43,6 +43,12 @@ class InteractiveDriver(object):
     def write_text(self, element, text):
         raise appier.NotImplementedError()
 
+    def press_space(self, element):
+        return self.press_key(element, "space")
+
+    def press_backspace(self, element):
+        return self.press_key(element, "backspace")
+
     def press_enter(self, element):
         return self.press_key(element, "enter")
 
