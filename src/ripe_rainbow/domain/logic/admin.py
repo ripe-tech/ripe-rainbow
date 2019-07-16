@@ -20,7 +20,7 @@ class AdminPart(parts.Part):
     def login_and_redirect(self, username, password):
         self.login(username, password)
 
-        self.waits.redirected_to(self.base_url)
+        self.waits.redirected_to(self.admin_url)
 
     def click_forgot(self):
         self.driver.get(self.signin_url)
@@ -36,8 +36,6 @@ class AdminPart(parts.Part):
 
         recover_button = self.driver.find_element_by_css_selector(".base")
         self.driver.click(recover_button)
-
-        self.waits.redirected_to(self.base_url)
 
     @property
     def base_url(self):
