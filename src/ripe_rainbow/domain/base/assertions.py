@@ -15,6 +15,15 @@ from .. import parts
 class AssertionsPart(parts.Part):
 
     def at_url(self, url):
+        """
+        Verifies if the current URL matches one of those being passed, taking
+        into account the scheme, hostname and path but ignoring the query
+        params and the fragment.
+
+        :type url: String, List of String or Tuple of String
+        :param url:
+        """
+
         # retrieves the current URL as a string from the underlying
         # driver so that it can be verified
         current_url = self.driver.current_url
