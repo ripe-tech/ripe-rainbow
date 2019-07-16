@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+
+if sys.version_info.major == 3:
+    from urllib.parse import urlparse, urljoin
+else:
+    from urlparse import urlparse, urljoin
+
 import appier
 
 from .. import parts
@@ -19,7 +26,11 @@ class AssertionsPart(parts.Part):
         # iterates over the complete set of URLs to be tested and sees
         # if at least one of them validates as a prefix
         for _url in url:
-            if not current_url.startswith(_url): continue
+            no_params = urljoin(current_url, urlparse(current_url).path)
+
+            # compare the current URL (minus the query params) both
+            # with and without a trailing slash
+            if not _url in (no_params, no_params[:-1]): continue
             return True
 
         self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
