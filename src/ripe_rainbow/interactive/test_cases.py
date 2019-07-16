@@ -22,6 +22,7 @@ class InteractiveTestCase(test_cases.TestCase):
 
     def after(self):
         if self.driver:
+            self.driver.check_errors()
             self.driver.stop()
             self.driver = None
         test_cases.TestCase.after(self)

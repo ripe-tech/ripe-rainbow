@@ -19,6 +19,13 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def check_errors(self):
+        """
+        Checks if the driver got any errors since it started, throwing exceptions
+        when that happens.
+        """
+        pass
+
     def get_key(self, name):
         raise appier.NotImplementedError()
 
@@ -85,6 +92,13 @@ class SeleniumDriver(InteractiveDriver):
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
+
+    def check_errors(self):
+        logs = self.instance.get_log("browser")
+        error_logs = [log for log in logs if log["level"] == appier.legacy.u("INFO")]
+
+        if len(error_logs) > 0:
+            raise errors.ConsoleErrorsError(errors = error_logs)
 
     def get(self, url):
         return self.instance.get(url)
@@ -202,7 +216,8 @@ class SeleniumDriver(InteractiveDriver):
         # creates the underlying instance of the Chrome driver
         # that is going to be used in the concrete execution
         cls._instance = selenium.webdriver.Chrome(
-            chrome_options = self._selenium_options()
+            chrome_options = self._selenium_options(),
+            desired_capabilities = self._selenium_capabilities()
         )
 
         # in case the browser should be started maximized, then
@@ -252,6 +267,14 @@ class SeleniumDriver(InteractiveDriver):
         # returns the options to the calling method as expected
         # by the current infrastructure
         return options
+
+    def _selenium_capabilities(self):
+        from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+        capabilities = DesiredCapabilities.CHROME
+        capabilities["loggingPrefs"] = dict(browser = "ALL")
+
+        return capabilities
 
     def _wait(self, timeout = None):
         from selenium.webdriver.support.ui import WebDriverWait
