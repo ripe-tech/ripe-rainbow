@@ -79,7 +79,7 @@ class InteractionsPart(parts.Part):
         # waits for the element to be available at the DOM and then
         # optionally runs the scroll operation to the element
         element = self.waits.element(selector, condition = condition)
-        if scroll: self.driver.scroll_to(element)
+        if scroll: self.driver.wrap_inner(self.driver.scroll_to, element)
 
         # waits for the proper visibility of the element, should be ensured
         # by having the element "inside" the current browser viewport
