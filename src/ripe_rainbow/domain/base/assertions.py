@@ -15,7 +15,7 @@ class AssertionsPart(parts.Part):
         # parses the current URL in the browser and reconstructs it with just
         # the base scheme and the URL path
         current_url_p = appier.legacy.urlparse(self.driver.current_url)
-        current_url_base = current_url_p.scheme + "://" + current_url_p.netloc + "/" + current_url_p.path
+        current_url_base = current_url_p.scheme + "://" + current_url_p.netloc + current_url_p.path
 
         # in case the provided URL is not a sequence converts it into
         # one so that it can be used in the underlying algorithm
@@ -77,7 +77,7 @@ class AssertionsPart(parts.Part):
         if not condition: condition = lambda e: True
 
         # runs the selection operation using the underlying driver
-        elements = self.safe(self.driver.find_elements_by_css_selector, selector)
+        elements = self.driver.safe(self.driver.find_elements_by_css_selector, selector)
 
         # in case no elements match the provided selector then returns the
         # empty sequence immediately

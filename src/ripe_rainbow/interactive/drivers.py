@@ -72,7 +72,7 @@ class InteractiveDriver(object):
         return method(*args, **kwargs)
 
     def safe(self, method, *args, **kwargs):
-        return self.wrap_outer(self.wrap_inner(method, *args, **kwargs))
+        return self.wrap_outer(self.wrap_inner, method, *args, **kwargs)
 
     @property
     def current_url(self):

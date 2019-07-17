@@ -20,7 +20,7 @@ class RipeRetailPart(parts.Part):
     def login_and_redirect(self, username, password):
         self.login(username, password)
 
-        self.waits.redirected_to(self.base_url)
+        self.waits.redirected_to(self.home_url)
 
     def select_size(self, size, gender = None, scale = None, open = True):
         """
@@ -241,6 +241,10 @@ class RipeRetailPart(parts.Part):
         base_url = appier.conf("RETAIL_URL", base_url)
         base_url = appier.conf("RIPE_RETAIL_URL", base_url)
         return base_url
+
+    @property
+    def home_url(self):
+        return self.base_url + "/"
 
     @property
     def login_url(self):
