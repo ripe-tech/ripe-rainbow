@@ -7,10 +7,15 @@ from .. import parts
 
 class AssertionsPart(parts.Part):
 
-    def at_url(self, url):
+    def at_url(self, url, starts_with = False):
         # retrieves the current URL as a string from the underlying
         # driver so that it can be verified
         current_url = self.driver.current_url
+
+        # parses the current URL in the browser and reconstructs it with just
+        # the base scheme and the URL path
+        current_url_p = appier.legacy.urlparse(self.driver.current_url)
+        current_url_base = current_url_p.scheme + "://" + current_url_p.netloc + "/" + current_url_p.path
 
         # in case the provided URL is not a sequence converts it into
         # one so that it can be used in the underlying algorithm
@@ -19,7 +24,12 @@ class AssertionsPart(parts.Part):
         # iterates over the complete set of URLs to be tested and sees
         # if at least one of them validates as a prefix
         for _url in url:
-            if not current_url.startswith(_url): continue
+            if starts_with and not current_url.startswith(_url): continue
+            elif hasattr(_url, "match") and not _url.match(current_url): continue
+            else:
+                _url_p = appier.legacy.urlparse(_url)
+                _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
+                if not _url_base == current_url_base: continue
             return True
 
         self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
