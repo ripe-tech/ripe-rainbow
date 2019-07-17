@@ -17,7 +17,7 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.write_text(element, text)
+        self.driver.safe(self.driver.write_text, element, text)
 
     def press_key(self, selector, key):
         """
@@ -33,7 +33,7 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.press_key(element, key)
+        self.driver.safe(self.driver.press_key, element, key)
 
     def press_enter(self, selector):
         """
@@ -46,7 +46,7 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.press_enter(element)
+        self.driver.safe(self.driver.press_enter, element)
 
     def click_when_possible(
         self,
@@ -79,7 +79,7 @@ class InteractionsPart(parts.Part):
         # waits for the element to be available at the DOM and then
         # optionally runs the scroll operation to the element
         element = self.waits.element(selector, condition = condition)
-        if scroll: self.driver.scroll_to(element)
+        if scroll: self.driver.safe(self.driver.scroll_to, element)
 
         # waits for the proper visibility of the element, should be ensured
         # by having the element "inside" the current browser viewport
@@ -93,7 +93,8 @@ class InteractionsPart(parts.Part):
         )
 
     def _try_click(self, element, scroll = True, scroll_sleep = None):
-        return self.driver.click(
+        return self.driver.safe(
+            self.driver.click,
             element,
             scroll = scroll,
             scroll_sleep = scroll_sleep

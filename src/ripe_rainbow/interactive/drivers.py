@@ -71,6 +71,9 @@ class InteractiveDriver(object):
     def wrap_inner(self, method, *args, **kwargs):
         return method(*args, **kwargs)
 
+    def safe(self, method, *args, **kwargs):
+        return self.wrap_outer(self.wrap_inner(method, *args, **kwargs))
+
     @property
     def current_url(self):
         raise appier.NotImplementedError()

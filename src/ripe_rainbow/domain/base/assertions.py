@@ -35,7 +35,7 @@ class AssertionsPart(parts.Part):
         if element:
             # scroll the browser to the element, this may change the
             # value of the text found for the element
-            if scroll: self.driver.scroll_to(element)
+            if scroll: self.driver.safe(self.driver.scroll_to, element)
 
             if not element.text == text:
                 self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
@@ -67,7 +67,7 @@ class AssertionsPart(parts.Part):
         if not condition: condition = lambda e: True
 
         # runs the selection operation using the underlying driver
-        elements = self.driver.find_elements_by_css_selector(selector)
+        elements = self.safe(self.driver.find_elements_by_css_selector, selector)
 
         # in case no elements match the provided selector then returns the
         # empty sequence immediately
