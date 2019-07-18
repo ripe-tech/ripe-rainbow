@@ -24,6 +24,10 @@ class RipeCopperPart(parts.Part):
 
     @property
     def home_url(self):
+        return "%s/" % self.base_url
+
+    @property
+    def search_url(self):
         return "%s/search" % self.base_url
 
     @property

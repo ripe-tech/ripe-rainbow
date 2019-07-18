@@ -24,6 +24,10 @@ class RipePulsePart(parts.Part):
 
     @property
     def home_url(self):
+        return "%s/" % self.base_url
+
+    @property
+    def orders_url(self):
         return "%s/orders" % self.base_url
 
     @property
