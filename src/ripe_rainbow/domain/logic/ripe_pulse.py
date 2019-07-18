@@ -10,7 +10,7 @@ class RipePulsePart(parts.Part):
     def logout(self):
         self.driver.get(self.signout_url)
 
-    def logout_and_redirect(self, redirect_url = None):
+    def logout_wait(self, redirect_url = None):
         redirect_url = redirect_url or self.base_url
         self.logout()
         self.waits.redirected_to(redirect_url)
