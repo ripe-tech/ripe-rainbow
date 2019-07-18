@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import time
-
 from .. import parts
 
 class InteractionsPart(parts.Part):

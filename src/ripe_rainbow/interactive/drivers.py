@@ -131,8 +131,7 @@ class SeleniumDriver(InteractiveDriver):
 
         try:
             if scroll:
-                # runs the scroll operation with the request amount of sleep time
-                # for the scroll operation (important to guarantee visibility)
+                # runs the scroll operation (important to guarantee visibility)
                 self.scroll_to(element)
 
                 # a new object for the chain of actions of the current instance and
