@@ -46,7 +46,7 @@ class InteractiveDriver(object):
     def press_enter(self, element):
         return self.press_key(element, "enter")
 
-    def click(self, element, scroll = True, scroll_sleep = None):
+    def click(self, element, scroll = True):
         raise appier.NotImplementedError()
 
     def scroll_to(self, element, sleep = None):
@@ -125,7 +125,7 @@ class SeleniumDriver(InteractiveDriver):
         element.send_keys(text)
         return element
 
-    def click(self, element, scroll = True, scroll_sleep = None):
+    def click(self, element, scroll = True):
         from selenium.webdriver.common.action_chains import ActionChains
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
@@ -133,7 +133,7 @@ class SeleniumDriver(InteractiveDriver):
             if scroll:
                 # runs the scroll operation with the request amount of sleep time
                 # for the scroll operation (important to guarantee visibility)
-                self.scroll_to(element, sleep = scroll_sleep)
+                self.scroll_to(element)
 
                 # a new object for the chain of actions of the current instance and
                 # then moves to the target element and runs the click operation

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import time
+
 from .. import parts
 
 class InteractionsPart(parts.Part):
@@ -79,7 +81,7 @@ class InteractionsPart(parts.Part):
         # waits for the element to be available at the DOM and then
         # optionally runs the scroll operation to the element
         element = self.waits.element(selector, condition = condition)
-        if scroll: self.driver.safe(self.driver.scroll_to, element)
+        if scroll: self.driver.safe(self.driver.scroll_to, element, sleep = scroll_sleep)
 
         # waits for the proper visibility of the element, should be ensured
         # by having the element "inside" the current browser viewport
@@ -88,14 +90,6 @@ class InteractionsPart(parts.Part):
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
         return self.waits.until(
-            lambda d: self._try_click(element, scroll = scroll, scroll_sleep = scroll_sleep),
+            lambda d: self.driver.safe(self.driver.click, element),
             "Element '%s' found but never became clickable" % selector
-        )
-
-    def _try_click(self, element, scroll = True, scroll_sleep = None):
-        return self.driver.safe(
-            self.driver.click,
-            element,
-            scroll = scroll,
-            scroll_sleep = scroll_sleep
         )

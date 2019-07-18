@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import time
+
 import appier
 
 from .. import parts
@@ -112,6 +114,11 @@ class RipeRetailPart(parts.Part):
             ".pickers .button-part > p:not(.no-part)",
             condition = lambda e: e.text == part.upper()
         )
+
+        # the color transition must finish before we can keep going,
+        # otherwise scrolling to the correct color won't work
+        time.sleep(1)
+
         self.interactions.click_when_possible(
             ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
             scroll_sleep = color_scroll_sleep
