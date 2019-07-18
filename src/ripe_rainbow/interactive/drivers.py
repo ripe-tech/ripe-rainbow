@@ -131,9 +131,6 @@ class SeleniumDriver(InteractiveDriver):
 
         try:
             if scroll:
-                # runs the scroll operation (important to guarantee visibility)
-                self.scroll_to(element)
-
                 # a new object for the chain of actions of the current instance and
                 # then moves to the target element and runs the click operation
                 actions = ActionChains(self.instance)
