@@ -123,7 +123,8 @@ class ConsoleRunner(Runner):
                         result = False
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                        extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
+                        if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
+                        else: extra_s = ""
                         failure = results.Result.build_failure(test, exception)
                         failures.append(failure)
                         failed += 1
@@ -133,7 +134,8 @@ class ConsoleRunner(Runner):
                         failures.append(failure)
                         test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
                         mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                        extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
+                        if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
+                        else: extra_s = ""
                         failed += 1
 
                     # determines the kind of environment we're running on and taking that

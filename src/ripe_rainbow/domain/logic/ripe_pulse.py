@@ -7,11 +7,17 @@ from .. import parts
 
 class RipePulsePart(parts.Part):
 
+    def login(self):
+        self.id.login()
+
+    def login_wait(self, redirect_url = None):
+        self.id.login_wait(redirect_url = redirect_url)
+
     def logout(self):
         self.driver.get(self.signout_url)
 
     def logout_wait(self, redirect_url = None):
-        redirect_url = redirect_url or self.base_url
+        redirect_url = redirect_url or self.home_url
         self.logout()
         self.waits.redirected_to(redirect_url)
 
@@ -25,6 +31,10 @@ class RipePulsePart(parts.Part):
     @property
     def home_url(self):
         return "%s/" % self.base_url
+
+    @property
+    def next_url(self):
+        return self.orders_url
 
     @property
     def orders_url(self):

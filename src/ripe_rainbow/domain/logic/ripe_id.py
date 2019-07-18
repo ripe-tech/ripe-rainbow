@@ -11,7 +11,7 @@ class RipeIdPart(parts.Part):
         username = appier.conf("RIPE_ID_USERNAME", username)
         password = appier.conf("RIPE_ID_PASSWORD", password)
         if not username or not password:
-            self.owner.skip(message = "No RIPE ID credentials available")
+            self.skip(message = "No RIPE ID credentials available")
 
         self.driver.get(self.home_url)
 
@@ -33,8 +33,20 @@ class RipeIdPart(parts.Part):
         self.interactions.click_when_possible(".form .button-blue")
 
     def login_wait(self, username = None, password = None, redirect_url = None):
-        redirect_url = redirect_url or self.home_url
-        self.login(username = username, password = password, redirect_url = redirect_url)
+        redirect_url = redirect_url or self.next_url
+        self.login(
+            username = username,
+            password = password,
+            redirect_url = redirect_url
+        )
+        self.waits.redirected_to(redirect_url)
+
+    def logout(self):
+        self.driver.get(self.logout_url)
+
+    def logout_wait(self, redirect_url = None):
+        redirect_url = redirect_url or self.login_url
+        self.logout()
         self.waits.redirected_to(redirect_url)
 
     @property
@@ -46,6 +58,10 @@ class RipeIdPart(parts.Part):
     @property
     def login_url(self):
         return "%s/admin/signin" % self.id_url
+
+    @property
+    def logout_url(self):
+        return "%s/admin/signout" % self.id_url
 
     @property
     def oauth_authorize_url(self):

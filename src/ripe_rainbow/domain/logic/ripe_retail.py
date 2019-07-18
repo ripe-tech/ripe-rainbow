@@ -19,7 +19,7 @@ class RipeRetailPart(parts.Part):
 
     def login_wait(self, username, password):
         self.login(username, password)
-        self.waits.redirected_to(self.home_url)
+        self.waits.redirected_to(self.next_url)
 
     def select_size(self, size, gender = None, scale = None, open = True):
         """
@@ -244,6 +244,10 @@ class RipeRetailPart(parts.Part):
     @property
     def home_url(self):
         return self.base_url + "/"
+
+    @property
+    def next_url(self):
+        return self.home_url
 
     @property
     def login_url(self):

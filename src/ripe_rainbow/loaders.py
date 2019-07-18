@@ -62,6 +62,7 @@ class PathLoader(Loader):
     def _load_modules(self, path, recursive = True):
         modules = []
         names = os.listdir(path)
+        if not "." in sys.path: sys.path.insert(0, ".")
         for name in names:
             base_name = os.path.splitext(name)[0]
             full_path = os.path.join(path, name)

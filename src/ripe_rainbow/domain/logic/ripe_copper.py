@@ -7,6 +7,12 @@ from .. import parts
 
 class RipeCopperPart(parts.Part):
 
+    def login(self):
+        self.id.login()
+
+    def login_wait(self, redirect_url = None):
+        self.id.login_wait(redirect_url = redirect_url)
+
     def logout(self):
         self.driver.get(self.signout_url)
 
@@ -25,6 +31,10 @@ class RipeCopperPart(parts.Part):
     @property
     def home_url(self):
         return "%s/" % self.base_url
+
+    @property
+    def next_url(self):
+        return self.search_url
 
     @property
     def search_url(self):
