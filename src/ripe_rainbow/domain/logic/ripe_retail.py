@@ -17,9 +17,8 @@ class RipeRetailPart(parts.Part):
         self.driver.write_text(password_input, password)
         self.driver.press_enter(password_input)
 
-    def login_and_redirect(self, username, password):
+    def login_wait(self, username, password):
         self.login(username, password)
-
         self.waits.redirected_to(self.home_url)
 
     def select_size(self, size, gender = None, scale = None, open = True):

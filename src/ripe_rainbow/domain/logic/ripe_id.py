@@ -32,7 +32,7 @@ class RipeIdPart(parts.Part):
 
         self.interactions.click_when_possible(".form .button-blue")
 
-    def login_and_redirect(self, username = None, password = None, redirect_url = None):
+    def login_wait(self, username = None, password = None, redirect_url = None):
         redirect_url = redirect_url or self.home_url
         self.login(username = username, password = password, redirect_url = redirect_url)
         self.waits.redirected_to(redirect_url)
