@@ -13,11 +13,7 @@ class RipeCopperPart(parts.Part):
     def logout_and_redirect(self, redirect_url = None):
         redirect_url = redirect_url or self.home_url
         self.logout()
-        if first:
-            self.waits.redirected_to(redirect_url)
-            first = True
-        else:
-            self.waits.redirected_to(redirect_url)
+        self.waits.redirected_to(redirect_url)
 
     @property
     def base_url(self):
