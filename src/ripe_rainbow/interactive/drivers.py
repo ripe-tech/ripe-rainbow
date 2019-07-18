@@ -266,6 +266,12 @@ class SeleniumDriver(InteractiveDriver):
         KEYS = dict(
             enter = Keys.ENTER,
             space = Keys.SPACE,
-            backspace = Keys.BACKSPACE
+            backspace = Keys.BACKSPACE,
+            left = Keys.LEFT,
+            right = Keys.RIGHT,
+            up = Keys.UP,
+            down = Keys.DOWN,
+            page_up = Keys.PAGE_UP,
+            page_down = Keys.PAGE_DOWN
         )
         return KEYS[name]
