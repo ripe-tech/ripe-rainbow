@@ -13,7 +13,7 @@ class RipeIdPart(parts.Part):
         if not username or not password:
             self.owner.skip(message = "No RIPE ID credentials available")
 
-        self.driver.get(self.home_url)
+        self.driver.get(self.base_url)
 
         self.interactions.click_when_possible(".button-platforme")
 
