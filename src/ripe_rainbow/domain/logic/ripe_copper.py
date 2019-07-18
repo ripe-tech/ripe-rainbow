@@ -11,7 +11,6 @@ class RipeCopperPart(parts.Part):
         self.driver.get(self.signout_url)
 
     def logout_and_redirect(self, redirect_url = None):
-        global first
         redirect_url = redirect_url or self.home_url
         self.logout()
         if first:
