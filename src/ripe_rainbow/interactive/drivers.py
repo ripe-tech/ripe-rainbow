@@ -158,7 +158,12 @@ class SeleniumDriver(InteractiveDriver):
         # in elements inside the page, such as when using an iframe or
         # overflow scroll, therefore we must rely on Web API Element.scrollIntoView()
         # that allows proper scroll operation into element
-        self.instance.execute_script("arguments[0].scrollIntoView();", element)
+        #
+        # the options are needed to scroll the element to the center of the page,
+        # both horizontally and vertically. This is useful for cases when the page
+        # has fixed elements (such as a header) that might cover the element
+        # if we aligned it to the top (which is the default behavior)
+        self.instance.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element)
 
         # when triggering a smooth scroll, the element may take some time to
         # be displayed in the desired position, hence the optional sleep
