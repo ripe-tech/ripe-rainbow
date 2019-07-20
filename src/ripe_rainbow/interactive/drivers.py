@@ -89,6 +89,10 @@ class SeleniumDriver(InteractiveDriver):
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
 
+    def stop(self):
+        self._flush_log()
+        InteractiveDriver.stop(self)
+
     def get(self, url):
         return self.instance.get(url)
 
@@ -219,7 +223,12 @@ class SeleniumDriver(InteractiveDriver):
             width, height = (int(value) for value in self.window_size.split("x"))
             cls._instance.set_window_size(width, height)
 
+        # registers the destroy instance method to be called once
+        # the runner is finished (proper cleanup)
         self.owner.runner.add_on_finish(self._destroy_instance)
+
+        # returns the final instance of the driver to the caller
+        # so that it can be used for operation
         return cls._instance
 
     def _destroy_instance(self):
@@ -275,3 +284,9 @@ class SeleniumDriver(InteractiveDriver):
             page_down = Keys.PAGE_DOWN
         )
         return KEYS[name]
+
+    def _flush_log(self, levels = ("INFO", "WARN", "ERROR")):
+        log = self.instance.get_log("browser")
+        for item in log:
+            if not item["level"] in levels: continue
+            self.owner.breadcrumbs.info(log)
