@@ -37,6 +37,8 @@ class AssertionsPart(parts.Part):
             if not params == None and not current_url_params == params: continue
             if not fragment == None and not current_url_p.fragment == fragment: continue
 
+            # returns a valid value as the current URL in iteration complies
+            # with the complete set of items for acceptance criteria
             return True
 
         self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
