@@ -7,7 +7,7 @@ from .. import parts
 
 class AssertionsPart(parts.Part):
 
-    def at_url(self, url, starts_with = False):
+    def at_url(self, url, params = None, fragment = None, starts_with = False):
         # retrieves the current URL as a string from the underlying
         # driver so that it can be verified
         current_url = self.driver.current_url
@@ -15,6 +15,7 @@ class AssertionsPart(parts.Part):
         # parses the current URL in the browser and reconstructs it with just
         # the base scheme and the URL path
         current_url_p = appier.legacy.urlparse(self.driver.current_url)
+        current_url_params = appier.http._params(current_url_p.query)
         current_url_base = current_url_p.scheme + "://" + current_url_p.netloc + current_url_p.path
 
         # in case the provided URL is not a sequence converts it into
@@ -30,6 +31,12 @@ class AssertionsPart(parts.Part):
                 _url_p = appier.legacy.urlparse(_url)
                 _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
                 if not _url_base == current_url_base: continue
+
+            # runs the extra set of verification (parameters and fragment) in
+            # case they have been requested (proper parameters set)
+            if not params == None and not current_url_params == params: continue
+            if not fragment == None and not current_url_p.fragment == fragment: continue
+
             return True
 
         self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
