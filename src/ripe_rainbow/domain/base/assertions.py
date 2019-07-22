@@ -7,7 +7,7 @@ from .. import parts
 
 class AssertionsPart(parts.Part):
 
-    def at_url(self, url, starts_with = False):
+    def at_url(self, url, starts_with = False, query_params = {}, fragment = ""):
         # retrieves the current URL as a string from the underlying
         # driver so that it can be verified
         current_url = self.driver.current_url
@@ -15,6 +15,7 @@ class AssertionsPart(parts.Part):
         # parses the current URL in the browser and reconstructs it with just
         # the base scheme and the URL path
         current_url_p = appier.legacy.urlparse(self.driver.current_url)
+        current_url_params = self._params(current_url_p.query)
         current_url_base = current_url_p.scheme + "://" + current_url_p.netloc + current_url_p.path
 
         # in case the provided URL is not a sequence converts it into
@@ -30,11 +31,43 @@ class AssertionsPart(parts.Part):
                 _url_p = appier.legacy.urlparse(_url)
                 _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
                 if not _url_base == current_url_base: continue
+                if not current_url_p.fragment == fragment: continue
+                if not current_url_params == query_params: continue
+
             return True
 
         self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
 
         return False
+
+    def _params(self, query):
+        # creates the dictionary that is going to be used to store the
+        # complete information regarding the parameters in query
+        params = dict()
+
+        # validates that the provided query value is valid and if
+        # that's not the case returns the created parameters immediately
+        # (empty parameters are returned)
+        if not query: return params
+
+        # splits the query value around the initial parameter separator
+        # symbol and iterates over each of them to parse them and create
+        # the proper parameters dictionary (of lists)
+        query_s = query.split("&")
+        for part in query_s:
+            parts = part.split("=", 1)
+            if len(parts) == 1: value = ""
+            else: value = parts[1]
+            key = parts[0]
+            key = appier.legacy.unquote_plus(key)
+            value = appier.legacy.unquote_plus(value)
+            param = params.get(key, [])
+            param.append(value)
+            params[key] = param
+
+        # returns the final parameters dictionary to the caller method
+        # so that it may be used as a proper structure representation
+        return params
 
     def has_text(self, selector, text, scroll = True):
         selector = appier.legacy.u(selector)
