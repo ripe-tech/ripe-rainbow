@@ -31,8 +31,11 @@ class AssertionsPart(parts.Part):
                 _url_p = appier.legacy.urlparse(_url)
                 _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
                 if not _url_base == current_url_base: continue
-                if not params == None and not current_url_params == params: continue
-                if not fragment == None and not current_url_p.fragment == fragment: continue
+
+            # runs the extra set of verification (parameters and fragment) in
+            # case they have been requested (proper parameters set)
+            if not params == None and not current_url_params == params: continue
+            if not fragment == None and not current_url_p.fragment == fragment: continue
 
             return True
 
