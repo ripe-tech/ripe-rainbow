@@ -177,12 +177,17 @@ class SeleniumDriver(InteractiveDriver):
             )
         return element
 
-    def scroll_to(self, element, sleep = None):
+    def scroll_to(self, element, position = "center", sleep = None):
+        # builds the proper options string taking into account the offset
+        # in terms of positioning of the element in the scroll
+        if position == "center": options = "{ block: \"center\", inline: \"center\ }"
+        else: options = ""
+
         # as Selenium doesn't automatically support automatically scrolling
         # in elements inside the page, such as when using an iframe or
-        # overflow scroll, therefore we must rely on Web API Element.scrollIntoView()
+        # overflow scroll, therefore we must rely on Web API `Element.scrollIntoView()`
         # that allows proper scroll operation into element
-        self.instance.execute_script("arguments[0].scrollIntoView();", element)
+        self.instance.execute_script("arguments[0].scrollIntoView(%s);" % options, element)
 
         # when triggering a smooth scroll, the element may take some time to
         # be displayed in the desired position, hence the optional sleep
