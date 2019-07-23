@@ -13,7 +13,14 @@ class WaitsPart(parts.Part):
             )
         )
 
-    def redirected_to(self, url, params = None, fragment = None, starts_with = False, timeout = None):
+    def redirected_to(
+        self,
+        url,
+        params = None,
+        fragment = None,
+        starts_with = False,
+        timeout = None
+    ):
         return self.until(
             lambda d: self.assertions.at_url(
                 url,
