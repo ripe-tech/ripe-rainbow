@@ -22,15 +22,19 @@ class RipePulsePart(parts.Part):
         self.waits.redirected_to(redirect_url)
 
     @property
-    def base_url(self):
+    def pulse_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-pulse-ci.platforme.com")
         base_url = appier.conf("PULSE_URL", base_url)
         base_url = appier.conf("RIPE_PULSE_URL", base_url)
         return base_url
 
     @property
+    def base_url(self):
+        return self.pulse_url
+
+    @property
     def home_url(self):
-        return "%s/" % self.base_url
+        return "%s/" % self.pulse_url
 
     @property
     def next_url(self):
@@ -38,8 +42,8 @@ class RipePulsePart(parts.Part):
 
     @property
     def orders_url(self):
-        return "%s/orders" % self.base_url
+        return "%s/orders" % self.pulse_url
 
     @property
     def signout_url(self):
-        return "%s/signout" % self.base_url
+        return "%s/signout" % self.pulse_url

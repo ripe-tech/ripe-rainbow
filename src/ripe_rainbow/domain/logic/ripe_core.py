@@ -66,6 +66,10 @@ class RipeCorePart(parts.Part):
         return core_url
 
     @property
+    def base_url(self):
+        return self.core_url
+
+    @property
     def api_url(self):
         return "%s/api" % self.core_url
 

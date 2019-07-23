@@ -37,13 +37,17 @@ class AdminPart(parts.Part):
         self.driver.click(recover_button)
 
     @property
-    def base_url(self):
+    def root_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-retail-ci.platforme.com")
         return appier.conf("ADMIN_URL", base_url)
 
     @property
     def admin_url(self):
-        return "%s/admin" % self.base_url
+        return "%s/admin" % self.root_url
+
+    @property
+    def base_url(self):
+        return self.admin_url
 
     @property
     def signin_url(self):

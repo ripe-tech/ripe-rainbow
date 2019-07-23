@@ -56,6 +56,10 @@ class RipeIdPart(parts.Part):
         return id_url
 
     @property
+    def base_url(self):
+        return self.id_url
+
+    @property
     def login_url(self):
         return "%s/admin/signin" % self.id_url
 

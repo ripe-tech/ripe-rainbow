@@ -193,15 +193,19 @@ class RipeRetailPart(parts.Part):
         )
 
     @property
-    def base_url(self):
+    def retail_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-retail-ci.platforme.com")
         base_url = appier.conf("RETAIL_URL", base_url)
         base_url = appier.conf("RIPE_RETAIL_URL", base_url)
         return base_url
 
     @property
+    def base_url(self):
+        return self.retail_url
+
+    @property
     def home_url(self):
-        return self.base_url + "/"
+        return "%s/" % self.retail_url
 
     @property
     def next_url(self):
@@ -209,8 +213,8 @@ class RipeRetailPart(parts.Part):
 
     @property
     def login_url(self):
-        return "%s/login" % self.base_url
+        return "%s/login" % self.retail_url
 
     @property
     def logout_url(self):
-        return "%s/logout" % self.base_url
+        return "%s/logout" % self.retail_url

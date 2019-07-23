@@ -22,15 +22,19 @@ class RipeCopperPart(parts.Part):
         self.waits.redirected_to(redirect_url)
 
     @property
-    def base_url(self):
+    def copper_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-copper-ci.platforme.com")
         base_url = appier.conf("COPPER_URL", base_url)
         base_url = appier.conf("RIPE_COPPER_URL", base_url)
         return base_url
 
     @property
+    def base_url(self):
+        return self.copper_url
+
+    @property
     def home_url(self):
-        return "%s/" % self.base_url
+        return "%s/" % self.copper_url
 
     @property
     def next_url(self):
@@ -38,8 +42,8 @@ class RipeCopperPart(parts.Part):
 
     @property
     def search_url(self):
-        return "%s/search" % self.base_url
+        return "%s/search" % self.copper_url
 
     @property
     def signout_url(self):
-        return "%s/signout" % self.base_url
+        return "%s/signout" % self.copper_url
