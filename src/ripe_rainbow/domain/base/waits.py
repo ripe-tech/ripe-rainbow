@@ -13,9 +13,14 @@ class WaitsPart(parts.Part):
             )
         )
 
-    def redirected_to(self, url, timeout = None):
+    def redirected_to(self, url, params = None, fragment = None, starts_with = False, timeout = None):
         return self.until(
-            lambda d: self.assertions.at_url(url),
+            lambda d: self.assertions.at_url(
+                url,
+                params = params,
+                fragment = fragment,
+                starts_with = starts_with
+            ),
             message = "Expecting the page to be '%s' but is '%s'" % (
                 url,
                 self.driver.current_url

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
 import appier
 
 from .. import parts
@@ -12,36 +13,75 @@ class AssertionsPart(parts.Part):
         # driver so that it can be verified
         current_url = self.driver.current_url
 
-        # parses the current URL in the browser and reconstructs it with just
-        # the base scheme and the URL path
-        current_url_p = appier.legacy.urlparse(self.driver.current_url)
-        current_url_params = appier.http._params(current_url_p.query)
-        current_url_base = current_url_p.scheme + "://" + current_url_p.netloc + current_url_p.path
+        return self.same_url(
+            current_url,
+            url,
+            params = params,
+            fragment = fragment,
+            starts_with = starts_with
+        )
+
+    def same_url(self, actual_url, expected, params = None, strict_params = False, fragment = None, starts_with = False):
+        """
+        Verifies if 'actual' is the same as 'expected', including its query parameters and fragment.
+
+        :type actual_url: str
+        :param actual_url: The URL whose correctness is being checked.
+        :type expected: Union[str, list, tuple, regex]
+        :param expected: The possible URLs. If 'actual' is the same as one of these,
+        or matches one of the regex, then it satisfies the assertion.
+        :type strict_params: bool
+        :param strict_params: If 'true', the URL must exactly have 'params',
+        otherwise it can only contain 'params'.
+        :type params: dict[str, str]
+        :param params: The URL must have exactly these parameters.
+        :param fragment: The URL must have this exact fragment.
+        :type starts_with: bool
+        :param starts_with: Whether to use a 'starts with'
+        :rtype bool
+        :return: 'True' if it satisfies the assertion.
+        """
+
+        if params: params = {
+            appier.legacy.u(key): appier.legacy.u(value) if isinstance(value, (list, tuple)) else [appier.legacy.u(value)]
+            for (key, value) in appier.legacy.iteritems(params)
+        }
+
+        # parses the actual URL and reconstructs it with just the
+        # base scheme and the URL path
+        actual_url_p = appier.legacy.urlparse(actual_url)
+        actual_url_params = appier.http._params(actual_url_p.query)
+        actual_url_base = appier.legacy.u(actual_url_p.scheme + "://" + actual_url_p.netloc + actual_url_p.path)
 
         # in case the provided URL is not a sequence converts it into
         # one so that it can be used in the underlying algorithm
-        if not isinstance(url, (list, tuple)): url = (url,)
+        if not isinstance(expected, (list, tuple)): expected = (expected,)
 
         # iterates over the complete set of URLs to be tested and sees
         # if at least one of them validates as a prefix
-        for _url in url:
-            if starts_with and not current_url.startswith(_url): continue
-            elif hasattr(_url, "match") and not _url.match(current_url): continue
+        for _expected in expected:
+            if starts_with and not actual_url.startswith(_expected): continue
+            elif hasattr(_expected, "match") and not _expected.match(actual_url): continue
             else:
-                _url_p = appier.legacy.urlparse(_url)
-                _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
-                if not _url_base == current_url_base: continue
+                _url_p = appier.legacy.urlparse(_expected)
+                _url_base = appier.legacy.u(_url_p.scheme + "://" + _url_p.netloc + _url_p.path)
+                if not _url_base == actual_url_base: continue
 
             # runs the extra set of verification (parameters and fragment) in
             # case they have been requested (proper parameters set)
-            if not params == None and not current_url_params == params: continue
-            if not fragment == None and not current_url_p.fragment == fragment: continue
+            if params:
+                # if strict checks if the actual parameters exactly match the expected ones
+                if strict_params and not actual_url_params == params: continue
+                # otherwise check that the actual parameters are a superset of the expected ones
+                elif self._legacy_items(actual_url_params) < self._legacy_items(params): continue
+
+            if not fragment == None and not actual_url_p.fragment == fragment: continue
 
             # returns a valid value as the current URL in iteration complies
             # with the complete set of items for acceptance criteria
             return True
 
-        self.breadcrumbs.debug("Current page is '%s' and not '%s'" % (current_url, ",".join(url)))
+        self.breadcrumbs.debug("Actual URL is '%s' and not '%s'" % (actual_url, ",".join(expected)))
 
         return False
 
@@ -128,3 +168,9 @@ class AssertionsPart(parts.Part):
         # verifies that the element is not currently displayed in the screen
         # (invisible) and if not returns an invalid value
         return None if element.is_displayed() else element
+
+    def _legacy_items(self, dictionary):
+        python3 = sys.version_info[0] >= 3
+
+        if python3: return dictionary.items()
+        return dictionary.viewitems()

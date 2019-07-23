@@ -178,61 +178,19 @@ class RipeRetailPart(parts.Part):
         if material_text: self.waits.text(".button-material.active", material_text)
 
         self.waits.until(
-            lambda d: self.assert_swatch(
+            lambda d: self.ripe_core.assert_swatch(
                 ".pickers .button-part.active .swatch > img",
                 brand, model, material, color
             ),
             "Part swatch didn't have the expected image."
         )
         self.waits.until(
-            lambda d: self.assert_swatch(
+            lambda d: self.ripe_core.assert_swatch(
                 ".pickers .button-color.active .swatch > img",
                 brand, model, material, color
             ),
             "Color swatch didn't have the expected image."
         )
-
-    def assert_swatch(self, selector, brand, model, material, color):
-        """
-        Checks that the img element identified by the selector points to the
-        correct swatch. The correctness verification is performed by checking
-        the "src" attribute of the element.
-
-        This kind of assertion is critical to ensure proper responsiveness of
-        the UI in accordance with part selection.
-
-        :type selector: String
-        :param selector: The selector for the img.
-        :type brand: String
-        :param brand: The brand of the swatch.
-        :type model: String
-        :param model: The model of the swatch.
-        :type material: String
-        :param material: The material the swatch should represent.
-        :type color: String
-        :param color: The color being shown in the shown.
-        :rtype: Element
-        :return: The element with the swatch image.
-        """
-
-        element = self.waits.element(selector)
-        src = element.get_attribute("src")
-        expected_params = [
-            "brand=%s" % brand,
-            "model=%s" % model,
-            "material=%s" % material,
-            "color=%s" % color
-        ]
-
-        is_correct = all(expected_param in src for expected_param in expected_params)
-
-        if not is_correct:
-            raise AssertionError(
-                "Expected '%s' (src of '%s') to contain '%s'." %\
-                (src, selector, expected_params)
-            )
-
-        return element
 
     @property
     def base_url(self):
