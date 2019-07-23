@@ -11,7 +11,7 @@ class RipeCorePart(parts.Part):
         """
         Checks that the img element identified by the selector points to the
         correct swatch. The correctness verification is performed by checking
-        the "src" attribute of the element.
+        the `src` attribute of the element.
 
         This kind of assertion is critical to ensure proper responsiveness of
         the UI in accordance with part selection.
@@ -26,21 +26,21 @@ class RipeCorePart(parts.Part):
         :param material: The material the swatch should represent.
         :type color: String
         :param color: The color being shown in the shown.
-        :rtype: Element
-        :return: The element with the swatch image.
+        :rtype: bool
+        :return: If the assertion was successful or not (propagation).
         """
 
-        expected_params = dict(
-            brand = brand,
-            model = model,
-            material = material,
-            color = color
-        )
-
         element = self.waits.element(selector)
-        src = element.get_attribute("src")
-
-        return self.assertions.same_url(src, self.swatch_url, params = expected_params)
+        return self.assertions.same_url(
+            element.get_attribute("src"),
+            self.swatch_url,
+            params = dict(
+                brand = brand,
+                model = model,
+                material = material,
+                color = color
+            )
+        )
 
     def wait_initials_image(self, selector, model, initials):
         return self.waits.until(

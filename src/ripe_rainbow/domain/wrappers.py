@@ -7,22 +7,24 @@ from . import logic
 BASE_TUPLES = (
     ("assertions", base.AssertionsPart),
     ("interactions", base.InteractionsPart),
-    ("ripe_core", logic.RipeCorePart),
     ("waits", base.WaitsPart)
 )
 
 COPPER_TUPLES = (
     ("id", logic.RipeIdPart),
+    ("core", logic.RipeCorePart),
     ("copper", logic.RipeCopperPart)
 )
 
 PULSE_TUPLES = (
     ("id", logic.RipeIdPart),
+    ("core", logic.RipeCorePart),
     ("pulse", logic.RipePulsePart)
 )
 
 RETAIL_TUPLES = (
     ("admin", logic.AdminPart),
+    ("core", logic.RipeCorePart),
     ("retail", logic.RipeRetailPart)
 )
 

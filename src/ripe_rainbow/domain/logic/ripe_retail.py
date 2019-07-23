@@ -178,14 +178,14 @@ class RipeRetailPart(parts.Part):
         if material_text: self.waits.text(".button-material.active", material_text)
 
         self.waits.until(
-            lambda d: self.ripe_core.assert_swatch(
+            lambda d: self.core.assert_swatch(
                 ".pickers .button-part.active .swatch > img",
                 brand, model, material, color
             ),
             "Part swatch didn't have the expected image."
         )
         self.waits.until(
-            lambda d: self.ripe_core.assert_swatch(
+            lambda d: self.core.assert_swatch(
                 ".pickers .button-color.active .swatch > img",
                 brand, model, material, color
             ),
