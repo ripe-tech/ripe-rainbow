@@ -49,6 +49,9 @@ class InteractiveDriver(object):
     def click(self, element, scroll = True, scroll_sleep = None):
         raise appier.NotImplementedError()
 
+    def ensure_visible(self, element, timeout = None):
+        raise appier.NotImplementedError()
+
     def scroll_to(self, element, sleep = None):
         """
         Scrolls the element on which it's called into the visible area
@@ -146,9 +149,9 @@ class SeleniumDriver(InteractiveDriver):
                 actions.click(element)
                 actions.perform()
             else:
+                # runs the click operation directly on the element without any
+                # kind of previous interaction as expected
                 element.click()
-
-            return element
         except (
             ElementClickInterceptedException,
             ElementNotVisibleException,
@@ -156,6 +159,23 @@ class SeleniumDriver(InteractiveDriver):
         ) as exception:
             self.owner.breadcrumbs.debug("Element is not \"clickable\" because: %s" % exception)
             return None
+
+        # returns the element object to the caller so that it can
+        # be piped in a chain of operations
+        return element
+
+    def ensure_visible(self, element, timeout = None):
+        self.instance.execute_script("window._entered = false")
+        self.instance.execute_script("window._handler = function() { window._entered = true; };")
+        self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
+        try:
+            self._wait(timeout = timeout).until(lambda d: self._try_visible(element))
+        finally:
+            self.instance.execute_script(
+                "arguments[0].removeEventListener(\"mouseover\", window._handler);",
+                element
+            )
+        return element
 
     def scroll_to(self, element, sleep = None):
         # as Selenium doesn't automatically support automatically scrolling
@@ -269,6 +289,10 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.support.ui import WebDriverWait
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout)
+
+    def _try_visible(self, element, strategy = "scroll_to"):
+        if strategy == "scroll_to": self.scroll_to(element)
+        return self.driver.instance.execute_script("return window.entered")
 
     def _resolve_key(self, name):
         from selenium.webdriver.common.keys import Keys
