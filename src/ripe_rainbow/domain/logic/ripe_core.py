@@ -31,7 +31,7 @@ class RipeCorePart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        return self.assertions.same_url(
+        return self.assertions.verify_url(
             element.get_attribute("src"),
             self.swatch_url,
             params = dict(
@@ -57,7 +57,7 @@ class RipeCorePart(parts.Part):
         element = self.waits.element(selector)
         src = element.get_attribute("src")
 
-        return self.assertions.same_url(src, self.compose_url, params = expected_params)
+        return self.assertions.verify_url(src, self.compose_url, params = expected_params)
 
     @property
     def core_url(self):
