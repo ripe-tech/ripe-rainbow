@@ -21,7 +21,7 @@ class AssertionsPart(parts.Part):
 
         # runs the URL verification taking into account the URL currently
         # set in the driver (the interactive browser)
-        return self.verify_url(
+        return self.match_url(
             current_url,
             url,
             params = params,
@@ -30,7 +30,7 @@ class AssertionsPart(parts.Part):
             strict = strict
         )
 
-    def verify_url(
+    def match_url(
         self,
         url,
         expected,
