@@ -1,88 +1,92 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
 import appier
 
 from .. import parts
 
 class AssertionsPart(parts.Part):
 
-    def at_url(self, url, params = None, fragment = None, starts_with = False):
+    def at_url(
+        self,
+        url,
+        params = None,
+        fragment = None,
+        starts_with = False,
+        strict = False
+    ):
         # retrieves the current URL as a string from the underlying
         # driver so that it can be verified
         current_url = self.driver.current_url
 
-        return self.same_url(
+        # runs the URL verification taking into account the URL currently
+        # set in the driver (the interactive browser)
+        return self.verify_url(
             current_url,
             url,
             params = params,
             fragment = fragment,
-            starts_with = starts_with
+            starts_with = starts_with,
+            strict = strict
         )
 
-    def same_url(self, actual_url, expected, params = None, strict_params = False, fragment = None, starts_with = False):
-        """
-        Verifies if 'actual' is the same as 'expected', including its query parameters and fragment.
+    def verify_url(
+        self,
+        url,
+        expected,
+        params = None,
+        fragment = None,
+        starts_with = False,
+        strict = False
+    ):
+        # runs the normalization process for the provided parameters,
+        # so that they can be readily compared with the parsed ones
+        params = self._normalize_params(params)
 
-        :type actual_url: str
-        :param actual_url: The URL whose correctness is being checked.
-        :type expected: Union[str, list, tuple, regex]
-        :param expected: The possible URLs. If 'actual' is the same as one of these,
-        or matches one of the regex, then it satisfies the assertion.
-        :type strict_params: bool
-        :param strict_params: If 'true', the URL must exactly have 'params',
-        otherwise it can only contain 'params'.
-        :type params: dict[str, str]
-        :param params: The URL must have exactly these parameters.
-        :param fragment: The URL must have this exact fragment.
-        :type starts_with: bool
-        :param starts_with: Whether to use a 'starts with'
-        :rtype bool
-        :return: 'True' if it satisfies the assertion.
-        """
-
-        if params: params = {
-            appier.legacy.u(key): appier.legacy.u(value) if isinstance(value, (list, tuple)) else [appier.legacy.u(value)]
-            for (key, value) in appier.legacy.iteritems(params)
-        }
-
-        # parses the actual URL and reconstructs it with just the
-        # base scheme and the URL path
-        actual_url_p = appier.legacy.urlparse(actual_url)
-        actual_url_params = appier.http._params(actual_url_p.query)
-        actual_url_base = appier.legacy.u(actual_url_p.scheme + "://" + actual_url_p.netloc + actual_url_p.path)
+        # parses the current URL in the browser and reconstructs it with just
+        # the base scheme and the URL path
+        url_p = appier.legacy.urlparse(url)
+        url_params = appier.http._params(url_p.query)
+        url_base = url_p.scheme + "://" + url_p.netloc + url_p.path
 
         # in case the provided URL is not a sequence converts it into
         # one so that it can be used in the underlying algorithm
         if not isinstance(expected, (list, tuple)): expected = (expected,)
 
-        # iterates over the complete set of URLs to be tested and sees
-        # if at least one of them validates as a prefix
-        for _expected in expected:
-            if starts_with and not actual_url.startswith(_expected): continue
-            elif hasattr(_expected, "match") and not _expected.match(actual_url): continue
+        # iterates over the complete set of (expected) URLs to be tested and
+        # sees if at least one of them validates against the provided base URL
+        for _url in expected:
+            # in case the starts with mode is active verifies that the current
+            # URL starts with the current expected in iteration
+            if starts_with and not url.startswith(_url): continue
+
+            # otherwise tries to run the regex match operation (by asserting
+            # that the match method is present)
+            elif hasattr(_url, "match") and not _url.match(url): continue
+
+            # otherwise runs the "default" net location and path based verification
+            # so that the "initial" part of the URL is validated (no query of fragment)
             else:
-                _url_p = appier.legacy.urlparse(_expected)
-                _url_base = appier.legacy.u(_url_p.scheme + "://" + _url_p.netloc + _url_p.path)
-                if not _url_base == actual_url_base: continue
+                _url_p = appier.legacy.urlparse(_url)
+                _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
+                if not _url_base == url_base: continue
 
             # runs the extra set of verification (parameters and fragment) in
             # case they have been requested (proper parameters set)
-            if params:
-                # if strict checks if the actual parameters exactly match the expected ones
-                if strict_params and not actual_url_params == params: continue
-                # otherwise check that the actual parameters are a superset of the expected ones
-                elif self._legacy_items(actual_url_params) < self._legacy_items(params): continue
-
-            if not fragment == None and not actual_url_p.fragment == fragment: continue
+            if not params == None and not\
+                self._compare_params(url_params, params, strict = strict): continue
+            if not fragment == None and not url_p.fragment == fragment: continue
 
             # returns a valid value as the current URL in iteration complies
             # with the complete set of items for acceptance criteria
             return True
 
-        self.breadcrumbs.debug("Actual URL is '%s' and not '%s'" % (actual_url, ",".join(expected)))
+        # prints a debug message on the breadcrumbs logger indicating that there's
+        # a missmatch in the verification of the URL
+        self.breadcrumbs.debug("Provided URL is '%s' and not '%s'" % (url, expected))
 
+        # returns the invalid value as none of the expected URL was able to be validated
+        # against the provided URL
         return False
 
     def has_text(self, selector, text, scroll = True):
@@ -169,8 +173,14 @@ class AssertionsPart(parts.Part):
         # (invisible) and if not returns an invalid value
         return None if element.is_displayed() else element
 
-    def _legacy_items(self, dictionary):
-        python3 = sys.version_info[0] >= 3
+    def _normalize_params(self, params):
+        if not params: return params
+        return dict((key, value if isinstance(value, (list, tuple)) else [value]) for\
+            key, value in appier.legacy.iteritems(params))
 
-        if python3: return dictionary.items()
-        return dictionary.viewitems()
+    def _compare_params(self, first, second, strict = False):
+        if strict: return first == second
+        for key in second:
+            if not key in first: return False
+            if not first[key] == second[key]: return False
+        return True
