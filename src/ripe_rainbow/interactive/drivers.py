@@ -296,6 +296,7 @@ class SeleniumDriver(InteractiveDriver):
         return WebDriverWait(self.instance, timeout)
 
     def _try_visible(self, element, strategy = "scroll_to"):
+        if self.driver.instance.execute_script("return window.entered"): return True
         if strategy == "scroll_to": self.scroll_to(element)
         return self.driver.instance.execute_script("return window.entered")
 
