@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
+
 import appier
 
 from . import drivers
@@ -29,9 +31,7 @@ class InteractiveTestCase(test_cases.TestCase):
 
     def failed(self, test, exception):
         test_cases.TestCase.failed(self, test, exception)
-        test_name = util.test_fullname(test)
-        if self.driver:
-            self.driver.screenshot(test_name + ".png")
+        self._screenshot(test)
 
     def load_driver(self, start = True):
         driver_s = appier.conf("DRIVER", "selenium")
@@ -39,3 +39,14 @@ class InteractiveTestCase(test_cases.TestCase):
         driver = getattr(drivers, driver_s.capitalize() + "Driver")(self)
         if start: driver.start()
         return driver
+
+    def _screenshot(self, test):
+        if not appier.conf("SCREENSHOTS", False): return
+        if not self.driver: return
+        base_path = appier.conf("SCREENSHOTS_PATH", ".")
+        test_name = util.test_fullname(test)
+        if not os.path.exists(base_path): os.makedirs(base_path)
+        screen_path = os.path.join(base_path, test_name + ".png")
+        screen_path = os.path.abspath(screen_path)
+        screen_path = os.path.normpath(screen_path)
+        self.driver.screenshot(screen_path)
