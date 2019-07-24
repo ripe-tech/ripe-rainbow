@@ -209,9 +209,9 @@ class SeleniumDriver(InteractiveDriver):
         :return: The method wrapped on a try-catch for exceptions.
         """
 
-        from selenium.common.exceptions import StaleElementReferenceException
+        from selenium.common.exceptions import WebDriverException
         try: return method(*args, **kwargs)
-        except (StaleElementReferenceException, AssertionError) as exception:
+        except (WebDriverException, AssertionError) as exception:
             self.owner.breadcrumbs.debug("Got exception while waiting: %s" % exception)
             return None
 
