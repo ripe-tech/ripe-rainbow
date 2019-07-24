@@ -149,35 +149,6 @@ class SeleniumDriver(InteractiveDriver):
         # be piped in a chain of operations
         return element
 
-    def move_to_with_offset(self, element, x, y):
-        """
-        Moves the mouse to a given (x, y) point.
-
-        :type element: Element
-        :param element: The element whose top-left corner is used as origin for the offset.
-        :rtype Element
-        :return: The piped element.
-        """
-        from selenium.webdriver.common.action_chains import ActionChains
-
-        actions = ActionChains(self.instance)
-        actions.move_to_element_with_offset(element, x, y)
-        actions.perform()
-
-        return element
-
-    def move_outside(self, element):
-        """
-        Moves the mouse outside a given element.
-
-        :type element: Element
-        :param element: The element to move the mouse outside from.
-        :rtype Element
-        :return: The piped element.
-        """
-
-        return self.move_to_with_offset(element, -1, -1)
-
     def ensure_visible(self, element, timeout = None):
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { console.log(1); window._entered = true; };")
@@ -308,18 +279,61 @@ class SeleniumDriver(InteractiveDriver):
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout)
 
+    def _move_to_with_offset(self, element, x, y):
+        """
+        Moves the mouse to a given (x, y) point.
+
+        :type element: Element
+        :param element: The element whose top-left corner is used as origin for the offset.
+        :rtype Element
+        :return: The piped element.
+        """
+        from selenium.webdriver.common.action_chains import ActionChains
+
+        actions = ActionChains(self.instance)
+        actions.move_to_element_with_offset(element, x, y)
+        actions.perform()
+
+        return element
+
+    def _move_outside(self, element):
+        """
+        Moves the mouse outside a given element.
+
+        :type element: Element
+        :param element: The element to move the mouse outside from.
+        :rtype Element
+        :return: The piped element.
+        """
+
+        return self._move_to_with_offset(element, -1, -1)
+
+    def _move_try_visible(self, element, x, y):
+        self._move_to_with_offset(element, x, y)
+        return self.instance.execute_script("return window._entered")
+
     def _try_visible(self, element, strategy = "scroll_to", step = 15):
         if strategy == "scroll_to": self.scroll_to(element)
 
-        self.move_outside(element)
+        self._move_outside(element)
 
         element_width = element.size["width"]
         element_height = element.size["height"]
 
-        for x in range(0, element_width + 1, step):
-            for y in range(0, element_height + 1, step):
-                self.move_to_with_offset(element, x, y)
-                if self.instance.execute_script("return window._entered"): return True
+        # check the visibility by using the corners,
+        # as well as the middle of the element
+        if self._move_try_visible(element, 1, 1): return True
+        if self._move_try_visible(element, 1, element_height - 1): return True
+        if self._move_try_visible(element, element_width - 1, 1): return True
+        if self._move_try_visible(element, element_width - 1, element_height - 1): return True
+        if self._move_try_visible(element, element_width / 2, element_height / 2): return True
+
+        # if that doesn't work, resort to the more
+        # expensive strategy of trying to move the
+        # mouse through the element
+        for x in range(1, element_width, step):
+            for y in range(1, element_height, step):
+                if self._move_try_visible(element, x, y): return True
 
         return False
 
