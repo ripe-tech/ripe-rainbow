@@ -51,9 +51,7 @@ class InteractionsPart(parts.Part):
     def click_when_possible(
         self,
         selector,
-        condition = None,
-        scroll = True,
-        scroll_sleep = None
+        condition = None
     ):
         """
         Clicks an element when possible, which happens when that element is both
@@ -65,37 +63,17 @@ class InteractionsPart(parts.Part):
         :type selector: String
         :param selector: The selector for the element to click.
         :type condition: Function
-        :param condition: The filter the selected element must pass to be "clickable".
-        :type scroll: bool
-        :param scroll: If the browser viewport should be scrolled to the element
-        before the click operation is performed.
-        :type scroll_sleep: int
-        :param scroll_sleep: The number of seconds to wait after scrolling, which is
-        useful when the scroll is smooth and not immediate.
+        :param condition: The filter the selected element must pass to be selected.
         :rtype Element
         :return The clicked element if there's any otherwise an invalid value.
         """
 
-        # waits for the element to be available at the DOM and then
-        # optionally runs the scroll operation to the element
+        # waits for the element to be available at the DOM
         element = self.waits.element(selector, condition = condition)
-        if scroll: self.driver.safe(self.driver.scroll_to, element)
-
-        # waits for the proper visibility of the element, should be ensured
-        # by having the element "inside" the current browser viewport
-        element = self.waits.is_visible(selector, condition = condition)
 
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
         return self.waits.until(
-            lambda d: self._try_click(element, scroll = scroll, scroll_sleep = scroll_sleep),
+            lambda d: self.driver.safe(self.driver.click, element),
             "Element '%s' found but never became clickable" % selector
-        )
-
-    def _try_click(self, element, scroll = True, scroll_sleep = None):
-        return self.driver.safe(
-            self.driver.click,
-            element,
-            scroll = scroll,
-            scroll_sleep = scroll_sleep
         )

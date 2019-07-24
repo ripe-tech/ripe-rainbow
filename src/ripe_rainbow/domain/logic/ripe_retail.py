@@ -10,7 +10,7 @@ class RipeRetailPart(parts.Part):
     def login(self, username, password):
         self.driver.get(self.login_url)
 
-        form = self.driver.find_element_by_css_selector(".form")
+        form = self.driver.find_element(".form")
         username_input = form.find_element_by_name("username")
         self.driver.write_text(username_input, username)
         password_input = form.find_element_by_name("password")
@@ -70,8 +70,7 @@ class RipeRetailPart(parts.Part):
         part_text = None,
         material_text = None,
         color_text = None,
-        verify = True,
-        color_scroll_sleep = None
+        verify = True
     ):
         """
         Makes a change to the customization of a part and checks that the pages
@@ -100,11 +99,6 @@ class RipeRetailPart(parts.Part):
         :type verify: bool
         :param verify: If a final assertion should be performed after the selection
         has been done (to verify the final status).
-        :type color_scroll_sleep: int
-        :param color_scroll_sleep: The number of seconds to wait when scrolling to
-        the color to click. Since the scrolling is smooth, and not immediate,
-        sometimes we have to wait when picking a new color that is far apart the
-        current scroll position.
         """
 
         self.interactions.click_when_possible(
@@ -112,8 +106,7 @@ class RipeRetailPart(parts.Part):
             condition = lambda e: e.text == part.upper()
         )
         self.interactions.click_when_possible(
-            ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
-            scroll_sleep = color_scroll_sleep
+            ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color)
         )
 
         if verify:

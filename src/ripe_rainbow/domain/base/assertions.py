@@ -89,17 +89,13 @@ class AssertionsPart(parts.Part):
         # against the provided URL
         return False
 
-    def has_text(self, selector, text, scroll = True):
+    def has_text(self, selector, text):
         selector = appier.legacy.u(selector)
         text = appier.legacy.u(text)
 
         element = self.exists(selector)
 
         if element:
-            # scroll the browser to the element, this may change the
-            # value of the text found for the element
-            if scroll: self.driver.safe(self.driver.scroll_to, element)
-
             if not element.text == text:
                 self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
                     selector,
@@ -121,7 +117,11 @@ class AssertionsPart(parts.Part):
         # the provided selector and fulfill the condition if there's
         # at least one valid returns it otherwise returns invalid
         matching = self.exists_multiple(selector, condition = condition)
-        return matching[0] if len(matching) > 0 else None
+        element = matching[0] if len(matching) > 0 else None
+
+        if not element == None: self.driver.ensure_visible(element)
+
+        return element
 
     def exists_multiple(self, selector, condition = None):
         # determines if there's a valid condition provided and if that's
@@ -130,7 +130,7 @@ class AssertionsPart(parts.Part):
         if not condition: condition = lambda e: True
 
         # runs the selection operation using the underlying driver
-        elements = self.driver.safe(self.driver.find_elements_by_css_selector, selector)
+        elements = self.driver.safe(self.driver.find_elements, selector)
 
         # in case no elements match the provided selector then returns the
         # empty sequence immediately

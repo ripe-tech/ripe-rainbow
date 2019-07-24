@@ -10,7 +10,7 @@ class AdminPart(parts.Part):
     def login(self, username, password):
         self.driver.get(self.signin_url)
 
-        form = self.driver.find_element_by_css_selector(".form")
+        form = self.driver.find_element(".form")
         username_input = form.find_element_by_name("username")
         self.driver.write_text(username_input, username)
         password_input = form.find_element_by_name("password")
@@ -24,7 +24,7 @@ class AdminPart(parts.Part):
     def click_forgot(self):
         self.driver.get(self.signin_url)
 
-        forgot = self.driver.find_element_by_css_selector(".forgot a")
+        forgot = self.driver.find_element(".forgot a")
         self.driver.click(forgot)
 
     def forgot(self, email):
@@ -33,7 +33,7 @@ class AdminPart(parts.Part):
         email_input = self.driver.find_element_by_name("identifier")
         self.driver.write_text(email_input, email)
 
-        recover_button = self.driver.find_element_by_css_selector(".base")
+        recover_button = self.driver.find_element(".base")
         self.driver.click(recover_button)
 
     @property

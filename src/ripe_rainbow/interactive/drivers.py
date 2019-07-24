@@ -46,13 +46,13 @@ class InteractiveDriver(object):
     def press_enter(self, element):
         return self.press_key(element, "enter")
 
-    def click(self, element, scroll = True, scroll_sleep = None):
+    def click(self, element):
         raise appier.NotImplementedError()
 
     def ensure_visible(self, element, timeout = None):
         raise appier.NotImplementedError()
 
-    def scroll_to(self, element, sleep = None):
+    def scroll_to(self, element):
         """
         Scrolls the element on which it's called into the visible area
         of the browser window.
@@ -61,9 +61,6 @@ class InteractiveDriver(object):
 
         :type element: Element
         :param element: The element to scroll into view.
-        :type sleep: int
-        :param sleep: The number of seconds to sleep after the scroll
-        operation, important for smooth scrolls.
         """
 
         raise appier.NotImplementedError()
@@ -100,7 +97,9 @@ class SeleniumDriver(InteractiveDriver):
         return self.instance.get(url)
 
     def find_element(self, selector):
-        return self.instance.find_element_by_css_selector(selector)
+        element = self.instance.find_element_by_css_selector(selector)
+        self.ensure_visible(element)
+        return element
 
     def find_elements(self, selector):
         return self.instance.find_elements_by_css_selector(selector)
@@ -132,26 +131,13 @@ class SeleniumDriver(InteractiveDriver):
         element.send_keys(text)
         return element
 
-    def click(self, element, scroll = True, scroll_sleep = None):
-        from selenium.webdriver.common.action_chains import ActionChains
+    def click(self, element):
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
-        try:
-            if scroll:
-                # runs the scroll operation with the request amount of sleep time
-                # for the scroll operation (important to guarantee visibility)
-                self.scroll_to(element, sleep = scroll_sleep)
+        self.move_to(element)
 
-                # a new object for the chain of actions of the current instance and
-                # then moves to the target element and runs the click operation
-                actions = ActionChains(self.instance)
-                actions.move_to_element(element)
-                actions.click(element)
-                actions.perform()
-            else:
-                # runs the click operation directly on the element without any
-                # kind of previous interaction as expected
-                element.click()
+        try:
+            element.click()
         except (
             ElementClickInterceptedException,
             ElementNotVisibleException,
@@ -164,9 +150,43 @@ class SeleniumDriver(InteractiveDriver):
         # be piped in a chain of operations
         return element
 
+    def move_outside(self, element):
+        """
+        Moves the mouse outside a given element.
+
+        :type element: Element
+        :param element: The element to move the mouse outside from.
+        :rtype Element
+        :return: The piped element.
+        """
+        from selenium.webdriver.common.action_chains import ActionChains
+
+        actions = ActionChains(self.instance)
+        actions.move_to_element_with_offset(element, -1, -1)
+        actions.perform()
+
+        return element
+
+    def move_to(self, element):
+        """
+        Moves the mouse to center of an element.
+
+        :type element: Element
+        :param element: The element to move the mouse to.
+        :rtype Element
+        :return: The piped element.
+        """
+        from selenium.webdriver.common.action_chains import ActionChains
+
+        actions = ActionChains(self.instance)
+        actions.move_to_element(element)
+        actions.perform()
+
+        return element
+
     def ensure_visible(self, element, timeout = None):
         self.instance.execute_script("window._entered = false")
-        self.instance.execute_script("window._handler = function() { window._entered = true; };")
+        self.instance.execute_script("window._handler = function() { console.log('%s'); window._entered = true; };" % element)
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
         try:
             self._wait(timeout = timeout).until(lambda d: self._try_visible(element))
@@ -177,7 +197,7 @@ class SeleniumDriver(InteractiveDriver):
             )
         return element
 
-    def scroll_to(self, element, position = "center", sleep = None):
+    def scroll_to(self, element, position = "center"):
         # builds the proper options string taking into account the offset
         # in terms of positioning of the element in the scroll
         if position == "center": options = "{ block: \"center\", inline: \"center\" }"
@@ -188,10 +208,6 @@ class SeleniumDriver(InteractiveDriver):
         # overflow scroll, therefore we must rely on Web API `Element.scrollIntoView()`
         # that allows proper scroll operation into element
         self.instance.execute_script("arguments[0].scrollIntoView(%s);" % options, element)
-
-        # when triggering a smooth scroll, the element may take some time to
-        # be displayed in the desired position, hence the optional sleep
-        if sleep: time.sleep(sleep)
 
     def wrap_outer(self, method, *args, **kwargs):
         from selenium.common.exceptions import TimeoutException
@@ -297,7 +313,10 @@ class SeleniumDriver(InteractiveDriver):
 
     def _try_visible(self, element, strategy = "scroll_to"):
         if strategy == "scroll_to": self.scroll_to(element)
-        return self.driver.instance.execute_script("return window.entered")
+        self.move_outside(element)
+        self.move_to(element)
+        script = self.instance.execute_script("return window._entered")
+        return script
 
     def _resolve_key(self, name):
         from selenium.webdriver.common.keys import Keys
