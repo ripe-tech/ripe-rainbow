@@ -339,10 +339,14 @@ class SeleniumDriver(InteractiveDriver):
     def _move_to_offset(self, element, x = 0, y = 0):
         from selenium.webdriver.common.action_chains import ActionChains
 
+        # creates an action chain that will move the mouse into the
+        # target offset of coordinates relative to the element
         actions = ActionChains(self.instance)
         actions.move_to_element_with_offset(element, x, y)
         actions.perform()
 
+        # returns the element that currently has the mouse pointing
+        # to it according to the defined offset (if possible)
         return element
 
     def _try_visible(self, element, strategy = "scroll_to"):
