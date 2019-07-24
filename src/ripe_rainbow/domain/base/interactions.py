@@ -17,7 +17,11 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.safe(self.driver.write_text, element, text)
+
+        return self.waits.until(
+            lambda d: self.driver.safe(self.driver.write_text, element, text),
+            "Element '%s' found but never became writable" % selector
+        )
 
     def press_key(self, selector, key):
         """
@@ -33,7 +37,11 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.safe(self.driver.press_key, element, key)
+
+        return self.waits.until(
+            lambda d: self.driver.safe(self.driver.press_key, element, key),
+            "Element '%s' found but never became interactable" % selector
+        )
 
     def press_enter(self, selector):
         """
@@ -46,7 +54,11 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits.element(selector)
-        self.driver.safe(self.driver.press_enter, element)
+
+        return self.waits.until(
+            lambda d: self.driver.safe(self.driver.press_enter, element),
+            "Element '%s' found but never became interactable" % selector
+        )
 
     def click_when_possible(self, selector, condition = None):
         """
