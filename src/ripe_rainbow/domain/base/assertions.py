@@ -112,14 +112,15 @@ class AssertionsPart(parts.Part):
 
         return element
 
-    def exists(self, selector, condition = None):
+    def exists(self, selector, condition = None, ensure_visible = True):
         # tries to retrieve the complete set of elements that match
         # the provided selector and fulfill the condition if there's
         # at least one valid returns it otherwise returns invalid
         matching = self.exists_multiple(selector, condition = condition)
         element = matching[0] if len(matching) > 0 else None
 
-        if not element == None: self.driver.ensure_visible(element)
+        if ensure_visible and not element == None:
+            self.driver.ensure_visible(element)
 
         return element
 
@@ -166,7 +167,7 @@ class AssertionsPart(parts.Part):
     def is_not_visible(self, selector, condition = None):
         # runs the selector with the requested condition to retrieve a possible
         # element and returns invalid if there's none
-        element = self.exists(selector, condition = condition)
+        element = self.exists(selector, condition = condition, ensure_visible = False)
         if not element: return None
 
         # verifies that the element is not currently displayed in the screen

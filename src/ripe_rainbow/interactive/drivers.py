@@ -98,6 +98,7 @@ class SeleniumDriver(InteractiveDriver):
 
     def find_element(self, selector):
         element = self.instance.find_element_by_css_selector(selector)
+        print("Find", selector)
         self.ensure_visible(element)
         return element
 
@@ -134,8 +135,6 @@ class SeleniumDriver(InteractiveDriver):
     def click(self, element):
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
-        self.move_to(element)
-
         try:
             element.click()
         except (
@@ -150,6 +149,23 @@ class SeleniumDriver(InteractiveDriver):
         # be piped in a chain of operations
         return element
 
+    def move_to_with_offset(self, element, x, y):
+        """
+        Moves the mouse to a given (x, y) point.
+
+        :type element: Element
+        :param element: The element whose top-left corner is used as origin for the offset.
+        :rtype Element
+        :return: The piped element.
+        """
+        from selenium.webdriver.common.action_chains import ActionChains
+
+        actions = ActionChains(self.instance)
+        actions.move_to_element_with_offset(element, x, y)
+        actions.perform()
+
+        return element
+
     def move_outside(self, element):
         """
         Moves the mouse outside a given element.
@@ -159,34 +175,14 @@ class SeleniumDriver(InteractiveDriver):
         :rtype Element
         :return: The piped element.
         """
-        from selenium.webdriver.common.action_chains import ActionChains
 
-        actions = ActionChains(self.instance)
-        actions.move_to_element_with_offset(element, -1, -1)
-        actions.perform()
-
-        return element
-
-    def move_to(self, element):
-        """
-        Moves the mouse to center of an element.
-
-        :type element: Element
-        :param element: The element to move the mouse to.
-        :rtype Element
-        :return: The piped element.
-        """
-        from selenium.webdriver.common.action_chains import ActionChains
-
-        actions = ActionChains(self.instance)
-        actions.move_to_element(element)
-        actions.perform()
-
-        return element
+        return self.move_to_with_offset(element, -1, -1)
 
     def ensure_visible(self, element, timeout = None):
         self.instance.execute_script("window._entered = false")
-        self.instance.execute_script("window._handler = function() { window._entered = true; };")
+        self.instance.execute_script("window._handler = function() { console.log(1); window._entered = true; };")
+        self.instance.execute_script("window._disabled = arguments[0].disabled", element)
+        self.instance.execute_script("arguments[0].disabled = false", element)
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
         try:
             self._wait(timeout = timeout).until(lambda d: self._try_visible(element))
@@ -195,6 +191,7 @@ class SeleniumDriver(InteractiveDriver):
                 "arguments[0].removeEventListener(\"mouseover\", window._handler);",
                 element
             )
+            self.instance.execute_script("arguments[0].disabled = window._disabled", element)
         return element
 
     def scroll_to(self, element, position = "center"):
@@ -311,12 +308,20 @@ class SeleniumDriver(InteractiveDriver):
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout)
 
-    def _try_visible(self, element, strategy = "scroll_to"):
+    def _try_visible(self, element, strategy = "scroll_to", step = 15):
         if strategy == "scroll_to": self.scroll_to(element)
+
         self.move_outside(element)
-        self.move_to(element)
-        script = self.instance.execute_script("return window._entered")
-        return script
+
+        element_width = element.size["width"]
+        element_height = element.size["height"]
+
+        for x in range(0, element_width + 1, step):
+            for y in range(0, element_height + 1, step):
+                self.move_to_with_offset(element, x, y)
+                if self.instance.execute_script("return window._entered"): return True
+
+        return False
 
     def _resolve_key(self, name):
         from selenium.webdriver.common.keys import Keys
