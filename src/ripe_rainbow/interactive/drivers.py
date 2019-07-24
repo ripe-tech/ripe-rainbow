@@ -46,7 +46,7 @@ class InteractiveDriver(object):
     def press_enter(self, element):
         return self.press_key(element, "enter")
 
-    def click(self, element, scroll = True, scroll_sleep = None):
+    def click(self, element, ensure = True):
         raise appier.NotImplementedError()
 
     def ensure_visible(self, element, timeout = None):
@@ -132,26 +132,18 @@ class SeleniumDriver(InteractiveDriver):
         element.send_keys(text)
         return element
 
-    def click(self, element, scroll = True, scroll_sleep = None):
+    def click(self, element, ensure = True):
         from selenium.webdriver.common.action_chains import ActionChains
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
         try:
-            if scroll:
-                # runs the scroll operation with the request amount of sleep time
-                # for the scroll operation (important to guarantee visibility)
-                self.scroll_to(element, sleep = scroll_sleep)
+            # in case the ensure flag is set makes sure that the element
+            # is visible (in an interactable way) to be then clicked
+            if ensure: self.ensure_visible(element)
 
-                # a new object for the chain of actions of the current instance and
-                # then moves to the target element and runs the click operation
-                actions = ActionChains(self.instance)
-                actions.move_to_element(element)
-                actions.click(element)
-                actions.perform()
-            else:
-                # runs the click operation directly on the element without any
-                # kind of previous interaction as expected
-                element.click()
+            # runs the click operation directly on the element without any
+            # kind of previous interaction as expected
+            element.click()
         except (
             ElementClickInterceptedException,
             ElementNotVisibleException,
