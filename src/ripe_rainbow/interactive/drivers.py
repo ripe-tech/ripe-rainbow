@@ -133,13 +133,16 @@ class SeleniumDriver(InteractiveDriver):
         return element
 
     def click(self, element, ensure = True):
-        from selenium.webdriver.common.action_chains import ActionChains
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
 
         try:
             # in case the ensure flag is set makes sure that the element
             # is visible (in an interactable way) to be then clicked
             if ensure: self.ensure_visible(element)
+
+            # moves the mouse to the element according to the pre-defined
+            # pivot, this will allow proper clicking
+            self._move_to(element)
 
             # runs the click operation directly on the element without any
             # kind of previous interaction as expected
@@ -157,6 +160,7 @@ class SeleniumDriver(InteractiveDriver):
         return element
 
     def ensure_visible(self, element, timeout = None):
+        self._move_to_offset(element, -1, -1)
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
@@ -287,10 +291,60 @@ class SeleniumDriver(InteractiveDriver):
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout)
 
+    def _move_to(self, element, pivot = "center"):
+        element_width = element.size["width"]
+        element_height = element.size["height"]
+
+        if pivot == "center":
+            return self._move_to_offset(
+                element,
+                x = element_width / 2,
+                y = element_height / 2
+            )
+
+        if pivot == "left-top":
+            return self._move_to_offset(
+                element,
+                x = 0,
+                y = 0
+            )
+
+        if pivot == "right-top":
+            return self._move_to_offset(
+                element,
+                x = element_width - 1,
+                y = 0
+            )
+
+        if pivot == "right-bottom":
+            return self._move_to_offset(
+                element,
+                x = element_width - 1,
+                y = element_height - 1
+            )
+
+        if pivot == "left-bottom":
+            return self._move_to_offset(
+                element,
+                x = 0,
+                y = element_height - 1
+            )
+
+    def _move_to_offset(self, element, x = 0, y = 0):
+        from selenium.webdriver.common.action_chains import ActionChains
+
+        actions = ActionChains(self.instance)
+        actions.move_to_element_with_offset(element, x, y)
+        actions.perform()
+
+        return element
+
     def _try_visible(self, element, strategy = "scroll_to"):
-        if self.driver.instance.execute_script("return window.entered"): return True
+        self._move_to(element)
+        if self.instance.execute_script("return window._entered"): return True
         if strategy == "scroll_to": self.scroll_to(element)
-        return self.driver.instance.execute_script("return window.entered")
+        self._move_to(element)
+        return self.instance.execute_script("return window._entered")
 
     def _resolve_key(self, name):
         from selenium.webdriver.common.keys import Keys

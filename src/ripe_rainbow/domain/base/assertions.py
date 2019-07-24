@@ -89,16 +89,16 @@ class AssertionsPart(parts.Part):
         # against the provided URL
         return False
 
-    def has_text(self, selector, text, scroll = True):
+    def has_text(self, selector, text, ensure = False):
         selector = appier.legacy.u(selector)
         text = appier.legacy.u(text)
 
         element = self.exists(selector)
 
         if element:
-            # scroll the browser to the element, this may change the
-            # value of the text found for the element
-            if scroll: self.driver.safe(self.driver.scroll_to, element)
+            # in case the ensure flag is set makes sure that the element is visible
+            # from an interactable point of view
+            if ensure: self.driver.safe(self.driver.ensure_visible, element)
 
             if not element.text == text:
                 self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
