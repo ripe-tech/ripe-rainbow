@@ -96,6 +96,8 @@ class ConsoleRunner(Runner):
                     start = time.time()
 
                     try:
+                        # starts the appier console context loader so that an animation
+                        # is executed while the test is running (where it's possible)
                         with appier_console.ctx_loader(
                             spinner = "dots3",
                             template = "        %s {{spinner}}" % test_name,

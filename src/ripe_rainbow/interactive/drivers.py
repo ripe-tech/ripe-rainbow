@@ -68,6 +68,9 @@ class InteractiveDriver(object):
 
         raise appier.NotImplementedError()
 
+    def screenshot(self, file_path):
+        raise appier.NotImplementedError()
+
     def wrap_outer(self, method, *args, **kwargs):
         return method(*args, **kwargs)
 
@@ -188,6 +191,9 @@ class SeleniumDriver(InteractiveDriver):
         # when triggering a smooth scroll, the element may take some time to
         # be displayed in the desired position, hence the optional sleep
         if sleep: time.sleep(sleep)
+
+    def screenshot(self, file_path):
+        self.instance.save_screenshot(file_path)
 
     def wrap_outer(self, method, *args, **kwargs):
         from selenium.common.exceptions import TimeoutException

@@ -5,6 +5,7 @@ import appier
 
 from . import drivers
 
+from .. import util
 from .. import test_cases
 
 class InteractiveTestCase(test_cases.TestCase):
@@ -25,6 +26,12 @@ class InteractiveTestCase(test_cases.TestCase):
             self.driver.stop()
             self.driver = None
         test_cases.TestCase.after(self)
+
+    def failed(self, test, exception):
+        test_cases.TestCase.failed(self, test, exception)
+        test_name = util.test_fullname(test)
+        if self.driver:
+            self.driver.screenshot(test_name + ".png")
 
     def load_driver(self, start = True):
         driver_s = appier.conf("DRIVER", "selenium")
