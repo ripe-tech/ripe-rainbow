@@ -180,7 +180,7 @@ class SeleniumDriver(InteractiveDriver):
     def scroll_to(self, element, position = "center", sleep = None):
         # builds the proper options string taking into account the offset
         # in terms of positioning of the element in the scroll
-        if position == "center": options = "{ block: \"center\", inline: \"center\ }"
+        if position == "center": options = "{ block: \"center\", inline: \"center\" }"
         else: options = ""
 
         # as Selenium doesn't automatically support automatically scrolling
