@@ -14,10 +14,15 @@ class InteractionsPart(parts.Part):
         :param selector: The selector for the element to write the text in.
         :type text: String
         :param text: The text to write "using the keyboard".
+        :rtype: Element
+        :return: The element with the text changed.
         """
 
+        # waits for the element to be available at the DOM
         element = self.waits.element(selector)
 
+        # waits until a valid text change in the element is possible, this
+        # overcomes limitations with non interactable elements
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.write_text, element, text),
             "Element '%s' found but never became writable" % selector
@@ -34,10 +39,15 @@ class InteractionsPart(parts.Part):
         :type key: String
         :param key: The name of the key that is going to be pressed by
         the keyboard, this name is set on an agnostic way.
+        :rtype: Element
+        :return: The element with the key pressed.
         """
 
+        # waits for the element to be available at the DOM
         element = self.waits.element(selector)
 
+        # waits until a valid key stroke in the element is possible, this
+        # overcomes limitations with non interactable elements
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.press_key, element, key),
             "Element '%s' found but never became interactable" % selector
@@ -51,10 +61,15 @@ class InteractionsPart(parts.Part):
         :type selector: String
         :param selector: The selector for the element to focus when
         pressing enter.
+        :rtype: Element
+        :return: The element with the enter key pressed.
         """
 
+        # waits for the element to be available at the DOM
         element = self.waits.element(selector)
 
+        # waits until a valid key stroke in the element is possible, this
+        # overcomes limitations with non interactable elements
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.press_enter, element),
             "Element '%s' found but never became interactable" % selector
@@ -69,8 +84,8 @@ class InteractionsPart(parts.Part):
         :param selector: The selector for the element to click.
         :type condition: Function
         :param condition: The filter the selected element must pass to be "clickable".
-        :rtype Element
-        :return The clicked element if there's any otherwise an invalid value.
+        :rtype: Element
+        :return: The clicked element if there's any otherwise an invalid value.
         """
 
         # waits for the element to be available at the DOM
