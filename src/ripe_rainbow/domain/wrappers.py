@@ -24,11 +24,13 @@ PULSE_TUPLES = (
 
 RETAIL_TUPLES = (
     ("admin", logic.AdminPart),
+    ("commons", logic.RipeCommonsPart),
     ("core", logic.RipeCorePart),
     ("retail", logic.RipeRetailPart)
 )
 
 WHITE_TUPLES = (
+    ("commons", logic.RipeCommonsPart),
     ("core", logic.RipeCorePart),
     ("white", logic.RipeWhitePart)
 )

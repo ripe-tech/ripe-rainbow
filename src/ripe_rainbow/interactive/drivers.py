@@ -165,7 +165,7 @@ class SeleniumDriver(InteractiveDriver):
     def ensure_visible(self, element, timeout = None):
         self._move_to_offset(element, -1, -1)
         self.instance.execute_script("window._entered = false")
-        self.instance.execute_script("window._handler = function() { window._entered = true; };")
+        self.instance.execute_script("window._handler = function() { console.log(1); window._entered = true; };")
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
         try:
             self._wait(timeout = timeout).until(lambda d: self._try_visible(element))
