@@ -1,9 +1,52 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import appier
+
 from .. import parts
 
 class InteractionsPart(parts.Part):
+
+    def get_url(self, url, params = [], fragment = ""):
+        """
+        Navigates to a certain URL with given GET parameters and to
+        the request fragment.
+
+        The operation is always going to be performed using a GET
+        request as that's the only available request method from
+        the browser.
+
+        :type url: String
+        :param url: The URL to navigate to, this should represent only
+        the base URL without GET parameters and fragment.
+        :type params: list
+        :param params: A list of (key, values) tuples representing
+        the GET query parameters to be added to the base URL
+        :type fragment: String
+        :param fragment: The fragment string to be added to the last part
+        of the URL to be built.
+        :rtype: bool
+        :return: The result of the redirection, if it was verified by
+        the browser.
+        """
+
+        params_s = []
+
+        for (key, value) in params:
+            key_q = appier.util.quote(key)
+            for _value in value:
+                value_q = appier.util.quote(_value)
+                param = key_q + "=" + value_q
+                params_s.append(param)
+
+        params_s = "&".join(params_s) if params_s else ""
+
+        if joined_params: url += "?" + params_s
+        if fragment: url += "#" + fragment
+
+        self.driver.get(url)
+
+        return self.waits.redirected_to(url)
 
     def write_text(self, selector, text):
         """
