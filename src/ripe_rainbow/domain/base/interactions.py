@@ -1,9 +1,44 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import appier
+
 from .. import parts
 
 class InteractionsPart(parts.Part):
+
+    def get_page(self, url, params = [], fragment = ""):
+        """
+        Navigates to a certain URL with given params.
+
+        :type url: str
+        :param url: The URL to navigate to.
+        :type params: list
+        :param params: A list of (key, values) tuples representing
+        the query parameters.
+        :type fragment: str
+        :param fragment: The fragment string.
+        :rtype bool
+        :return: 'true' if it was successfully redirected.
+        """
+        params_s = []
+
+        for (key, value) in params:
+            key_q = appier.util.quote(key)
+            for _value in value:
+                value_q = appier.util.quote(_value)
+                param = key_q + "=" + value_q
+                params_s.append(param)
+
+        joined_params = "&".join(params_s) if params_s else ""
+
+        joined_url = url
+        if joined_params: joined_url += "?" + joined_params
+        if fragment: joined_url += "#" + fragment
+
+        self.driver.get(joined_url)
+
+        return self.waits.redirected_to(joined_url)
 
     def write_text(self, selector, text):
         """
