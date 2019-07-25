@@ -9,7 +9,7 @@ setuptools.setup(
     version = "0.4.0",
     author = "Platforme International",
     author_email = "development@platforme.com",
-    description = "RIPE Rainbow",
+    description = "RIPE Rainbow", 
     license = "Apache License, Version 2.0",
     keywords = "ripe rainbow test",
     url = "http://www.platforme.com",
