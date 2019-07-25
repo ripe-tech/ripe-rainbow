@@ -35,7 +35,7 @@ class RipeWhitePart(parts.Part):
             part,
             material,
             color,
-            part_text = part_text if part_text else part.capitalize(),
+            part_text if part_text else part.capitalize(),
             material_text = material_text,
             color_text = color_text,
             verify = verify,

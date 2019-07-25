@@ -53,7 +53,7 @@ class RipeCommonsPart(parts.Part):
             part,
             material,
             color,
-            part_text = None,
+            part_text,
             material_text = None,
             color_text = None,
             verify = True,
@@ -95,11 +95,14 @@ class RipeCommonsPart(parts.Part):
         :param click_material: Whether the material should be clicked or not.
         :type click_color: bool
         :param click_color: Whether the color should be clicked or not.
+        :type container_selector: str
+        :param container_selector: The selector to restrain the picker being
+        manipulated.
         """
 
         if click_part: self.interactions.click_when_possible(
             "%s .pickers .button-part > p:not(.no-part)" % container_selector,
-            condition = lambda e: e.text == part_text if part_text else part.upper()
+            condition = lambda e: e.text == part_text
         )
 
         if click_material: self.interactions.click_when_possible(
@@ -162,6 +165,9 @@ class RipeCommonsPart(parts.Part):
         :param material_text: The expected label for the material.
         :type color_text: String
         :param color_text: The expected label for the color.
+        :type container_selector: str
+        :param container_selector: The selector to restrain the picker being
+        asserted.
         """
 
         self.interactions.click_when_possible(
