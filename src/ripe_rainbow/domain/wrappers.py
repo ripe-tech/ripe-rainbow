@@ -28,6 +28,11 @@ RETAIL_TUPLES = (
     ("retail", logic.RipeRetailPart)
 )
 
+WHITE_TUPLES = (
+    ("core", logic.RipeCorePart),
+    ("white", logic.RipeWhitePart)
+)
+
 class DomainWrapper(object):
 
     @classmethod
@@ -51,3 +56,7 @@ class DomainWrapper(object):
     @classmethod
     def wrap_retail(cls, instance):
         cls.wrap(instance, RETAIL_TUPLES)
+
+    @classmethod
+    def wrap_white(cls, instance):
+        cls.wrap(instance, WHITE_TUPLES)
