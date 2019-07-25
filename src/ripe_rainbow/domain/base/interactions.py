@@ -41,7 +41,7 @@ class InteractionsPart(parts.Part):
 
         params_s = "&".join(params_s) if params_s else ""
 
-        if joined_params: url += "?" + params_s
+        if params_s: url += "?" + params_s
         if fragment: url += "#" + fragment
 
         self.driver.get(url)
