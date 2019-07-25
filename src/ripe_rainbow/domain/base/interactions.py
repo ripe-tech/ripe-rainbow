@@ -7,20 +7,29 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def get_page(self, url, params = [], fragment = ""):
+    def get_url(self, url, params = [], fragment = ""):
         """
-        Navigates to a certain URL with given params.
+        Navigates to a certain URL with given GET parameters and to
+        the request fragment.
 
-        :type url: str
-        :param url: The URL to navigate to.
+        The operation is always going to be performed using a GET
+        request as that's the only available request method from
+        the browser.
+
+        :type url: String
+        :param url: The URL to navigate to, this should represent only
+        the base URL without GET parameters and fragment.
         :type params: list
         :param params: A list of (key, values) tuples representing
-        the query parameters.
-        :type fragment: str
-        :param fragment: The fragment string.
-        :rtype bool
-        :return: 'true' if it was successfully redirected.
+        the GET query parameters to be added to the base URL
+        :type fragment: String
+        :param fragment: The fragment string to be added to the last part
+        of the URL to be built.
+        :rtype: bool
+        :return: The result of the redirection, if it was verified by
+        the browser.
         """
+
         params_s = []
 
         for (key, value) in params:
@@ -30,15 +39,14 @@ class InteractionsPart(parts.Part):
                 param = key_q + "=" + value_q
                 params_s.append(param)
 
-        joined_params = "&".join(params_s) if params_s else ""
+        params_s = "&".join(params_s) if params_s else ""
 
-        joined_url = url
-        if joined_params: joined_url += "?" + joined_params
-        if fragment: joined_url += "#" + fragment
+        if joined_params: url += "?" + params_s
+        if fragment: url += "#" + fragment
 
-        self.driver.get(joined_url)
+        self.driver.get(url)
 
-        return self.waits.redirected_to(joined_url)
+        return self.waits.redirected_to(url)
 
     def write_text(self, selector, text):
         """
