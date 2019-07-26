@@ -60,14 +60,12 @@ class RipeCorePart(parts.Part):
         return self.assertions.match_url(src, self.compose_url, params = expected_params)
 
     def report_url(self, number, key = None):
-        url = "%s/orders/%s/report.pdf" % (self.api_url, number)
-
+        url = "%s/orders/%d/report.pdf" % (self.api_url, number)
         if key: url += "?key=%s" % appier.util.quote(key)
-
         return url
 
     def order_url(self, number):
-        return "%s/orders/%s" % (self.api_url, number)
+        return "%s/orders/%d" % (self.api_url, number)
 
     @property
     def core_url(self):
