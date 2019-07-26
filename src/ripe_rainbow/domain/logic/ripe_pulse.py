@@ -21,8 +21,17 @@ class RipePulsePart(parts.Part):
         self.logout()
         self.waits.redirected_to(redirect_url)
 
-    def order_url(self, order):
-        return "%s/%s" % (self.orders_url, order)
+    def click_order(self, order):
+        self.interactions.click_when_possible(".table .id a[href^='%s']" % self.order_url(order, absolute = False))
+        self.waits.redirected_to(self.order_url(order))
+        self.waits.text(".title", "Order #%s" % order)
+
+    def order_url(self, order, absolute = True):
+        url = "%s/%s" % (self.orders_url, order)
+
+        if not absolute: url = url.replace(self.base_url, "")
+
+        return url
 
     @property
     def pulse_url(self):
