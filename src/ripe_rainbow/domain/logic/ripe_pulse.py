@@ -26,6 +26,9 @@ class RipePulsePart(parts.Part):
         self.waits.redirected_to(self.order_url(order))
         self.waits.text(".title", "Order #%s" % order)
 
+    def click_report(self, order):
+        self.interactions.click_when_possible(".order-report")
+
     def order_url(self, order, absolute = True):
         url = "%s/%s" % (self.orders_url, order)
 
