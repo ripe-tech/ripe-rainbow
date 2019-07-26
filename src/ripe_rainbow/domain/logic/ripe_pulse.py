@@ -21,6 +21,15 @@ class RipePulsePart(parts.Part):
         self.logout()
         self.waits.redirected_to(redirect_url)
 
+    def click_order(self, number):
+        self.interactions.click_when_possible(".table .id a[href^='/orders/%d']" % number)
+        self.waits.redirected_to(self.order_url(number))
+        self.waits.text(".title", "Order #%d" % number)
+
+    def order_url(self, number):
+        url = "%s/orders/%d" % (self.pulse_url, number)
+        return url
+
     @property
     def pulse_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-pulse-ci.platforme.com")
