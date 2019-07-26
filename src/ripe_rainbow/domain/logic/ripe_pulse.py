@@ -26,14 +26,11 @@ class RipePulsePart(parts.Part):
         self.waits.redirected_to(self.order_url(order))
         self.waits.text(".title", "Order #%s" % order)
 
-    def click_report(self, order):
+    def click_report(self, number):
         self.interactions.click_when_possible(".order-report")
 
-    def order_url(self, order, absolute = True):
-        url = "%s/%s" % (self.orders_url, order)
-
-        if not absolute: url = url.replace(self.base_url, "")
-
+    def order_url(self, number, absolute = True):
+        url = "%s/orders/%s" % (self.pulse_url, number) if absolute else "/orders/%s" % number
         return url
 
     @property
