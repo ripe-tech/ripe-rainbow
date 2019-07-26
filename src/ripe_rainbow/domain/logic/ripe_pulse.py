@@ -21,6 +21,9 @@ class RipePulsePart(parts.Part):
         self.logout()
         self.waits.redirected_to(redirect_url)
 
+    def order_url(self, order):
+        return "%s/%s" % (self.orders_url, order)
+
     @property
     def pulse_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-pulse-ci.platforme.com")

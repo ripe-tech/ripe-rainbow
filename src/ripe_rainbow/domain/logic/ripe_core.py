@@ -59,6 +59,16 @@ class RipeCorePart(parts.Part):
 
         return self.assertions.match_url(src, self.compose_url, params = expected_params)
 
+    def report_url(self, order, key = None):
+        url = "%s/report.pdf" % self.order_url(order)
+
+        if key: url += "?key=%s" % appier.util.quote(key)
+
+        return url
+
+    def order_url(self, order):
+        return "%s/%s" % (self.orders_url, order)
+
     @property
     def core_url(self):
         core_url = appier.conf("CORE_URL", "https://ripe-core-ci.platforme.com")
@@ -72,6 +82,10 @@ class RipeCorePart(parts.Part):
     @property
     def api_url(self):
         return "%s/api" % self.core_url
+
+    @property
+    def orders_url(self):
+        return "%s/orders" % self.api_url
 
     @property
     def swatch_url(self):
