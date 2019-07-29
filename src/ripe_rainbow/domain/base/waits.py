@@ -35,6 +35,13 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def all(self, selector, condition, timeout = None):
+        return self.until(
+            lambda d: self.assertions.all(selector, condition),
+            message = "Elements for '%s' don't match the condition" % selector,
+            timeout = timeout
+        )
+
     def element(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.exists(selector, condition = condition),

@@ -116,6 +116,18 @@ class AssertionsPart(parts.Part):
 
         return element
 
+    def all(self, selector, condition):
+        elements = self.driver.safe(self.driver.find_elements, selector)
+        matching = [element for element in elements if condition(element)]
+
+        if not len(matching) == len(elements):
+            self.breadcrumbs.debug(
+                "Some elements for the selector '%s' don't fulfill the expected condition" % selector
+            )
+            return None
+
+        return matching
+
     def exists(self, selector, condition = None):
         # tries to retrieve the complete set of elements that match
         # the provided selector and fulfill the condition if there's
