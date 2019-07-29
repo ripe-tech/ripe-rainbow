@@ -117,21 +117,13 @@ class AssertionsPart(parts.Part):
         return element
 
     def all(self, selector, condition):
-        """
-        Checks that all elements matching a certain selector satisfy a given condition.
-
-        :type selector: str
-        :param selector: The element selector
-        :type condition: function
-        :param condition: The expected condition for each element.
-        :rtype list
-        :return: The list of elements that matched the selector, if all of them matched the condition.
-        """
         elements = self.driver.safe(self.driver.find_elements, selector)
         matching = [element for element in elements if condition(element)]
 
-        if len(matching) != len(elements):
-            self.breadcrumbs.debug("Some elements for the selector '%s' don't have the expected condition." % selector)
+        if not len(matching) == len(elements):
+            self.breadcrumbs.debug(
+                "Some elements for the selector '%s' don't fulfill the expected condition" % selector
+            )
             return None
 
         return matching
