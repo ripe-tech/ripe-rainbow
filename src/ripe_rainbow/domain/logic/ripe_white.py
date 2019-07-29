@@ -176,9 +176,6 @@ class RipeWhitePart(parts.Part):
             "Color swatch didn't have the expected image."
         )
 
-    def _capitalize_words(self, sentence):
-        return " ".join(map(lambda s: s.capitalize(), sentence.split(" ")))
-
     def url_model(self, model, brand):
         return "%s/?model=%s&brand=%s" % (self.white_url, model, brand)
 
@@ -195,3 +192,6 @@ class RipeWhitePart(parts.Part):
         base_url = appier.conf("WHITE_URL", base_url)
         base_url = appier.conf("RIPE_WHITE_URL", base_url)
         return base_url
+
+    def _capitalize_words(self, sentence):
+        return " ".join(map(lambda s: s.capitalize(), sentence.split(" ")))
