@@ -30,6 +30,13 @@ class InteractionsPart(parts.Part):
         the browser.
         """
 
+        url_p = appier.legacy.urlparse(url)
+        url_params = appier.http._params(url_p.query)
+        url_base = url_p.scheme + "://" + url_p.netloc + url_p.path
+
+        # merge the URL params with the explicitly provided params
+        params += [(key, value) for key, value in appier.legacy.iteritems(url_params)]
+
         params_s = []
 
         for (key, value) in params:
@@ -41,8 +48,8 @@ class InteractionsPart(parts.Part):
 
         params_s = "&".join(params_s) if params_s else ""
 
-        if params_s: url += "?" + params_s
-        if fragment: url += "#" + fragment
+        if params_s: url_base += "?" + params_s
+        if fragment: url_base += "#" + fragment
 
         self.driver.get(url)
 
