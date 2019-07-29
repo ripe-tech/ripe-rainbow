@@ -89,10 +89,15 @@ class RipeWhitePart(parts.Part):
 
         self.interactions.click_when_possible(
             ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.text == part.upper()
+            condition = lambda e: e.is_displayed() and e.text == part.capitalize()
         )
         self.interactions.click_when_possible(
-            ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color)
+            ".pickers .button-material[data-material='%s']" % material,
+            condition = lambda e: e.is_displayed()
+        )
+        self.interactions.click_when_possible(
+            ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
+            condition = lambda e: e.is_displayed()
         )
 
         if verify:
@@ -149,7 +154,7 @@ class RipeWhitePart(parts.Part):
 
         self.interactions.click_when_possible(
             ".pickers .button-part",
-            condition = lambda e: e.text == part.upper()
+            condition = lambda e: e.text == part.capitalize()
         )
 
         if part_text: self.waits.text(".button-part.active", part_text)
