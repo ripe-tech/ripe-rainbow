@@ -89,7 +89,7 @@ class RipeWhitePart(parts.Part):
 
         self.interactions.click_when_possible(
             ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.is_displayed() and e.text == part.capitalize()
+            condition = lambda e: e.is_displayed() and self._capitalize_words(part)
         )
         self.interactions.click_when_possible(
             ".pickers .button-material[data-material='%s']" % material,
@@ -154,7 +154,7 @@ class RipeWhitePart(parts.Part):
 
         self.interactions.click_when_possible(
             ".pickers .button-part",
-            condition = lambda e: e.text == part.capitalize()
+            condition = lambda e: e.is_displayed() and self._capitalize_words(part)
         )
 
         if part_text: self.waits.text(".button-part.active", part_text)
@@ -175,6 +175,9 @@ class RipeWhitePart(parts.Part):
             ),
             "Color swatch didn't have the expected image."
         )
+
+    def _capitalize_words(self, sentence):
+        return " ".join(map(lambda s: s.capitalize(), sentence.split(" ")))
 
     def url_model(self, model, brand):
         return "%s/?model=%s&brand=%s" % (self.white_url, model, brand)
