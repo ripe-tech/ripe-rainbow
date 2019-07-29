@@ -151,7 +151,7 @@ class AssertionsPart(parts.Part):
             return elements
 
         # runs the filtering operation so that only the elements that match
-        # the provided condition are selected
+        # the provided condition are selected (requires at least one to pass)
         elements = [element for element in elements if condition(element)]
 
         if len(elements) == 0:
