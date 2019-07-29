@@ -35,6 +35,25 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def all(self, selector, condition, timeout = None):
+        """
+        Waits until all elements matching a certain selector satisfy a given condition.
+
+        :type selector: str
+        :param selector: The element selector
+        :type condition: function
+        :param condition: The expected condition for each element.
+        :type timeout: int
+        :param timeout: How long to wait for, in seconds.
+        :rtype list
+        :return: The list of elements that matched the selector, if all of them matched the condition.
+        """
+        return self.until(
+            lambda d: self.assertions.all(selector, condition),
+            message = "Elements for '%s' don't match the condition" % selector,
+            timeout = timeout
+        )
+
     def element(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.exists(selector, condition = condition),
