@@ -57,8 +57,8 @@ class TestCase(appier.Observable):
             self.run_test(test)
 
     def run_test(self, test):
-        self.before()
         try:
+            self.before()
             test()
             self.succeeded(test)
         except errors.SkipError:
