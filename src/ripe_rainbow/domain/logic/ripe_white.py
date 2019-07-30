@@ -87,7 +87,7 @@ class RipeWhitePart(parts.Part):
         has been done (to verify the final status).
         """
 
-        a = self.interactions.click_when_possible(
+        self.interactions.click_when_possible(
             ".pickers .button-part > p:not(.no-part)",
             condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
         )
