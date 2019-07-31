@@ -163,7 +163,7 @@ class SeleniumDriver(InteractiveDriver):
         return element
 
     def ensure_visible(self, element, timeout = None):
-        self._move_to_offset(element, -1, -1)
+        self._move_outside(element)
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
@@ -348,6 +348,39 @@ class SeleniumDriver(InteractiveDriver):
         # returns the element that currently has the mouse pointing
         # to it according to the defined offset (if possible)
         return element
+
+    def _move_outside(self, element):
+        """
+        Moves the mouse outside a given element.
+
+        :type element: Element
+        :param element: The element to move outside from.
+        """
+        from selenium.common.exceptions import MoveTargetOutOfBoundsException
+
+        size = element.size
+        width = size["width"]
+        height = size["height"]
+
+        possibilities = [
+            (-1, 0),
+            (0, -1),
+            (width, -1),
+            (width + 1, 0),
+            (width + 1, height),
+            (width, height + 1),
+            (-1, height),
+            (0, height + 1)
+        ]
+
+        for x, y in possibilities:
+            try:
+                self._move_to_offset(element, x, y)
+                return
+            except MoveTargetOutOfBoundsException:
+                pass
+
+        raise Exception("Couldn't move outside element.")
 
     def _try_visible(self, element, strategy = "scroll_to"):
         self._move_to(element)
