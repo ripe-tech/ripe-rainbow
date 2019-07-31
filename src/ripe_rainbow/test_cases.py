@@ -43,10 +43,10 @@ class TestCase(appier.Observable):
     def after(self):
         pass
 
-    def succeeded(self, test):
+    def succeeded(self, test, ctx = None):
         pass
 
-    def failed(self, test, exception):
+    def failed(self, test, exception, ctx = None):
         pass
 
     def skipped(self, test):
@@ -56,16 +56,16 @@ class TestCase(appier.Observable):
         for test in self.tests():
             self.run_test(test)
 
-    def run_test(self, test):
+    def run_test(self, test, ctx = None):
         self.before()
         try:
             test()
-            self.succeeded(test)
+            self.succeeded(test, ctx = ctx)
         except errors.SkipError:
             self.skipped(test)
             raise
         except Exception as exception:
-            self.failed(test, exception)
+            self.failed(test, exception, ctx = ctx)
             raise
         finally:
             self.after()

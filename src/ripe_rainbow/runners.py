@@ -116,7 +116,15 @@ class ConsoleRunner(Runner):
                             ):
                                 # executes the concrete logic of the test, making sure
                                 # that an overall spinner is making the UI interactive
-                                test_case.run_test(test)
+                                # notice that an extra context field is sent containing
+                                # some of the details of the current execution session
+                                test_case.run_test(
+                                    test,
+                                    ctx = dict(
+                                        index = index,
+                                        repeat = self.repeat
+                                    )
+                                )
 
                             test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
                             mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
