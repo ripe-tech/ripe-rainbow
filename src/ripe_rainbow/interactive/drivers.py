@@ -351,18 +351,24 @@ class SeleniumDriver(InteractiveDriver):
 
     def _move_outside(self, element):
         """
-        Moves the mouse outside a given element.
+        Moves the mouse outside a given element, this should
+        ensure proper outside of element position (not hover).
+
+        This method is going to use a series of strategies to
+        try to achieve the goal of moving the cursor outside
+        of the referred element.
 
         :type element: Element
         :param element: The element to move outside from.
         """
+
         from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
         size = element.size
         width = size["width"]
         height = size["height"]
 
-        possibilities = [
+        possibilities = (
             (-1, 0),
             (0, -1),
             (width, -1),
@@ -371,7 +377,7 @@ class SeleniumDriver(InteractiveDriver):
             (width, height + 1),
             (-1, height),
             (0, height + 1)
-        ]
+        )
 
         for x, y in possibilities:
             try:
@@ -380,7 +386,10 @@ class SeleniumDriver(InteractiveDriver):
             except MoveTargetOutOfBoundsException:
                 pass
 
-        raise Exception("Couldn't move outside element.")
+        # raises an operation error as it was not possible
+        # to move the cursor outside of the current element
+        # using any of the available strategies
+        raise appier.OperationalError(message = "Couldn't move outside element")
 
     def _try_visible(self, element, strategy = "scroll_to"):
         self._move_to(element)
