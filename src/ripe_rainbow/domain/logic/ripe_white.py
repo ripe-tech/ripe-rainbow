@@ -187,6 +187,10 @@ class RipeWhitePart(parts.Part):
         return self.white_url
 
     @property
+    def home_url(self):
+        return "%s/" % self.white_url
+
+    @property
     def white_url(self):
         base_url = appier.conf("BASE_URL", "https://ripe-white-ci.platforme.com")
         base_url = appier.conf("WHITE_URL", base_url)
