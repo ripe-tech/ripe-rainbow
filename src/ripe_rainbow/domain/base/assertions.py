@@ -100,10 +100,15 @@ class AssertionsPart(parts.Part):
             # from an interactable point of view
             if ensure: self.driver.safe(self.driver.ensure_visible, element)
 
-            if not element.text == text:
+            # tries to retrieve the text (value) from the element taking into consideration
+            # the kind of element that is being validation
+            if element.tag_name == "input": element_text = element.get_attribute("value")
+            else: element_text = element.text
+
+            if not element_text == text:
                 self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
                     selector,
-                    element.text,
+                    element_text,
                     text
                 ))
 
