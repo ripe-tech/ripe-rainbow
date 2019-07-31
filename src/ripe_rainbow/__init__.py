@@ -16,7 +16,7 @@ from .domain import *
 from .interactive import *
 from .decorators import test
 from .errors import SkipError
-from .info import NAME, VERSION 
+from .info import NAME, VERSION, RAINBOW, LABEL
 from .loaders import Loader, PathLoader
 from .results import Result
 from .runners import Runner, ConsoleRunner

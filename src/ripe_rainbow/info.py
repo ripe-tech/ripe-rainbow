@@ -3,3 +3,5 @@
 
 NAME = "RIPE Rainbow"
 VERSION = "0.4.3"
+RAINBOW = "🌈"
+LABEL = "%s %s %s" % (NAME, VERSION, RAINBOW)
