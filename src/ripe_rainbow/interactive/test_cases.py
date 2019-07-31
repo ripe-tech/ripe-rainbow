@@ -62,7 +62,7 @@ class InteractiveTestCase(test_cases.TestCase):
         try:
             for line in lines:
                 stack_file.write(line.encode("utf-8"))
-                stack_file.write("\n")
+                stack_file.write(b"\n")
         finally:
             stack_file.close()
 
