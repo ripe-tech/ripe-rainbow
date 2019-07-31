@@ -43,7 +43,7 @@ class InteractiveTestCase(test_cases.TestCase):
         return driver
 
     def _stacktrace(self, test, ctx = None):
-        if not appier.conf("STACKTRACE", False, cast = bool): return
+        if not appier.conf("STACKTRACES", False, cast = bool): return
         if not self.driver: return
         ctx = ctx or {}
         index = ctx.get("index", 0)
