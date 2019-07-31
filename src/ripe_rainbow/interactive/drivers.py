@@ -379,6 +379,9 @@ class SeleniumDriver(InteractiveDriver):
             (0, height + 1)
         )
 
+        # iterates over the complete set of offset possibilities
+        # and runs the cursor to the requested offset, in case
+        # there's no exception the control flow is returned (success)
         for x, y in possibilities:
             try:
                 self._move_to_offset(element, x, y)
