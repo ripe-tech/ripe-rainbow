@@ -19,6 +19,7 @@ class Runner(object):
     def __init__(self, loader = None, filter = None):
         self.loader = loader or self.loader_default
         self.filter = appier.conf("FILTER", filter)
+        self.repeat = appier.conf("REPEAT", 1, cast = int)
         self.on_finish = []
 
         # creates the regular expression object that is going to
@@ -80,82 +81,90 @@ class ConsoleRunner(Runner):
                 # test case to run then (if they are required)
                 for test in test_case.tests:
 
-                    # "gathers" the complete name for the test and verifies
-                    # that it represents a valid one, against the regex
-                    test_name = util.test_fullname(test)
-                    if self.regex and not self.regex.match(test_name):
-                        continue
+                    # iterates over the amount of time the test should be run
+                    # this is relevant for stress testing based execution
+                    for index in appier.legacy.xrange(self.repeat):
 
-                    # in case the name of the test case class is not printed
-                    # runs the printing operation and unsets the flag
-                    if not printed:
-                        print("    %s" % util.test_case_fullname(test_case))
-                        printed = True
+                        # "gathers" the complete name for the test and verifies
+                        # that it represents a valid one, against the regex
+                        test_name = util.test_fullname(test)
+                        if self.regex and not self.regex.match(test_name):
+                            continue
 
-                    # stores the starting time for the execution so that it's
-                    # latter possible to calculate the duration of the test
-                    start = time.time()
+                        # in case the name of the test case class is not printed
+                        # runs the printing operation and unsets the flag
+                        if not printed:
+                            print("    %s" % util.test_case_fullname(test_case))
+                            printed = True
 
-                    try:
-                        # starts the appier console context loader so that an animation
-                        # is executed while the test is running (where it's possible)
-                        with appier_console.ctx_loader(
-                            spinner = "dots3",
-                            template = "        %s {{spinner}}" % test_name,
-                            single = True,
-                            eol = ""
-                        ):
-                            # executes the concrete logic of the test, making sure
-                            # that an overall spinner is making the UI interactive
-                            test_case.run_test(test)
+                        # stores the starting time for the execution so that it's
+                        # latter possible to calculate the duration of the test
+                        start = time.time()
 
-                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
-                        mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
-                        extra_s = ""
-                        success = results.Result.build_success(test)
-                        passes.append(success)
-                        passed += 1
-                    except errors.SkipError as exception:
-                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
-                        mark_s = appier_console.colored("~", color = appier_console.COLOR_CYAN)
-                        extra_s = " (" + exception.reason + ")" if exception.reason else ""
-                        skip = results.Result.build_skip(test)
-                        skips.append(skip)
-                        skipped += 1
-                    except appier.AssertionError as exception:
-                        result = False
-                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                        mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                        if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
-                        else: extra_s = ""
-                        failure = results.Result.build_failure(test, exception)
-                        failures.append(failure)
-                        failed += 1
-                    except Exception as exception:
-                        result = False
-                        failure = results.Result.build_failure(test, exception)
-                        failures.append(failure)
-                        test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                        mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                        if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
-                        else: extra_s = ""
-                        failed += 1
+                        # builds the string prefix for the test to be used in the
+                        # printing of the label for test execution
+                        test_prefix = "[%d] " % (index + 1) if self.repeat > 1 else ""
 
-                    # determines the kind of environment we're running on and taking that
-                    # into account prints the proper output, standard is tty environment
-                    # meaning that proper interaction is allowed
-                    if appier_console.is_tty():
-                        print("        %s %s%s%s" % (test_name_s, mark_s, extra_s, self._duration(start)))
+                        try:
+                            # starts the appier console context loader so that an animation
+                            # is executed while the test is running (where it's possible)
+                            with appier_console.ctx_loader(
+                                spinner = "dots3",
+                                template = "        %s%s {{spinner}}" % (test_prefix, test_name),
+                                single = True,
+                                eol = ""
+                            ):
+                                # executes the concrete logic of the test, making sure
+                                # that an overall spinner is making the UI interactive
+                                test_case.run_test(test)
 
-                    # otherwise we're in a textual environment and only the extra part of
-                    # the line is expected to be printed (not possible to go back in the line)
-                    else:
-                        print("%s%s%s" % (mark_s, extra_s, self._duration(start)))
+                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
+                            mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
+                            extra_s = ""
+                            success = results.Result.build_success(test)
+                            passes.append(success)
+                            passed += 1
+                        except errors.SkipError as exception:
+                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
+                            mark_s = appier_console.colored("~", color = appier_console.COLOR_CYAN)
+                            extra_s = " (" + exception.reason + ")" if exception.reason else ""
+                            skip = results.Result.build_skip(test)
+                            skips.append(skip)
+                            skipped += 1
+                        except appier.AssertionError as exception:
+                            result = False
+                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
+                            mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
+                            if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
+                            else: extra_s = ""
+                            failure = results.Result.build_failure(test, exception)
+                            failures.append(failure)
+                            failed += 1
+                        except Exception as exception:
+                            result = False
+                            failure = results.Result.build_failure(test, exception)
+                            failures.append(failure)
+                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
+                            mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
+                            if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
+                            else: extra_s = ""
+                            failed += 1
 
-                    # flushes the stdout and stderr so that the pending
-                    # messages are properly handled by the output channels
-                    sys.stdout.flush()
-                    sys.stderr.flush()
+                        # determines the kind of environment we're running on and taking that
+                        # into account prints the proper output, standard is tty environment
+                        # meaning that proper interaction is allowed
+                        if appier_console.is_tty():
+                            print("        %s %s%s%s" % (test_name_s, mark_s, extra_s, self._duration(start)))
+
+                        # otherwise we're in a textual environment and only the extra part of
+                        # the line is expected to be printed (not possible to go back in the line)
+                        else:
+                            print("%s%s%s" % (mark_s, extra_s, self._duration(start)))
+
+                        # flushes the stdout and stderr so that the pending
+                        # messages are properly handled by the output channels
+                        sys.stdout.flush()
+                        sys.stderr.flush()
 
                 if printed: print("")
         finally:
