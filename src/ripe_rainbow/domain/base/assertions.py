@@ -89,7 +89,23 @@ class AssertionsPart(parts.Part):
         # against the provided URL
         return False
 
-    def has_text(self, selector, text, ensure = False):
+    def has_text(self, selector, text, is_input = False, ensure = False):
+        """
+        Checks that an element matching the selector has a certain text.
+
+        :type selector: str
+        :param selector: The selector for the element.
+        :type text: str
+        :param text: The text to wait for.
+        :type is_input: bool
+        :param is_input: Whether HTML element being checked is an input.
+        :type ensure: bool
+        :param ensure: Ensures that the element is visible from an
+        interactable point of view.
+        :rtype Element
+        :return: The element that matches the conditions.
+        """
+
         selector = appier.legacy.u(selector)
         text = appier.legacy.u(text)
 
@@ -100,7 +116,8 @@ class AssertionsPart(parts.Part):
             # from an interactable point of view
             if ensure: self.driver.safe(self.driver.ensure_visible, element)
 
-            if not element.text == text:
+            element_text = element.get_attribute("value") if is_input else element.text
+            if not element_text == text:
                 self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
                     selector,
                     element.text,
