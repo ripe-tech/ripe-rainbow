@@ -4,6 +4,8 @@
 from . import domain
 from . import interactive
 from . import decorators
+from . import errors
+from . import info
 from . import loaders
 from . import results
 from . import runners
@@ -14,6 +16,7 @@ from .domain import *
 from .interactive import *
 from .decorators import test
 from .errors import SkipError
+from .info import NAME, VERSION 
 from .loaders import Loader, PathLoader
 from .results import Result
 from .runners import Runner, ConsoleRunner

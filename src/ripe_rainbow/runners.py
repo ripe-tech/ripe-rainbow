@@ -9,6 +9,7 @@ import appier
 import appier_console
 
 from . import util
+from . import info
 from . import errors
 from . import loaders
 from . import results
@@ -62,7 +63,7 @@ class ConsoleRunner(Runner):
 
         # prints the header information on the product to be used to indicate
         # the proper execution of then console
-        print("RIPE Rainbow 🌈")
+        print("RIPE Rainbow %s 🌈" % info.VERSION)
         print("")
 
         try:
