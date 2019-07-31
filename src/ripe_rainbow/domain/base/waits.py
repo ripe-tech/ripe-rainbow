@@ -56,7 +56,7 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
-    def text(self, selector, text, is_input = False, timeout = None):
+    def text(self, selector, text, timeout = None):
         """
         Waits until an element matching the selector has a certain text.
 
@@ -64,8 +64,6 @@ class WaitsPart(parts.Part):
         :param selector: The selector for the element.
         :type text: str
         :param text: The text to wait for.
-        :type is_input: bool
-        :param is_input: Whether HTML element being checked is an input.
         :type timeout: int
         :param timeout: The timeout, in seconds.
         :rtype Element
@@ -73,7 +71,7 @@ class WaitsPart(parts.Part):
         """
 
         return self.until(
-            lambda d: self.assertions.has_text(selector, text, is_input = is_input),
+            lambda d: self.assertions.has_text(selector, text),
             message = "Element '%s' with text '%s' not found" % (selector, text),
             timeout = timeout
         )

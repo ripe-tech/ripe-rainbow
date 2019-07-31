@@ -89,7 +89,7 @@ class AssertionsPart(parts.Part):
         # against the provided URL
         return False
 
-    def has_text(self, selector, text, is_input = False, ensure = False):
+    def has_text(self, selector, text, ensure = False):
         """
         Checks that an element matching the selector has a certain text.
 
@@ -97,8 +97,6 @@ class AssertionsPart(parts.Part):
         :param selector: The selector for the element.
         :type text: str
         :param text: The text to wait for.
-        :type is_input: bool
-        :param is_input: Whether HTML element being checked is an input.
         :type ensure: bool
         :param ensure: Ensures that the element is visible from an
         interactable point of view.
@@ -115,6 +113,8 @@ class AssertionsPart(parts.Part):
             # in case the ensure flag is set makes sure that the element is visible
             # from an interactable point of view
             if ensure: self.driver.safe(self.driver.ensure_visible, element)
+
+            is_input = element.tag_name == "input"
 
             element_text = element.get_attribute("value") if is_input else element.text
             if not element_text == text:
