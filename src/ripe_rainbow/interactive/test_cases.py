@@ -50,14 +50,14 @@ class InteractiveTestCase(test_cases.TestCase):
         repeat = ctx.get("repeat", 1)
         extra_s = "-%d" % (index + 1) if repeat > 1 else ""
         base_path = appier.conf("STACKTRACES_PATH", ".")
+        lines = traceback.format_exc().splitlines()
+        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
+            line for line in lines]
         test_name = util.test_fullname(test)
         if not os.path.exists(base_path): os.makedirs(base_path)
         stack_path = os.path.join(base_path, test_name + extra_s + ".log")
         stack_path = os.path.abspath(stack_path)
         stack_path = os.path.normpath(stack_path)
-        lines = traceback.format_exc().splitlines()
-        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
-            line for line in lines]
         stack_file = open(stack_path, "wb")
         try:
             for line in lines:

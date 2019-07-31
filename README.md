@@ -25,6 +25,8 @@ rainbow
 | **DRIVER** | `str` | The driver to be used for the interactive mode (defaults to `selenium`). |
 | **TIMEOUT** | `int` | The timeout in seconds to be used by default for interactions under the interactive testing mode (defaults to `15`). |
 | **REPEAT** | `int` | The number of times to repeat the execution of the tests (defaults to `1`). |
+| **STACKTRACES** | `bool` | If "stacktrace" log should be stored on failure of tests (defaults to `false`). |
+| **STACKTRACES_PATH** | `bool` | The base path to be used to save the stacktraces log (defaults to `.`). |
 | **SCREENSHOTS** | `bool` | If screenshots should be save on failure of tests (defaults to `false`). |
 | **SCREENSHOTS_PATH** | `bool` | The base path to be used to save the screenshots (defaults to `.`). |
 | **SEL_MAXIMIZED** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode (defaults to `False`). |
