@@ -429,7 +429,7 @@ class SeleniumDriver(InteractiveDriver):
         # immediately (no need to run a scroll operation)
         self._move_to(element)
         if self.instance.execute_script("return window._entered"): return True
-        
+
         # moves the element back to the outside of it and so that there's
         # a mouse movement one more time (skeptical move)
         self._move_outside(element)
