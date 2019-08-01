@@ -29,6 +29,7 @@ rainbow
 | **STACKTRACES_PATH** | `bool` | The base path to be used to save the stacktraces log (defaults to `.`). |
 | **SCREENSHOTS** | `bool` | If screenshots should be save on failure of tests (defaults to `false`). |
 | **SCREENSHOTS_PATH** | `bool` | The base path to be used to save the screenshots (defaults to `.`). |
+| **SEL_SECURE** | `bool` | If the [Selenium](https://www.seleniumhq.org) engine should be executed under a secure approach (should be slower) (defaults to `False`). |
 | **SEL_MAXIMIZED** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode (defaults to `False`). |
 | **SEL_HEADLESS** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode (defaults to `False`). |
 | **SEL_WINDOW_SIZE** | `str` | Resolution (in pixels) that the [Selenium](https://www.seleniumhq.org) driver will use for the window (defaults to `1920x1080`). |

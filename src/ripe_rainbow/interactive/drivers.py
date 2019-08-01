@@ -91,6 +91,7 @@ class SeleniumDriver(InteractiveDriver):
 
     def __init__(self, owner):
         InteractiveDriver.__init__(self, owner)
+        self.secure = appier.conf("SEL_SECURE", False, cast = bool)
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
@@ -166,20 +167,20 @@ class SeleniumDriver(InteractiveDriver):
         # be piped in a chain of operations
         return element
 
-    def ensure_visible(self, element, timeout = None):
+    def ensure_visible(self, element, timeout = None, force = None):
         # starts the operation by moving the cursor to the outside of the element
-        # this ensures that the cursor is not "moving over" the element 
+        # this ensures that the cursor is not "moving over" the element
         self._move_outside(element)
 
         # sets the initial value of the "entered" global variable and then registers the mouse
-        # over event listener that will change the entered flag value 
+        # over event listener that will change the entered flag value
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
 
         try:
             self._wait(timeout = timeout).until(
-                lambda d: self._try_visible(element),
+                lambda d: self._try_visible(element, force = force),
                 "Element never became visible"
             )
         finally:
@@ -414,10 +415,26 @@ class SeleniumDriver(InteractiveDriver):
         # using any of the available strategies
         raise appier.OperationalError(message = "Couldn't move outside element")
 
-    def _try_visible(self, element, strategy = "scroll_to"):
-        self._move_to(element)
-        if self.instance.execute_script("return window._entered"): return True
+    def _try_visible(self, element, strategy = "scroll_to", force = None):
+        # runs then default operation on the force flag in case it's not set
+        # meaning that the force mode of visibility is enforced in case the
+        # secure mode for the Selenium execution is enabled
+        if force == None: force = self.secure
+
+        # runs the pre-validation of element visibility, to make sure that
+        # the element is not yet visible and if that's the case returns
+        # immediately (no need to run a scroll operation)
+        if not force:
+            self._move_to(element)
+            if self.instance.execute_script("return window._entered"): return True
+
+        # executes the try-out strategy to try to make the element visible
+        # in the view-port, by default this scrolls the element to the center
+        # of the current screen (best possible strategy)
         if strategy == "scroll_to": self.scroll_to(element)
+
+        # runs the cursor movement to the element and then verifies the result
+        # of the cursor moving operation
         self._move_to(element)
         return self.instance.execute_script("return window._entered")
 
