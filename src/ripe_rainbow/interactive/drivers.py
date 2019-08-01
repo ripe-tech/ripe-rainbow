@@ -94,6 +94,7 @@ class SeleniumDriver(InteractiveDriver):
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
+        self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
 
     def stop(self):
         self._flush_log()
@@ -300,8 +301,10 @@ class SeleniumDriver(InteractiveDriver):
 
     def _wait(self, timeout = None):
         from selenium.webdriver.support.ui import WebDriverWait
+        kwargs = dict()
+        if self.poll_frequency: kwargs["poll_frequency"] = self.poll_frequency
         if timeout == None: timeout = self.owner.timeout
-        return WebDriverWait(self.instance, timeout)
+        return WebDriverWait(self.instance, timeout, **kwargs)
 
     def _move_to(self, element, pivot = "center"):
         element_width = element.size["width"]
