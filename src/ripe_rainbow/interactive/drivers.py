@@ -133,7 +133,7 @@ class SeleniumDriver(InteractiveDriver):
                 name = instance.capabilities.get("browserName", None)
                 version = instance.capabilities.get("browserVersion", None)
             finally:
-                instance.close()
+                instance.quit()
         elif browser == "firefox":
             options = selenium.webdriver.FirefoxOptions()
             options.headless = True
@@ -142,7 +142,7 @@ class SeleniumDriver(InteractiveDriver):
                 name = instance.capabilities.get("browserName", None)
                 version = instance.capabilities.get("browserVersion", None)
             finally:
-                instance.close()
+                instance.quit()
         else:
             raise appier.OperationalError(
                 message = "Unknown browser '%s'" % browser
@@ -359,7 +359,7 @@ class SeleniumDriver(InteractiveDriver):
         cls = self.__class__
         if not hasattr(cls, "_instance") or not self._instance:
             return
-        cls._instance.close()
+        cls._instance.quit()
         cls._instance = None
 
     def _selenium_options(self, browser):
