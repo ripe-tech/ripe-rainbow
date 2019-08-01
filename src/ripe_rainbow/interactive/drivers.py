@@ -188,6 +188,9 @@ class SeleniumDriver(InteractiveDriver):
                 "arguments[0].removeEventListener(\"mouseover\", window._handler);",
                 element
             )
+
+        # returns the element object so that in can be chained in multiple
+        # operations (functional design decision)
         return element
 
     def scroll_to(self, element, position = "center", sleep = None):
