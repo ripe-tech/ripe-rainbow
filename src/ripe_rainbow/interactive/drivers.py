@@ -374,7 +374,11 @@ class SeleniumDriver(InteractiveDriver):
         width = size["width"]
         height = size["height"]
 
+        # creates the tuple that contains the complete set of strategies
+        # for the offset operation to move the cursor outside of the
+        # requested element (avoiding collision)
         possibilities = (
+            (-1, -1),
             (-1, 0),
             (0, -1),
             (width, -1),
