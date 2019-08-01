@@ -451,7 +451,7 @@ class SeleniumDriver(InteractiveDriver):
         # a mouse movement one more time (skeptical move)
         self._move_outside(element)
 
-        # "resets" the value of the entered flag back to the false value
+        # "resets" the value of the entered flag back to the original value
         # so that the test may be done against the movement to be performed
         self.instance.execute_script("window._entered = false")
 
