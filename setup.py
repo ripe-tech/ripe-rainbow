@@ -35,7 +35,8 @@ setuptools.setup(
         ]
     },
     install_requires = [
-        "appier"
+        "appier",
+        "appier_console"
     ],
     classifiers = [
         "Development Status :: 5 - Production/Stable",
