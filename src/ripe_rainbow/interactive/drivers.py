@@ -155,7 +155,10 @@ class SeleniumDriver(InteractiveDriver):
             ElementNotVisibleException,
             WebDriverException
         ) as exception:
-            self.owner.breadcrumbs.debug("Element is not \"clickable\" because: %s" % exception)
+            self.owner.breadcrumbs.debug("Element is not \"clickable\" because: %s (%s)" % (
+                exception,
+                exception.__class__
+            ))
             return None
 
         # returns the element object to the caller so that it can
@@ -168,7 +171,10 @@ class SeleniumDriver(InteractiveDriver):
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
         try:
-            self._wait(timeout = timeout).until(lambda d: self._try_visible(element))
+            self._wait(timeout = timeout).until(
+                lambda d: self._try_visible(element),
+                "Element never became visible."
+            )
         finally:
             self.instance.execute_script(
                 "arguments[0].removeEventListener(\"mouseover\", window._handler);",
