@@ -183,8 +183,8 @@ class SeleniumDriver(InteractiveDriver):
         # over event listener that will change the entered flag value
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
-        self.instance.execute_script("arguments[0].addEventListener(\"mouseenter\", window._handler);", element)
-        self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
+        self.instance.execute_script("arguments[0].addEventListener(\"mouseenter\", window._handler, true);", element)
+        self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler, true);", element)
 
         try:
             self._wait(timeout = timeout).until(
