@@ -434,7 +434,7 @@ class SeleniumDriver(InteractiveDriver):
     def _try_visible(self, element, strategy = "scroll_to"):
         # prints some debug information on the retry of the visibility
         # test for the element in question
-        self.owner.breadcrumbs.debug("Trying visibility on element: %s" % element.id)
+        self.owner.breadcrumbs.debug("Trying visibility on element '%s'" % element.id)
 
         # runs the pre-validation of element visibility, to make sure that
         # the element is not yet visible and if that's the case returns
@@ -490,12 +490,13 @@ class SeleniumDriver(InteractiveDriver):
         Should be used with proper care to avoid unwanted behaviour.
 
         :type element: Element
-        :param element: The element to validated visibility/intractability.
+        :param element: The element to validated for visibility and/or
+        intractability (probably for click purposes).
         :rtype: bool
         :return: If the element is currently interactable.
         """
 
-        if self.instance.execute_script("return window._entered"): return True
+        if not self.secure and self.instance.execute_script("return window._entered"): return True
         if self.instance.execute_script(
             "return Array.from(arguments[0].parentElement.querySelectorAll(\":hover\").values()).includes(arguments[0])",
             element
