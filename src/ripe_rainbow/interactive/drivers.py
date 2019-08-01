@@ -478,6 +478,19 @@ class SeleniumDriver(InteractiveDriver):
             self.owner.breadcrumbs.info(log)
 
     def __is_visible(self, element):
+        """
+        Internal method that verifies the visibility/intractability
+        of the provided element taking into account a series of
+        previously inserted setup operation.
+
+        Should be used with proper care to avoid unwanted behaviour.
+
+        :type element: Element
+        :param element: The element to validated visibility/intractability.
+        :rtype: bool
+        :return: If the element is currently interactable.
+        """
+
         if self.instance.execute_script("return window._entered"): return True
         if self.instance.execute_script(
             "return Array.from(arguments[0].parentElement.querySelectorAll(\":hover\").values()).includes(arguments[0])",
