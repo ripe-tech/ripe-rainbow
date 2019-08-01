@@ -176,6 +176,7 @@ class SeleniumDriver(InteractiveDriver):
         # over event listener that will change the entered flag value
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
+        self.instance.execute_script("arguments[0].addEventListener(\"mouseenter\", window._handler);", element)
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
 
         try:
@@ -184,6 +185,10 @@ class SeleniumDriver(InteractiveDriver):
                 "Element never became visible"
             )
         finally:
+            self.instance.execute_script(
+                "arguments[0].removeEventListener(\"mouseenter\", window._handler);",
+                element
+            )
             self.instance.execute_script(
                 "arguments[0].removeEventListener(\"mouseover\", window._handler);",
                 element
@@ -392,7 +397,6 @@ class SeleniumDriver(InteractiveDriver):
         # for the offset operation to move the cursor outside of the
         # requested element (avoiding collision)
         possibilities = (
-            (-1, -1),
             (-1, 0),
             (0, -1),
             (width, -1),
@@ -418,18 +422,12 @@ class SeleniumDriver(InteractiveDriver):
         # using any of the available strategies
         raise appier.OperationalError(message = "Couldn't move outside element")
 
-    def _try_visible(self, element, strategy = "scroll_to", force = None):
-        # runs then default operation on the force flag in case it's not set
-        # meaning that the force mode of visibility is enforced in case the
-        # secure mode for the Selenium execution is enabled
-        if force == None: force = self.secure
-
+    def _try_visible(self, element, strategy = "scroll_to"):
         # runs the pre-validation of element visibility, to make sure that
         # the element is not yet visible and if that's the case returns
         # immediately (no need to run a scroll operation)
-        if not force:
-            self._move_to(element)
-            if self.instance.execute_script("return window._entered"): return True
+        self._move_to(element)
+        if self.instance.execute_script("return window._entered"): return True
 
         # executes the try-out strategy to try to make the element visible
         # in the view-port, by default this scrolls the element to the center
