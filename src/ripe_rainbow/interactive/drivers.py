@@ -328,8 +328,8 @@ class SeleniumDriver(InteractiveDriver):
         if pivot == "center":
             return self._move_to_offset(
                 element,
-                x = element_width / 2,
-                y = element_height / 2
+                x = int(element_width / 2),
+                y = int(element_height / 2)
             )
 
         if pivot == "left-top":
@@ -397,6 +397,7 @@ class SeleniumDriver(InteractiveDriver):
         # for the offset operation to move the cursor outside of the
         # requested element (avoiding collision)
         possibilities = (
+            #(-1, -1),
             (-1, 0),
             (0, -1),
             (width, -1),
@@ -428,6 +429,10 @@ class SeleniumDriver(InteractiveDriver):
         # immediately (no need to run a scroll operation)
         self._move_to(element)
         if self.instance.execute_script("return window._entered"): return True
+        
+        # moves the element back to the outside of it and so that there's
+        # a mouse movement one more time (skeptical move)
+        self._move_outside(element)
 
         # executes the try-out strategy to try to make the element visible
         # in the view-port, by default this scrolls the element to the center
