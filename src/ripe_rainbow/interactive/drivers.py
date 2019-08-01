@@ -168,6 +168,13 @@ class SeleniumDriver(InteractiveDriver):
         return element
 
     def ensure_visible(self, element, timeout = None):
+        # waits until the element is visible from a document point of view
+        # no scroll ensuring a z index collision is enforced
+        self._wait(timeout = timeout).until(
+            lambda d: element.is_displayed(),
+            "Element never became visible at block (display and opacity)"
+        )
+
         # starts the operation by moving the cursor to the outside of the element
         # this ensures that the cursor is not "moving over" the element
         self._move_outside(element)
@@ -397,7 +404,7 @@ class SeleniumDriver(InteractiveDriver):
         # for the offset operation to move the cursor outside of the
         # requested element (avoiding collision)
         possibilities = (
-            (-1, -1),
+            #(-1, -1),
             (-1, 0),
             (0, -1),
             (width, -1),
@@ -423,23 +430,27 @@ class SeleniumDriver(InteractiveDriver):
         raise appier.OperationalError(message = "Couldn't move outside element")
 
     def _try_visible(self, element, strategy = "scroll_to"):
+        # prints some debug information on the retry of the visibility
+        # test for the element in question
+        self.owner.breadcrumbs.debug("Trying visibility on: %s" % element)
+
         # runs the pre-validation of element visibility, to make sure that
         # the element is not yet visible and if that's the case returns
         # immediately (no need to run a scroll operation)
         self._move_to(element)
         if self.instance.execute_script("return window._entered"): return True
 
-        # moves the element back to the outside of it and so that there's
-        # a mouse movement one more time (skeptical move)
-        self._move_outside(element)
-
         # executes the try-out strategy to try to make the element visible
         # in the view-port, by default this scrolls the element to the center
         # of the current screen (best possible strategy)
         if strategy == "scroll_to": self.scroll_to(element)
 
+        # moves the element back to the outside of it and so that there's
+        # a mouse movement one more time (skeptical move)
+        self._move_outside(element)
+
         # runs the cursor movement to the element and then verifies the result
-        # of the cursor moving operation
+        # of the cursor moving operation (to the center of the element)
         self._move_to(element)
         return self.instance.execute_script("return window._entered")
 
