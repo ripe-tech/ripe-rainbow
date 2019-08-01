@@ -192,6 +192,8 @@ class SeleniumDriver(InteractiveDriver):
                 "Element never became visible"
             )
         finally:
+            self.instance.execute_script("delete window._entered")
+            self.instance.execute_script("delete window._handler")
             self.instance.execute_script(
                 "arguments[0].removeEventListener(\"mouseenter\", window._handler);",
                 element
@@ -438,7 +440,7 @@ class SeleniumDriver(InteractiveDriver):
         # the element is not yet visible and if that's the case returns
         # immediately (no need to run a scroll operation)
         self._move_to(element)
-        if self.instance.execute_script("return window._entered"): return True
+        if self.__is_visible(element): return True
 
         # executes the try-out strategy to try to make the element visible
         # in the view-port, by default this scrolls the element to the center
@@ -452,7 +454,7 @@ class SeleniumDriver(InteractiveDriver):
         # runs the cursor movement to the element and then verifies the result
         # of the cursor moving operation (to the center of the element)
         self._move_to(element)
-        return self.instance.execute_script("return window._entered")
+        return self.__is_visible(element)
 
     def _resolve_key(self, name):
         from selenium.webdriver.common.keys import Keys
@@ -474,3 +476,11 @@ class SeleniumDriver(InteractiveDriver):
         for item in log:
             if not item["level"] in levels: continue
             self.owner.breadcrumbs.info(log)
+
+    def __is_visible(self, element):
+        if self.instance.execute_script("return window._entered"): return True
+        if self.instance.execute_script(
+            "return Array.from(arguments[0].parentElement.querySelectorAll(\":hover\").values()).includes(arguments[0])",
+            element
+        ): return True
+        return False
