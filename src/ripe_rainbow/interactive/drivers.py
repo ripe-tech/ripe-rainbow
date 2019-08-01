@@ -397,8 +397,8 @@ class SeleniumDriver(InteractiveDriver):
         # for the offset operation to move the cursor outside of the
         # requested element (avoiding collision)
         possibilities = (
-            (0, -1),
             (-1, 0),
+            (0, -1),
             (width, -1),
             (width + 1, 0),
             (width + 1, height),
