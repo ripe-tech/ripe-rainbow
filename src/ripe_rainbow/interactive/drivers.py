@@ -167,10 +167,16 @@ class SeleniumDriver(InteractiveDriver):
         return element
 
     def ensure_visible(self, element, timeout = None):
+        # starts the operation by moving the cursor to the outside of the element
+        # this ensures that the cursor is not "moving over" the element 
         self._move_outside(element)
+
+        # sets the initial value of the "entered" global variable and then registers the mouse
+        # over event listener that will change the entered flag value 
         self.instance.execute_script("window._entered = false")
         self.instance.execute_script("window._handler = function() { window._entered = true; };")
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler);", element)
+
         try:
             self._wait(timeout = timeout).until(
                 lambda d: self._try_visible(element),
@@ -373,9 +379,10 @@ class SeleniumDriver(InteractiveDriver):
 
         from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
+        # gathers the element's dimensions to be able to calculate other
+        # corner's offset positions, for the list of possibilities
         size = element.size
-        width = size["width"]
-        height = size["height"]
+        width, height = size["width"], size["height"]
 
         # creates the tuple that contains the complete set of strategies
         # for the offset operation to move the cursor outside of the
