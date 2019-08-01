@@ -167,7 +167,7 @@ class SeleniumDriver(InteractiveDriver):
         # be piped in a chain of operations
         return element
 
-    def ensure_visible(self, element, timeout = None, force = None):
+    def ensure_visible(self, element, timeout = None):
         # starts the operation by moving the cursor to the outside of the element
         # this ensures that the cursor is not "moving over" the element
         self._move_outside(element)
@@ -181,7 +181,7 @@ class SeleniumDriver(InteractiveDriver):
 
         try:
             self._wait(timeout = timeout).until(
-                lambda d: self._try_visible(element, force = force),
+                lambda d: self._try_visible(element),
                 "Element never became visible"
             )
         finally:
@@ -397,8 +397,8 @@ class SeleniumDriver(InteractiveDriver):
         # for the offset operation to move the cursor outside of the
         # requested element (avoiding collision)
         possibilities = (
-            (-1, 0),
             (0, -1),
+            (-1, 0),
             (width, -1),
             (width + 1, 0),
             (width + 1, height),
