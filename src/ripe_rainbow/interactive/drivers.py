@@ -113,8 +113,44 @@ class SeleniumDriver(InteractiveDriver):
 
     @classmethod
     def label(cls):
+        import selenium.webdriver
+        browser = cls.browser()
+        return "Selenium %s (%s/%s)" % (
+            selenium.webdriver.__version__,
+            browser["name"],
+            browser["version"]
+        )
+
+    @classmethod
+    def browser(clas):
+        import selenium.webdriver
         browser = appier.conf("SEL_BROWSER", "chrome")
-        return "Selenium/%s" % browser
+        if browser == "chrome":
+            options = selenium.webdriver.ChromeOptions()
+            options.add_argument("--headless")
+            instance = selenium.webdriver.Chrome(options = options)
+            try:
+                name = instance.capabilities.get("browserName", None)
+                version = instance.capabilities.get("browserVersion", None)
+            finally:
+                instance.close()
+        elif browser == "firefox":
+            options = selenium.webdriver.FirefoxOptions()
+            options.headless = True
+            instance = selenium.webdriver.Firefox(options = options)
+            try:
+                name = instance.capabilities.get("browserName", None)
+                version = instance.capabilities.get("browserVersion", None)
+            finally:
+                instance.close()
+        else:
+            raise appier.OperationalError(
+                message = "Unknown browser '%s'" % browser
+            )
+        return dict(
+            name = name,
+            version = version
+        )
 
     def stop(self):
         self._flush_log()
@@ -287,12 +323,14 @@ class SeleniumDriver(InteractiveDriver):
             # creates the underlying instance of the Chrome driver
             # that is going to be used in the concrete execution
             cls._instance = selenium.webdriver.Chrome(
-                chrome_options = self._selenium_options(self.browser)
+                options = self._selenium_options(self.browser)
             )
         elif self.browser == "firefox":
             # creates the underlying Firefox instance using the
             # pre-defined options as expected
-            cls._instance = selenium.webdriver.Firefox()
+            cls._instance = selenium.webdriver.Firefox(
+                options = self._selenium_options(self.browser)
+            )
         else:
             raise appier.OperationalError(
                 message = "Unknown browser '%s'" % self.brownser
@@ -352,6 +390,16 @@ class SeleniumDriver(InteractiveDriver):
 
         # returns the options to the calling method as expected
         # by the current infrastructure
+        return options
+
+    def _selenium_options_firefox(self):
+        import selenium.webdriver
+
+        options = selenium.webdriver.FirefoxOptions()
+
+        if self.headless:
+            options.headless = True
+
         return options
 
     def _wait(self, timeout = None):
