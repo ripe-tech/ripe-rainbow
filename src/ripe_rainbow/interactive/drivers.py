@@ -227,16 +227,9 @@ class SeleniumDriver(InteractiveDriver):
         return element
 
     def ensure_visible(self, element, timeout = None):
-        # waits until the element is visible from a document point of view
-        # no scroll ensuring a z index collision is enforced
-        self._wait(timeout = timeout).until(
-            lambda d: element.is_displayed(),
-            "Element never became visible at block (display and opacity)"
-        )
-
         # starts the operation by moving the cursor to the outside of the element
         # this ensures that the cursor is not "moving over" the element
-        self._move_outside(element)
+        self._move_outside(element, raise_e = False)
 
         # sets the initial value of the "entered" global variable and then registers the mouse
         # over event listener that will change the entered flag value
@@ -465,7 +458,7 @@ class SeleniumDriver(InteractiveDriver):
         # to it according to the defined offset (if possible)
         return element
 
-    def _move_outside(self, element):
+    def _move_outside(self, element, raise_e = True):
         """
         Moves the mouse outside a given element, this should
         ensure proper outside of element position (not hover).
@@ -476,8 +469,10 @@ class SeleniumDriver(InteractiveDriver):
 
         :type element: Element
         :param element: The element to move outside from.
+        :type raise_e: bool
+        :param raise_e: Whether to raise an exception when
+        it's not possible to move outside the element.
         """
-
         from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
         # gathers the element's dimensions to be able to calculate other
@@ -512,17 +507,26 @@ class SeleniumDriver(InteractiveDriver):
         # raises an operation error as it was not possible
         # to move the cursor outside of the current element
         # using any of the available strategies
-        raise appier.OperationalError(message = "Couldn't move outside element")
+        if raise_e: raise appier.OperationalError(message = "Couldn't move outside element")
 
     def _try_visible(self, element, strategy = "scroll_to"):
+        from selenium.common.exceptions import MoveTargetOutOfBoundsException
+
         # prints some debug information on the retry of the visibility
         # test for the element in question
         self.owner.breadcrumbs.debug("Trying visibility on element '%s'" % element.id)
 
-        # runs the pre-validation of element visibility, to make sure that
-        # the element is not yet visible and if that's the case returns
-        # immediately (no need to run a scroll operation)
-        self._move_to(element)
+        try:
+            # runs the pre-validation of element visibility, to make sure that
+            # the element is not yet visible and if that's the case returns
+            # immediately (no need to run a scroll operation)
+            self._move_to(element)
+
+            # some drivers raise exceptions when trying to move to elements
+            # outside the viewport, so we must account for that
+        except MoveTargetOutOfBoundsException:
+            pass
+
         if self.__is_visible(element): return True
 
         # executes the try-out strategy to try to make the element visible
@@ -532,7 +536,7 @@ class SeleniumDriver(InteractiveDriver):
 
         # moves the element back to the outside of it and so that there's
         # a mouse movement one more time (skeptical move)
-        self._move_outside(element)
+        self._move_outside(element, raise_e = False)
 
         # "resets" the value of the entered flag back to the original value
         # so that the test may be done against the movement to be performed
