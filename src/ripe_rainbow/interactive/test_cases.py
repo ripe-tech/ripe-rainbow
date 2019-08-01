@@ -38,7 +38,7 @@ class InteractiveTestCase(test_cases.TestCase):
     def load_driver(self, start = True):
         driver_s = appier.conf("DRIVER", "selenium")
         driver_s = self.options.get("driver", driver_s)
-        driver = getattr(drivers, driver_s.capitalize() + "Driver")(self)
+        driver = drivers.InteractiveDriver.driver_g(driver_s)(self)
         if start: driver.start()
         return driver
 

@@ -13,6 +13,7 @@ from . import info
 from . import errors
 from . import loaders
 from . import results
+from . import interactive
 
 class Runner(object):
 
@@ -65,6 +66,7 @@ class ConsoleRunner(Runner):
         # prints the header information on the product to be used to indicate
         # the proper execution of then console
         print(info.LABEL)
+        print(interactive.InteractiveDriver.label_g())
         print("")
 
         try:

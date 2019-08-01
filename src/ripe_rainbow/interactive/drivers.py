@@ -13,6 +13,19 @@ class InteractiveDriver(object):
     def __init__(self, owner):
         self.owner = owner
 
+    @staticmethod
+    def driver_g(name):
+        return globals()[name.capitalize() + "Driver"]
+
+    @staticmethod
+    def label_g():
+        driver = appier.conf("DRIVER", "selenium")
+        return InteractiveDriver.driver_g(driver).label()
+
+    @classmethod
+    def label(cls):
+        return "Interactive"
+
     def start(self):
         pass
 
@@ -92,10 +105,16 @@ class SeleniumDriver(InteractiveDriver):
     def __init__(self, owner):
         InteractiveDriver.__init__(self, owner)
         self.secure = appier.conf("SEL_SECURE", False, cast = bool)
+        self.browser = appier.conf("SEL_BROWSER", "chrome")
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
         self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
+
+    @classmethod
+    def label(cls):
+        browser = appier.conf("SEL_BROWSER", "chrome")
+        return "Selenium/%s" % browser
 
     def stop(self):
         self._flush_log()
@@ -264,11 +283,20 @@ class SeleniumDriver(InteractiveDriver):
 
         import selenium.webdriver
 
-        # creates the underlying instance of the Chrome driver
-        # that is going to be used in the concrete execution
-        cls._instance = selenium.webdriver.Chrome(
-            chrome_options = self._selenium_options()
-        )
+        if self.browser == "chrome":
+            # creates the underlying instance of the Chrome driver
+            # that is going to be used in the concrete execution
+            cls._instance = selenium.webdriver.Chrome(
+                chrome_options = self._selenium_options(self.browser)
+            )
+        elif self.browser == "firefox":
+            # creates the underlying Firefox instance using the
+            # pre-defined options as expected
+            cls._instance = selenium.webdriver.Firefox()
+        else:
+            raise appier.OperationalError(
+                message = "Unknown browser '%s'" % self.brownser
+            )
 
         # in case the browser should be started maximized, then
         # a new argument is added to the list of options
@@ -296,7 +324,10 @@ class SeleniumDriver(InteractiveDriver):
         cls._instance.close()
         cls._instance = None
 
-    def _selenium_options(self):
+    def _selenium_options(self, browser):
+        return getattr(self, "_selenium_options_%s" % browser)()
+
+    def _selenium_options_chrome(self):
         import selenium.webdriver
 
         # crates the base object for the options to be used by
@@ -476,7 +507,9 @@ class SeleniumDriver(InteractiveDriver):
         return KEYS[name]
 
     def _flush_log(self, levels = ("INFO", "WARN", "ERROR")):
-        log = self.instance.get_log("browser")
+        from selenium.common.exceptions import WebDriverException
+        try: log = self.instance.get_log("browser")
+        except WebDriverException: log = []
         for item in log:
             if not item["level"] in levels: continue
             self.owner.breadcrumbs.info(log)
