@@ -173,7 +173,7 @@ class SeleniumDriver(InteractiveDriver):
         try:
             self._wait(timeout = timeout).until(
                 lambda d: self._try_visible(element),
-                "Element never became visible."
+                "Element never became visible"
             )
         finally:
             self.instance.execute_script(
