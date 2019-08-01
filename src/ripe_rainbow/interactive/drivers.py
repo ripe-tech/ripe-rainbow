@@ -432,7 +432,7 @@ class SeleniumDriver(InteractiveDriver):
     def _try_visible(self, element, strategy = "scroll_to"):
         # prints some debug information on the retry of the visibility
         # test for the element in question
-        self.owner.breadcrumbs.debug("Trying visibility on: %s" % element)
+        self.owner.breadcrumbs.debug("Trying visibility on element: %s" % element.id)
 
         # runs the pre-validation of element visibility, to make sure that
         # the element is not yet visible and if that's the case returns
