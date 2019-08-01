@@ -127,7 +127,11 @@ class SeleniumDriver(InteractiveDriver):
         browser = appier.conf("SEL_BROWSER", "chrome")
         if browser == "chrome":
             options = selenium.webdriver.ChromeOptions()
+            options.add_argument("--disable-extensions")
             options.add_argument("--headless")
+            if sys.platform.startswith("linux"):
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--no-sandbox")
             instance = selenium.webdriver.Chrome(options = options)
             try:
                 name = instance.capabilities.get("browserName", None)
