@@ -322,14 +322,14 @@ class SeleniumDriver(InteractiveDriver):
             # that is going to be used in the concrete execution
             cls._instance = selenium.webdriver.Chrome(
                 options = self._selenium_options(self.browser),
-                service_args = self.service_args
+                service_args = self.service_args or None
             )
         elif self.browser == "firefox":
             # creates the underlying Firefox instance using the
             # pre-defined options as expected
             cls._instance = selenium.webdriver.Firefox(
                 options = self._selenium_options(self.browser),
-                service_args = self.service_args
+                service_args = self.service_args or None
             )
         else:
             raise appier.OperationalError(
