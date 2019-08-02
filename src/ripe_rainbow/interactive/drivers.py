@@ -322,6 +322,7 @@ class SeleniumDriver(InteractiveDriver):
             # that is going to be used in the concrete execution
             cls._instance = selenium.webdriver.Chrome(
                 options = self._selenium_options(self.browser),
+                desired_capabilities = self._selenium_capabilities(self.browser),
                 service_args = self.service_args or None
             )
         elif self.browser == "firefox":
@@ -329,6 +330,7 @@ class SeleniumDriver(InteractiveDriver):
             # pre-defined options as expected
             cls._instance = selenium.webdriver.Firefox(
                 options = self._selenium_options(self.browser),
+                desired_capabilities = self._selenium_capabilities(self.browser),
                 service_args = self.service_args or None
             )
         else:
@@ -407,6 +409,25 @@ class SeleniumDriver(InteractiveDriver):
         # returns the options to the calling method as expected
         # by the current infrastructure
         return options
+
+    def _selenium_capabilities(self, browser):
+        return getattr(self, "_selenium_capabilities_%s" % browser)()
+
+    def _selenium_capabilities_chrome(self):
+        from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+        capabilities = DesiredCapabilities.CHROME
+        capabilities["loggingPrefs"] = dict(browser = "ALL")
+
+        return capabilities
+
+    def _selenium_capabilities_firefox(self):
+        from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+        capabilities = DesiredCapabilities.FIREFOX
+        capabilities["loggingPrefs"] = dict(browser = "ALL")
+
+        return capabilities
 
     def _wait(self, timeout = None):
         from selenium.webdriver.support.ui import WebDriverWait
