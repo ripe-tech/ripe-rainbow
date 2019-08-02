@@ -331,6 +331,7 @@ class SeleniumDriver(InteractiveDriver):
             cls._instance = selenium.webdriver.Firefox(
                 options = self._selenium_options(self.browser),
                 desired_capabilities = self._selenium_capabilities(self.browser),
+                firefox_profile = self._selenium_profile(self.browser),
                 service_args = self.service_args or None
             )
         else:
@@ -428,6 +429,19 @@ class SeleniumDriver(InteractiveDriver):
         capabilities["loggingPrefs"] = dict(browser = "ALL")
 
         return capabilities
+
+    def _selenium_profile(self, browser):
+        return getattr(self, "_selenium_profile_%s" % browser)()
+
+    def _selenium_profile_firefox(self):
+        from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+
+        profile = FirefoxProfile()
+        profile.set_preference("browser.cache.disk.enable", False)
+        profile.set_preference("browser.cache.memory.enable", False)
+        profile.set_preference("browser.cache.offline.enable", False)
+
+        return profile
 
     def _wait(self, timeout = None):
         from selenium.webdriver.support.ui import WebDriverWait
