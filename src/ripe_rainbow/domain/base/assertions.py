@@ -151,9 +151,9 @@ class AssertionsPart(parts.Part):
 
         # in case no elements match the provided selector then returns the
         # empty sequence immediately
-        if len(elements) == 0:
+        if not elements or len(elements) == 0:
             self.breadcrumbs.debug("Could not find elements with '%s'" % selector)
-            return elements
+            return []
 
         # runs the filtering operation so that only the elements that match
         # the provided condition are selected (requires at least one to pass)
