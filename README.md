@@ -34,6 +34,7 @@ rainbow
 | **SEL_MAXIMIZED** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode (defaults to `False`). |
 | **SEL_HEADLESS** | `bool` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode (defaults to `False`). |
 | **SEL_WINDOW_SIZE** | `str` | Resolution (in pixels) that the [Selenium](https://www.seleniumhq.org) driver will use for the window (defaults to `1920x1080`). |
+| **SEL_SERVICE_ARGS** | `list` | List of args to be passed to the driver service that interacts with the browser (eg: `chromedriver`, `geckodriver`) (defaults to `[]`). |
 | **SEL_POLL_FREQUENCY** | `float` | The frequency (in seconds) to run the [busy waiting](https://en.wikipedia.org/wiki/Busy_waiting) polling operation on the Selenium `wait` operation (defaults to `None`). |
 | **RIPE_ID_USERNAME** | `str` | The username to be used for the RIPE ID authentication (defaults to `None` ) |
 | **RIPE_ID_PASSWORD** | `str` | The password to be used for the RIPE ID authentication (defaults to `None` ) |

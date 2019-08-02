@@ -110,6 +110,7 @@ class SeleniumDriver(InteractiveDriver):
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
         self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
+        self.service_args = appier.conf("SEL_SERVICE_ARGS", [], cast = list)
 
     @classmethod
     def label(cls):
@@ -320,13 +321,15 @@ class SeleniumDriver(InteractiveDriver):
             # creates the underlying instance of the Chrome driver
             # that is going to be used in the concrete execution
             cls._instance = selenium.webdriver.Chrome(
-                options = self._selenium_options(self.browser)
+                options = self._selenium_options(self.browser),
+                service_args = self.service_args
             )
         elif self.browser == "firefox":
             # creates the underlying Firefox instance using the
             # pre-defined options as expected
             cls._instance = selenium.webdriver.Firefox(
-                options = self._selenium_options(self.browser)
+                options = self._selenium_options(self.browser),
+                service_args = self.service_args
             )
         else:
             raise appier.OperationalError(
