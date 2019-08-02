@@ -392,11 +392,17 @@ class SeleniumDriver(InteractiveDriver):
     def _selenium_options_firefox(self):
         import selenium.webdriver
 
+        # crates the base object for the options to be used by
+        # the Mozilla Firefox browser
         options = selenium.webdriver.FirefoxOptions()
 
+        # in case the headless instance option is set propagates
+        # it to the Firefox options object
         if self.headless:
             options.headless = True
 
+        # returns the options to the calling method as expected
+        # by the current infrastructure
         return options
 
     def _wait(self, timeout = None):
