@@ -470,9 +470,10 @@ class SeleniumDriver(InteractiveDriver):
         :type element: Element
         :param element: The element to move outside from.
         :type raise_e: bool
-        :param raise_e: Whether to raise an exception when
+        :param raise_e: If an exception should be raised when
         it's not possible to move outside the element.
         """
+
         from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
         # gathers the element's dimensions to be able to calculate other
@@ -504,10 +505,14 @@ class SeleniumDriver(InteractiveDriver):
             except MoveTargetOutOfBoundsException:
                 pass
 
-        # raises an operation error as it was not possible
-        # to move the cursor outside of the current element
-        # using any of the available strategies
-        if raise_e: raise appier.OperationalError(message = "Couldn't move outside element")
+        # raises an operation error as it was not possible to move
+        # the cursor outside of the current element using any of
+        # the available strategies (only active if the raise~
+        # exception flag is set as a parameter)
+        if raise_e:
+            raise appier.OperationalError(
+                message = "Couldn't move outside element"
+            )
 
     def _try_visible(self, element, strategy = "scroll_to"):
         from selenium.common.exceptions import MoveTargetOutOfBoundsException
@@ -517,16 +522,17 @@ class SeleniumDriver(InteractiveDriver):
         self.owner.breadcrumbs.debug("Trying visibility on element '%s'" % element.id)
 
         try:
-            # runs the pre-validation of element visibility, to make sure that
-            # the element is not yet visible and if that's the case returns
-            # immediately (no need to run a scroll operation)
+            # tries to run the cursor movement to the element, this may fail
+            # as the element is not currently visible in the viewport
             self._move_to(element)
-
-            # some drivers raise exceptions when trying to move to elements
-            # outside the viewport, so we must account for that
         except MoveTargetOutOfBoundsException:
+            # some drivers raise exceptions when trying to move to elements
+            # outside the viewport, so we must ignore such exception
             pass
 
+        # runs the is visible operation on the element that should guarantee
+        # that the element is visible and interactable, if the returns is
+        # positive the control flow is returned and the return value is positive
         if self.__is_visible(element): return True
 
         # executes the try-out strategy to try to make the element visible
@@ -542,10 +548,22 @@ class SeleniumDriver(InteractiveDriver):
         # so that the test may be done against the movement to be performed
         self.instance.execute_script("window._entered = false")
 
-        # runs the cursor movement to the element and then verifies the result
-        # of the cursor moving operation (to the center of the element)
-        self._move_to(element)
-        return self.__is_visible(element)
+        try:
+            # tries to run the cursor movement to the element, this may or
+            # may not fail according to the success of the strategy
+            self._move_to(element)
+        except MoveTargetOutOfBoundsException:
+            # some drivers raise exceptions when trying to move to elements
+            # outside the viewport, so we must ignore such exception
+            pass
+
+        # verifies if the element is visible and interactable and if that's
+        # the case returns a positive result and the control flow
+        if self.__is_visible(element): return True
+
+        # by default the visibility/interactability of the provided element
+        # is assumed to be false (not interactable) as no tests have passed
+        return False
 
     def _resolve_key(self, name):
         from selenium.webdriver.common.keys import Keys
