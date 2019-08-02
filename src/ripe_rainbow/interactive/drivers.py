@@ -527,7 +527,7 @@ class SeleniumDriver(InteractiveDriver):
             self._move_to(element)
         except MoveTargetOutOfBoundsException:
             # some drivers raise exceptions when trying to move to elements
-            # outside the viewport, so we must ignore such exception
+            # outside the viewport, we must ignore such exceptions
             pass
 
         # runs the is visible operation on the element that should guarantee
@@ -554,7 +554,7 @@ class SeleniumDriver(InteractiveDriver):
             self._move_to(element)
         except MoveTargetOutOfBoundsException:
             # some drivers raise exceptions when trying to move to elements
-            # outside the viewport, so we must ignore such exception
+            # outside the viewport, we must ignore such exceptions
             pass
 
         # verifies if the element is visible and interactable and if that's
