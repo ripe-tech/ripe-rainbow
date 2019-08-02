@@ -31,10 +31,12 @@ class Runner(object):
     def run(self):
         raise appier.NotImplementedError()
 
-    def add_on_finish(self, method):
+    def add_on_finish(self, method, safe = True):
+        if safe and method in self.on_finish: return
         self.on_finish.append(method)
 
-    def remove_on_finish(self, method):
+    def remove_on_finish(self, method, safe = True):
+        if safe and not method in self.on_finish: return
         self.on_finish.remove(method)
 
     def run_on_finish(self):
