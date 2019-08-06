@@ -11,24 +11,28 @@ BASE_TUPLES = (
 )
 
 COPPER_TUPLES = (
+    ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
     ("copper", logic.RipeCopperPart)
 )
 
 PULSE_TUPLES = (
+    ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
     ("pulse", logic.RipePulsePart)
 )
 
 RETAIL_TUPLES = (
+    ("provision", logic.ProvisionPart),
     ("admin", logic.AdminPart),
     ("core", logic.RipeCorePart),
     ("retail", logic.RipeRetailPart)
 )
 
 WHITE_TUPLES = (
+    ("provision", logic.ProvisionPart),
     ("core", logic.RipeCorePart),
     ("white", logic.RipeWhitePart)
 )
