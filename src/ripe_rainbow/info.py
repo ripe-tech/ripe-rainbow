@@ -2,6 +2,6 @@
 # -*- coding: utf-8 -*-
 
 NAME = "RIPE Rainbow"
-VERSION = "0.5.8"
+VERSION = "0.5.9"
 RAINBOW = "🌈"
 LABEL = "%s %s %s" % (NAME, VERSION, RAINBOW)
