@@ -56,9 +56,9 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
-    def text(self, selector, text, timeout = None):
+    def text(self, selector, text, timeout = None, ensure = False):
         return self.until(
-            lambda d: self.assertions.has_text(selector, text),
+            lambda d: self.assertions.has_text(selector, text, ensure = ensure),
             message = "Element '%s' with text '%s' not found" % (selector, text),
             timeout = timeout
         )
