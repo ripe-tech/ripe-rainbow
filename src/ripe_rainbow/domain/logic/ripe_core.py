@@ -42,17 +42,24 @@ class RipeCorePart(parts.Part):
             )
         )
 
-    def wait_initials_image(self, selector, model, initials):
+    def wait_initials_image(self, selector, model, initials, profile = None):
         return self.waits.until(
-            lambda d: self.assert_initials_image(selector, model, initials),
+            lambda d: self.assert_initials_image(
+                selector,
+                model,
+                initials,
+                profile = profile
+            ),
             "Personalization image was not the expected one."
         )
 
-    def assert_initials_image(self, selector, model, initials):
+    def assert_initials_image(self, selector, model, initials, profile = None):
         expected_params = dict(
             initials = initials,
             model = model
         )
+
+        if profile: expected_params["initials_profile"] = profile
 
         element = self.waits.element(selector)
         src = element.get_attribute("src")
