@@ -58,21 +58,18 @@ class AssertionsPart(parts.Part):
         for _url in expected:
             # in case the starts with mode is active verifies that the current
             # URL starts with the current expected in iteration
-            if starts_with and not url.startswith(_url):
-                continue
+            if starts_with and not url.startswith(_url): continue
 
             # otherwise tries to run the regex match operation (by asserting
             # that the match method is present)
-            elif hasattr(_url, "match") and not _url.match(url):
-                continue
+            elif hasattr(_url, "match") and not _url.match(url): continue
 
             # otherwise runs the "default" net location and path based verification
             # so that the "initial" part of the URL is validated (no query of fragment)
             else:
                 _url_p = appier.legacy.urlparse(_url)
                 _url_base = _url_p.scheme + "://" + _url_p.netloc + _url_p.path
-                if not _url_base == url_base:
-                    continue
+                if not _url_base == url_base: continue
 
             # runs the extra set of verification (parameters and fragment) in
             # case they have been requested (proper parameters set)
@@ -80,6 +77,7 @@ class AssertionsPart(parts.Part):
                 self._compare_params(url_params, params, strict = strict):
                 continue
             if not fragment == None and not url_p.fragment == fragment:
+                self.breadcrumbs.debug("The fragment '%s' is not the expected one ('%s')" % (fragment, url_p.fragment))
                 continue
 
             # returns a valid value as the current URL in iteration complies
