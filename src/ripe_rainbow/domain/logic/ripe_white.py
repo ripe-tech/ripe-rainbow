@@ -7,7 +7,7 @@ from .. import parts
 
 class RipeWhitePart(parts.Part):
 
-    def select_size(self, size, gender = None, scale = None, open = True):
+    def select_size(self, size, gender = None, scale = None, open = True, wait_closed = True):
         """
         Opens the size selection window, selects the proper scale and size and
         applies that configuration by clicking 'Apply' and closing the window.
@@ -22,6 +22,8 @@ class RipeWhitePart(parts.Part):
         :param scale: The scale that is going to be picked.
         :type open: Boolean
         :param open: If the size modal window should be opened before selection.
+        :type wait_closed: Boolean
+        :param wait_closed: Whether it should wait for the size modal to be closed.
         """
 
         if open: self.interactions.click_when_possible(".size:not(.disabled) .button-size")
@@ -44,7 +46,7 @@ class RipeWhitePart(parts.Part):
         )
 
         self.interactions.click_when_possible(".size .button.button-primary.button-apply")
-        self.waits.is_not_visible(".size .modal")
+        if wait_closed: self.waits.is_not_visible(".size .modal")
 
     def set_part(
         self,
