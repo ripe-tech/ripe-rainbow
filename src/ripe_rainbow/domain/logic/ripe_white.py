@@ -23,7 +23,8 @@ class RipeWhitePart(parts.Part):
         :type open: Boolean
         :param open: If the size modal window should be opened before selection.
         :type wait_closed: Boolean
-        :param wait_closed: Whether it should wait for the size modal to be closed.
+        :param wait_closed: Whether it should wait for the size modal to be closed,
+        not waiting for the closing of the modal should improve performance.
         """
 
         if open: self.interactions.click_when_possible(".size:not(.disabled) .button-size")
