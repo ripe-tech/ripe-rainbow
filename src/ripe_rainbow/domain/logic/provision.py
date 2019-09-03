@@ -78,10 +78,10 @@ class ProvisionPart(parts.Part):
         if hasattr(self, name) and getattr(self, name):
             return getattr(self, name)
         export_api = appier_export.API(
-            base_url = self.core.export_api_url + "/",
-            admin_url = self.core.admin_api_url + "/",
-            username = self.core.username,
-            password = self.core.password
+            base_url = base.export_api_url + "/",
+            admin_url = base.admin_api_url + "/",
+            username = base.username,
+            password = base.password
         )
         setattr(self, name, export_api)
         return export_api
@@ -93,9 +93,9 @@ class ProvisionPart(parts.Part):
         if hasattr(self, name) and getattr(self, name):
             return getattr(self, name)
         admin_api = appier_admin.API(
-            base_url = self.core.admin_api_url + "/",
-            username = self.core.username,
-            password = self.core.password
+            base_url = base.admin_api_url + "/",
+            username = base.username,
+            password = base.password
         )
         setattr(self, name, admin_api)
         return admin_api
