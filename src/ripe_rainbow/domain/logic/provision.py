@@ -55,11 +55,20 @@ class ProvisionPart(parts.Part):
     @property
     def export_api(self):
         if hasattr(self, "_export_api") and self._export_api: return self._export_api
-        self._export_api = appier_export.API()
+        self._export_api = appier_export.API(
+            base_url = self.core.export_api_url + "/",
+            admin_url = self.core.admin_api_url + "/",
+            username = self.core.username,
+            password = self.core.password
+        )
         return self._export_api
 
     @property
     def admin_api(self):
         if hasattr(self, "_admin_api") and self._admin_api: return self._admin_api
-        self._admin_api = appier_admin.API()
+        self._admin_api = appier_admin.API(
+            base_url = self.core.admin_api_url + "/",
+            username = self.core.username,
+            password = self.core.password
+        )
         return self._admin_api

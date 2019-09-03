@@ -81,12 +81,40 @@ class RipeCorePart(parts.Part):
         return core_url
 
     @property
+    def username(self):
+        username = appier.conf("CORE_USERNAME", None)
+        username = appier.conf("RIPE_CORE_USERNAME", username)
+        return username
+
+    @property
+    def password(self):
+        password = appier.conf("CORE_PASSWORD", None)
+        password = appier.conf("RIPE_CORE_PASSWORD", password)
+        return password
+
+    @property
     def base_url(self):
         return self.core_url
 
     @property
     def api_url(self):
         return "%s/api" % self.core_url
+
+    @property
+    def admin_url(self):
+        return "%s/admin" % self.core_url
+
+    @property
+    def admin_api_url(self):
+        return "%s/api/admin" % self.core_url
+
+    @property
+    def export_url(self):
+        return "%s/export" % self.core_url
+
+    @property
+    def export_api_url(self):
+        return "%s/api/export" % self.core_url
 
     @property
     def orders_url(self):
