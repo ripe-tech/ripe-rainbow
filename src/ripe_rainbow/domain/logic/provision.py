@@ -15,9 +15,6 @@ class ProvisionPart(parts.Part):
         api = api or self.export_api(base = base, ctx = ctx)
         api.reset_database()
 
-    def reset_core(self):
-        self.reset(base = self.ripe_core, ctx = "core")
-
     def ripe_core(self, names = None, base_url = None, reset = True):
         names = names or (
             "account.json",
