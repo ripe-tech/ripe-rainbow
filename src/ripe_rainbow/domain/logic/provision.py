@@ -12,7 +12,7 @@ from .. import parts
 class ProvisionPart(parts.Part):
 
     def reset(self):
-        self.admin_api.reset_database()
+        self.api.reset_database()
 
     def ripe_core(self, data_set = None):
         names = (
