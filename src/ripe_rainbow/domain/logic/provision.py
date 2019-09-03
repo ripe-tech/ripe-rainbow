@@ -4,11 +4,15 @@
 import os
 
 import appier
+import appier_admin
 import appier_export
 
 from .. import parts
 
 class ProvisionPart(parts.Part):
+
+    def clear(self):
+        self.admin_api.reset_database()
 
     def ripe_core(self, data_set = None):
         names = (
@@ -46,6 +50,16 @@ class ProvisionPart(parts.Part):
 
     @property
     def api(self):
-        if hasattr(self, "_api") and self._api: return self._api
-        self._api = appier_export.API()
-        return self._api
+        return self.export_api
+
+    @property
+    def export_api(self):
+        if hasattr(self, "_export_api") and self._export_api: return self._export_api
+        self._export_api = appier_export.API()
+        return self._export_api
+
+    @property
+    def admin_api(self):
+        if hasattr(self, "_admin_api") and self._admin_api: return self._admin_api
+        self._admin_api = appier_admin.API()
+        return self._admin_api
