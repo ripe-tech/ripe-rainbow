@@ -11,7 +11,7 @@ from .. import parts
 
 class ProvisionPart(parts.Part):
 
-    def clear(self):
+    def reset(self):
         self.admin_api.reset_database()
 
     def ripe_core(self, data_set = None):
