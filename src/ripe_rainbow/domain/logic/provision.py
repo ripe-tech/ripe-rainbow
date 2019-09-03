@@ -30,7 +30,7 @@ class ProvisionPart(parts.Part):
         base_url = base_url or "https://cdn.platforme.com/data/ripe_core/%s"
 
         api = self.export_api(
-            base = self.ripe_core,
+            base = self.core,
             ctx = "core"
         )
 
@@ -52,7 +52,7 @@ class ProvisionPart(parts.Part):
         base_url = base_url or "https://cdn.platforme.com/data/ripe_retail/%s"
 
         api = self.export_api(
-            base = self.ripe_retail,
+            base = self.retail,
             ctx = "retail"
         )
 
