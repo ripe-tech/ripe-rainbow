@@ -197,6 +197,26 @@ class RipeRetailPart(parts.Part):
         return self.retail_url
 
     @property
+    def api_url(self):
+        return "%s/api" % self.retail_url
+
+    @property
+    def admin_url(self):
+        return "%s/admin" % self.retail_url
+
+    @property
+    def admin_api_url(self):
+        return "%s/api/admin" % self.retail_url
+
+    @property
+    def export_url(self):
+        return "%s/export" % self.retail_url
+
+    @property
+    def export_api_url(self):
+        return "%s/api/export" % self.retail_url
+
+    @property
     def home_url(self):
         return "%s/" % self.retail_url
 

@@ -11,11 +11,15 @@ from .. import parts
 
 class ProvisionPart(parts.Part):
 
-    def reset(self):
-        self.api.reset_database()
+    def reset(self, api = None, base = None, ctx = None):
+        api = api or self.export_api(base = base, ctx = ctx)
+        api.reset_database()
 
-    def ripe_core(self, data_set = None):
-        names = (
+    def reset_core(self):
+        self.reset(base = self.ripe_core, ctx = "core")
+
+    def ripe_core(self, names = None, base_url = None, reset = True):
+        names = names or (
             "account.json",
             "availability_rule.json",
             "factory_rule.json",
@@ -26,50 +30,72 @@ class ProvisionPart(parts.Part):
             "product.json"
         )
 
-        base_url = "https://cdn.platforme.com/data/ripe_core/%s"
+        base_url = base_url or "https://cdn.platforme.com/data/ripe_core/%s"
+
+        api = self.export_api(
+            base = self.ripe_core,
+            ctx = "core"
+        )
+
+        if reset: self.reset(api = api)
 
         for name in names:
             model = os.path.splitext(name)[0]
             items = appier.get(base_url % name)
             data = dict(items = items)
-            self.api.import_model(model, data)
+            api.import_model(model, data)
 
-    def ripe_retail(self, data_set = None):
-        names = (
+    def ripe_retail(self, names = None, base_url = None, reset = True):
+        names = names or (
             "brand.json",
             "store.json",
             "retail_account.json"
         )
 
-        base_url = "https://cdn.platforme.com/data/ripe_retail/%s"
+        base_url = base_url or "https://cdn.platforme.com/data/ripe_retail/%s"
+
+        api = self.export_api(
+            base = self.ripe_retail,
+            ctx = "retail"
+        )
+
+        if reset: self.reset(api = api)
 
         for name in names:
             model = os.path.splitext(name)[0]
             items = appier.get(base_url % name)
             data = dict(items = items)
-            self.api.import_model(model, data)
+            api.import_model(model, data)
 
     @property
     def api(self):
-        return self.export_api
+        return self.export_api()
 
-    @property
-    def export_api(self):
-        if hasattr(self, "_export_api") and self._export_api: return self._export_api
-        self._export_api = appier_export.API(
+    def export_api(self, base = None, ctx = None):
+        base = base or self.core
+        ctx = ctx or "core"
+        name = "_export_api_%s" % ctx
+        if hasattr(self, name) and getattr(self, name):
+            return getattr(self, name)
+        export_api = appier_export.API(
             base_url = self.core.export_api_url + "/",
             admin_url = self.core.admin_api_url + "/",
             username = self.core.username,
             password = self.core.password
         )
-        return self._export_api
+        setattr(self, name, export_api)
+        return export_api
 
-    @property
-    def admin_api(self):
-        if hasattr(self, "_admin_api") and self._admin_api: return self._admin_api
-        self._admin_api = appier_admin.API(
+    def admin_api(self, base = None, ctx = None):
+        base = base or self.core
+        ctx = ctx or "core"
+        name = "_admin_api_%s" % ctx
+        if hasattr(self, name) and getattr(self, name):
+            return getattr(self, name)
+        admin_api = appier_admin.API(
             base_url = self.core.admin_api_url + "/",
             username = self.core.username,
             password = self.core.password
         )
-        return self._admin_api
+        setattr(self, name, admin_api)
+        return admin_api
