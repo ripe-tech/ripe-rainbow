@@ -21,6 +21,7 @@ class ProvisionPart(parts.Part):
             "factory_rule.json",
             "letter_rule.json",
             "order.json",
+            "order_state.json",
             "price_rule.json",
             "product.json"
         )
