@@ -82,13 +82,13 @@ class RipeCorePart(parts.Part):
 
     @property
     def username(self):
-        username = appier.conf("CORE_USERNAME", None)
+        username = appier.conf("CORE_USERNAME", "root")
         username = appier.conf("RIPE_CORE_USERNAME", username)
         return username
 
     @property
     def password(self):
-        password = appier.conf("CORE_PASSWORD", None)
+        password = appier.conf("CORE_PASSWORD", "root")
         password = appier.conf("RIPE_CORE_PASSWORD", password)
         return password
 
