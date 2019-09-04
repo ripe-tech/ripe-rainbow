@@ -194,13 +194,13 @@ class RipeRetailPart(parts.Part):
 
     @property
     def username(self):
-        username = appier.conf("RETAIL_USERNAME", None)
+        username = appier.conf("RETAIL_USERNAME", "root")
         username = appier.conf("RIPE_RETAIL_USERNAME", username)
         return username
 
     @property
     def password(self):
-        password = appier.conf("RETAIL_PASSWORD", None)
+        password = appier.conf("RETAIL_PASSWORD", "root")
         password = appier.conf("RIPE_RETAIL_PASSWORD", password)
         return password
 
