@@ -193,6 +193,18 @@ class RipeRetailPart(parts.Part):
         return base_url
 
     @property
+    def username(self):
+        username = appier.conf("RETAIL_USERNAME", None)
+        username = appier.conf("RIPE_RETAIL_USERNAME", username)
+        return username
+
+    @property
+    def password(self):
+        password = appier.conf("RETAIL_PASSWORD", None)
+        password = appier.conf("RIPE_RETAIL_PASSWORD", password)
+        return password
+
+    @property
     def base_url(self):
         return self.retail_url
 
