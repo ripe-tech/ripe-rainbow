@@ -46,7 +46,6 @@ class ProvisionPart(parts.Part):
             model = os.path.splitext(name)[0]
             items = appier.get(base_url % name)
             data = dict(items = items)
-            print("====> MODEL ====> ", model)
             api.import_model(model, data)
 
     def ripe_retail(self, names = None, base_url = None, reset = True):
