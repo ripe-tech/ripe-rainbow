@@ -19,12 +19,18 @@ class ProvisionPart(parts.Part):
         names = names or (
             "account.json",
             "availability_rule.json",
+            "ddp_rules.json",
+            "exchange_rates.json",
+            "extra_duty_rules.json",
             "factory_rule.json",
+            "hs_code_maps.json",
+            "hs_code_rules.json",
             "letter_rule.json",
-            "order.json",
             "order_state.json",
+            "order.json",
             "price_rule.json",
-            "product.json"
+            "product.json",
+            "shipping_rules.json"
         )
 
         base_url = base_url or "https://cdn.platforme.com/data/ripe_core/%s"
@@ -44,6 +50,7 @@ class ProvisionPart(parts.Part):
 
     def ripe_retail(self, names = None, base_url = None, reset = True):
         names = names or (
+            "account.json",
             "brand.json",
             "store.json",
             "retail_account.json"
@@ -63,6 +70,17 @@ class ProvisionPart(parts.Part):
             items = appier.get(base_url % name)
             data = dict(items = items)
             api.import_model(model, data)
+
+    def ripe_retail_extra(self):
+        self.ripe_retail(
+            names = (
+                "brand.json",
+                "store.json",
+                "retail_account.json"
+            ),
+            base_url = "https://cdn.platforme.com/data/ripe_retail_extra/%s",
+            reset = False
+        )
 
     @property
     def api(self):
