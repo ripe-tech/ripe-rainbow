@@ -28,12 +28,30 @@ class PathLoader(Loader):
     def _load_classes(self, path, recursive = True):
         classes = []
         modules = self._load_modules(path, recursive = recursive)
+
+        # iterates over the complete set of loaded modules to try
+        # to load all of the test classes contained in them
         for module in modules:
+
+            # uses the path to the module containing the test to try
+            # to gather some context to the test, this means that the
+            # name of the directory is going to be used as some kind
+            # of context for the test execution
+            module_path = module.__file__ if hasattr(module, "__file__") else None
+            module_path = module_path or None
+            if module_path:
+                module_path = os.path.normpath(os.path.abspath(module_path))
+                ctx = os.path.basename(os.path.dirname(module_path))
+            else:
+                ctx = None
+
             for name in dir(module):
                 value = getattr(module, name)
                 if not inspect.isclass(value): continue
                 if not issubclass(value, test_cases.TestCase): continue
+                value.ctx = ctx
                 classes.append(value)
+
         return classes
 
     def _load_packages(self, path, recursive = True):
