@@ -71,16 +71,14 @@ class ProvisionPart(parts.Part):
             data = dict(items = items)
             api.import_model(model, data)
 
-    def ripe_retail_extra(self):
-        self.ripe_retail(
-            names = (
-                "brand.json",
-                "store.json",
-                "retail_account.json"
-            ),
-            base_url = "https://cdn.platforme.com/data/ripe_retail_extra/%s",
-            reset = False
-        )
+    def ripe_retail_dummy(self):
+        self._ripe_retail_extra("dummy")
+
+    def ripe_retail_sergio_rossi(self):
+        self._ripe_retail_extra("sergio_rossi")
+
+    def ripe_retail_emilio_pucci(self):
+        self._ripe_retail_extra("emilio_pucci")
 
     @property
     def api(self):
@@ -114,3 +112,15 @@ class ProvisionPart(parts.Part):
         )
         setattr(self, name, admin_api)
         return admin_api
+
+    def _ripe_retail_extra(self, brand):
+        url_prefix = "https://cdn.platforme.com/data/ripe_retail_%s/" % brand
+        self.ripe_retail(
+            names = (
+                "brand.json",
+                "store.json",
+                "retail_account.json"
+            ),
+            base_url = url_prefix + "%s",
+            reset = False
+        )
