@@ -19,6 +19,10 @@ class ProvisionPart(parts.Part):
         cls._CACHE[url] = appier.get(url)
         return cls._CACHE[url]
 
+    @classmethod
+    def _clear(cls):
+        cls._CACHE.clear()
+
     def reset(self, api = None, base = None, ctx = None):
         api = api or self.export_api(base = base, ctx = ctx)
         api.reset_database()
