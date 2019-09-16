@@ -14,8 +14,8 @@ class ProvisionPart(parts.Part):
     _CACHE = {}
 
     @classmethod
-    def _get(cls, url):
-        if url in cls._CACHE: return cls._CACHE[url]
+    def _get(cls, url, cache = True):
+        if cache and url in cls._CACHE: return cls._CACHE[url]
         cls._CACHE[url] = appier.get(url)
         return cls._CACHE[url]
 
