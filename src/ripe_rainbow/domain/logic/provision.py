@@ -56,10 +56,7 @@ class ProvisionPart(parts.Part):
         )
 
     def ripe_core_reset(self):
-        self.reset(
-            base = self.core,
-            ctx = "core"
-        )
+        self.reset(base = self.core, ctx = "core")
 
     def ripe_retail(self, names = None, base_url = None, reset = True):
         names = names or (
@@ -101,10 +98,7 @@ class ProvisionPart(parts.Part):
         )
 
     def ripe_retail_reset(self):
-        self.reset(
-            base = self.retail,
-            ctx = "retail"
-        )
+        self.reset(base = self.retail, ctx = "retail")
 
     @property
     def api(self):
