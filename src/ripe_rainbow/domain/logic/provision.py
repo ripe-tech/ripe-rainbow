@@ -48,6 +48,16 @@ class ProvisionPart(parts.Part):
             data = dict(items = items)
             api.import_model(model, data)
 
+    def ripe_core_minimal(self, names = None, base_url = None, reset = True):
+        return self.ripe_core(
+            names = names or ("account.json", ),
+            base_url = base_url or "https://cdn.platforme.com/data/ripe_core_minimal/%s",
+            reset = reset
+        )
+
+    def ripe_core_reset(self):
+        self.reset(base = self.core, ctx = "core")
+
     def ripe_retail(self, names = None, base_url = None, reset = True):
         names = names or (
             "account.json",
@@ -79,6 +89,16 @@ class ProvisionPart(parts.Part):
 
     def ripe_retail_emilio_pucci(self):
         self._ripe_retail_extra("emilio_pucci")
+
+    def ripe_retail_minimal(self, names = None, base_url = None, reset = True):
+        return self.ripe_retail(
+            names = names or ("account.json", ),
+            base_url = base_url or "https://cdn.platforme.com/data/ripe_retail_minimal/%s",
+            reset = reset
+        )
+
+    def ripe_retail_reset(self):
+        self.reset(base = self.retail, ctx = "retail")
 
     @property
     def api(self):
