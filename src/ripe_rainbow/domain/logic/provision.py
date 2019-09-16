@@ -81,6 +81,13 @@ class ProvisionPart(parts.Part):
             data = dict(items = items)
             api.import_model(model, data)
 
+    def ripe_retail_minimal(self, names = None, base_url = None, reset = True):
+        return self.ripe_retail(
+            names = names or ("account.json", ),
+            base_url = base_url or "https://cdn.platforme.com/data/ripe_retail_minimal/%s",
+            reset = reset
+        )
+
     def ripe_retail_dummy(self):
         self._ripe_retail_extra("dummy")
 
@@ -89,13 +96,6 @@ class ProvisionPart(parts.Part):
 
     def ripe_retail_emilio_pucci(self):
         self._ripe_retail_extra("emilio_pucci")
-
-    def ripe_retail_minimal(self, names = None, base_url = None, reset = True):
-        return self.ripe_retail(
-            names = names or ("account.json", ),
-            base_url = base_url or "https://cdn.platforme.com/data/ripe_retail_minimal/%s",
-            reset = reset
-        )
 
     def ripe_retail_reset(self):
         self.reset(base = self.retail, ctx = "retail")
@@ -133,7 +133,7 @@ class ProvisionPart(parts.Part):
         setattr(self, name, admin_api)
         return admin_api
 
-    def _ripe_retail_extra(self, brand):
+    def _ripe_retail_extra(self, brand, reset = False):
         url_prefix = "https://cdn.platforme.com/data/ripe_retail_%s/" % brand
         self.ripe_retail(
             names = (
@@ -142,5 +142,5 @@ class ProvisionPart(parts.Part):
                 "retail_account.json"
             ),
             base_url = url_prefix + "%s",
-            reset = False
+            reset = reset
         )
