@@ -11,11 +11,21 @@ from .. import parts
 
 class ProvisionPart(parts.Part):
 
+    _CACHE = {}
+
+    @classmethod
+    def _get(cls, url):
+        if url in cls._CACHE: return cls._CACHE[url]
+        cls._CACHE[url] = appier.get(url)
+        return cls._CACHE[url]
+
     def reset(self, api = None, base = None, ctx = None):
         api = api or self.export_api(base = base, ctx = ctx)
         api.reset_database()
 
     def ripe_core(self, names = None, base_url = None, reset = True):
+        cls = self.__class__
+
         names = names or (
             "account.json",
             "availability_rule.json",
@@ -44,7 +54,7 @@ class ProvisionPart(parts.Part):
 
         for name in names:
             model = os.path.splitext(name)[0]
-            items = appier.get(base_url % name)
+            items = cls._get(base_url % name)
             data = dict(items = items)
             api.import_model(model, data)
 
@@ -59,6 +69,8 @@ class ProvisionPart(parts.Part):
         self.reset(base = self.core, ctx = "core")
 
     def ripe_retail(self, names = None, base_url = None, reset = True):
+        cls = self.__class__
+
         names = names or (
             "account.json",
             "brand.json",
@@ -77,7 +89,7 @@ class ProvisionPart(parts.Part):
 
         for name in names:
             model = os.path.splitext(name)[0]
-            items = appier.get(base_url % name)
+            items = cls._get(base_url % name)
             data = dict(items = items)
             api.import_model(model, data)
 
