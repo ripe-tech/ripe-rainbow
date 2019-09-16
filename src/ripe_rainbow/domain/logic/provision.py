@@ -45,16 +45,14 @@ class ProvisionPart(parts.Part):
 
         base_url = base_url or "https://cdn.platforme.com/data/ripe_core/%s"
 
-        api = self.export_api(
-            base = self.core,
-            ctx = "core"
-        )
+        api = self.export_api(base = self.core, ctx = "core")
+
+        tuples = [(name, cls._get(base_url % name)) for name in names]
 
         if reset: self.reset(api = api)
 
-        for name in names:
+        for name, items in tuples:
             model = os.path.splitext(name)[0]
-            items = cls._get(base_url % name)
             data = dict(items = items)
             api.import_model(model, data)
 
@@ -80,16 +78,14 @@ class ProvisionPart(parts.Part):
 
         base_url = base_url or "https://cdn.platforme.com/data/ripe_retail/%s"
 
-        api = self.export_api(
-            base = self.retail,
-            ctx = "retail"
-        )
+        api = self.export_api(base = self.retail, ctx = "retail")
+
+        tuples = [(name, cls._get(base_url % name)) for name in names]
 
         if reset: self.reset(api = api)
 
-        for name in names:
+        for name, items in tuples:
             model = os.path.splitext(name)[0]
-            items = cls._get(base_url % name)
             data = dict(items = items)
             api.import_model(model, data)
 
