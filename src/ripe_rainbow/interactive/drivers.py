@@ -240,9 +240,11 @@ class SeleniumDriver(InteractiveDriver):
         self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler, true);", element)
 
         try:
-            self._wait(timeout = timeout).until(
-                lambda d: self._try_visible(element),
-                "Element never became visible"
+            self.wrap_outer(
+                lambda: self._wait(timeout = timeout).until(
+                    lambda d: self._try_visible(element),
+                    "Element never became visible"
+                )
             )
         finally:
             self.instance.execute_script("delete window._entered")

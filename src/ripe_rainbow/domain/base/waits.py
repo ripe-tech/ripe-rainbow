@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from ... import errors
 from .. import parts
 
 class WaitsPart(parts.Part):
@@ -63,16 +64,33 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
-    def is_visible(self, selector, condition = None, timeout = None):
-        return self.until(
-            lambda d: self.assertions.is_visible(selector, condition = condition),
-            message = "Element '%s' is not visible" % selector,
-            timeout = timeout
-        )
+    def is_visible(self, selector, condition = None, timeout = None, strict = False):
+        if strict:
+            element = self.element(selector, condition = condition, timeout = timeout)
+            self._is_interactible(element, condition = condition, timeout = timeout)
+            if not interactible: raise errors.TimeoutError(message = "Element '%s' is not interactible" % element)
+        else:
+            return self.until(
+                lambda d: self.assertions.is_visible(selector, condition = condition),
+                message = "Element '%s' is not visible" % selector,
+                timeout = timeout
+            )
 
-    def is_not_visible(self, selector, condition = None, timeout = None):
-        return self.until(
-            lambda d: self.assertions.is_not_visible(selector, condition = condition),
-            message = "Element '%s' is visible" % selector,
-            timeout = timeout
-        )
+    def is_not_visible(self, selector, condition = None, timeout = None, strict = False):
+        if strict:
+            element = self.element(selector, condition = condition, timeout = timeout)
+            interactible = self._is_interactible(element, condition = condition, timeout = timeout)
+            if interactible: raise errors.TimeoutError(message = "Element '%s' is interactible" % element)
+        else:
+            return self.until(
+                lambda d: self.assertions.is_not_visible(selector, condition = condition),
+                message = "Element '%s' is visible" % selector,
+                timeout = timeout
+            )
+
+    def _is_interactible(self, element, condition = None, timeout = None):
+        try:
+            self.driver.ensure_visible(element, timeout = timeout)
+            return True
+        except errors.TimeoutError:
+            return False
