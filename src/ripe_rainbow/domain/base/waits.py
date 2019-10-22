@@ -65,6 +65,25 @@ class WaitsPart(parts.Part):
         )
 
     def is_visible(self, selector, condition = None, timeout = None, strict = False):
+        """
+        Waits for an element to become visible. Strict visibility implies that the
+        element is interactible (e.g. you can click on it), otherwise it just has
+        to be present in the screen with display different from 'none' and opacity
+        greater than 0.
+
+        :type selector: string
+        :param selector: The CSS selector for the element.
+        :type condition: function
+        :param condition: A condition that must be met by the selected element.
+        :type timeout: int
+        :param timeout: The timeout in seconds to wait for the element to
+        become visible.
+        :type strict: bool
+        :param strict: Whether the definition of visibility is strict or not.
+        :rtype: Element
+        :return: The selected element.
+        """
+
         if strict:
             element = self.element(selector, condition = condition, timeout = timeout)
             self._is_interactible(element, condition = condition, timeout = timeout)
@@ -77,6 +96,25 @@ class WaitsPart(parts.Part):
             )
 
     def is_not_visible(self, selector, condition = None, timeout = None, strict = False):
+        """
+        Waits for an element to stop being visible. Strict visibility implies that the
+        element is interactible (e.g. you can click on it), otherwise it just has
+        to be present in the screen with display different from 'none' and opacity
+        greater than 0.
+
+        :type selector: string
+        :param selector: The CSS selector for the element.
+        :type condition: function
+        :param condition: A condition that must be met by the selected element.
+        :type timeout: int
+        :param timeout: The timeout in seconds to wait for the element to
+        stop being visible.
+        :type strict: bool
+        :param strict: Whether the definition of visibility is strict or not.
+        :rtype: Element
+        :return: The selected element.
+        """
+
         if strict:
             element = self.element(selector, condition = condition, timeout = timeout)
             interactible = self._is_interactible(element, condition = condition, timeout = timeout)
