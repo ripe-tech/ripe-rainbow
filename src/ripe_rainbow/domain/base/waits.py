@@ -49,6 +49,13 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def no_element(self, selector, condition = None, timeout = None):
+        return self.until(
+            lambda d: not self.assertions.exists(selector, condition = condition),
+            message = "Element '%s' found" % selector,
+            timeout = timeout
+        )
+
     def elements(self, selector, condition = None, timeout = None):
         return self.until(
             lambda d: self.assertions.exists_multiple(selector, condition = condition),

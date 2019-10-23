@@ -60,6 +60,16 @@ class RipeRetailPart(parts.Part):
         self.interactions.click_when_possible(".size .button.button-primary.button-apply")
         self.waits.is_not_visible(".size .modal")
 
+    def select_part(self, part):
+        self.interactions.click_when_possible(
+            ".pickers .button-part > p:not(.no-part)",
+            condition = lambda e: e.text == part.upper()
+        )
+
+    def no_material(self, material):
+        self.waits.no_element(".material li[data-material='%s']" % material)
+        self.waits.no_element(".pickers .button-color[data-material='%s']" % material)
+
     def set_part(
         self,
         brand,
@@ -101,10 +111,7 @@ class RipeRetailPart(parts.Part):
         has been done (to verify the final status).
         """
 
-        self.interactions.click_when_possible(
-            ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.text == part.upper()
-        )
+        self.select_part(part)
         self.interactions.click_when_possible(
             ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color)
         )
@@ -161,10 +168,7 @@ class RipeRetailPart(parts.Part):
         :param color_text: The expected label for the color.
         """
 
-        self.interactions.click_when_possible(
-            ".pickers .button-part",
-            condition = lambda e: e.text == part.upper()
-        )
+        self.select_part(part)
 
         if part_text: self.waits.text(".button-part.active", part_text)
         if color_text: self.waits.text(".button-color.active", color_text)
