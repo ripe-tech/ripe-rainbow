@@ -66,9 +66,20 @@ class RipeRetailPart(parts.Part):
             condition = lambda e: e.text == part.upper()
         )
 
-    def no_material(self, material):
+    def no_part(self, part):
+        self.waits.no_element(
+            ".pickers .button-part > p:not(.no-part)",
+            condition = lambda e: e.text == part.upper()
+        )
+
+    def no_material(self, part, material):
+        self.select_part(part)
         self.waits.no_element(".material li[data-material='%s']" % material)
         self.waits.no_element(".pickers .button-color[data-material='%s']" % material)
+
+    def no_color(self, part, color):
+        self.select_part(part)
+        self.waits.no_element(".pickers .button-color[data-color='%s']" % color)
 
     def set_part(
         self,

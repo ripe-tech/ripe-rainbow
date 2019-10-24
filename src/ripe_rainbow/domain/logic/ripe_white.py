@@ -49,6 +49,34 @@ class RipeWhitePart(parts.Part):
         self.interactions.click_when_possible(".size .button.button-primary.button-apply")
         if wait_closed: self.waits.is_not_visible(".size .modal")
 
+    def select_part(self, part):
+        self.interactions.click_when_possible(
+            ".pickers .button-part > p:not(.no-part)",
+            condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
+        )
+
+    def select_material(self, material):
+        self.interactions.click_when_possible(
+            ".pickers .button-material[data-material='%s']" % material,
+            condition = lambda e: e.is_displayed()
+        )
+
+    def no_part(self, part):
+        self.waits.no_element(
+            ".pickers .button-part > p:not(.no-part)",
+            condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
+        )
+
+    def no_material(self, part, material):
+        self.select_part(part)
+        self.waits.no_element(".pickers .button-material[data-material='%s']" % material)
+        self.waits.no_element(".pickers .button-color[data-material='%s']" % material)
+
+    def no_color(self, part, material, color):
+        self.select_part(part)
+        self.select_material(material)
+        self.waits.no_element(".pickers .button-color[data-color='%s']" % color)
+
     def set_part(
         self,
         brand,
@@ -90,14 +118,8 @@ class RipeWhitePart(parts.Part):
         has been done (to verify the final status).
         """
 
-        self.interactions.click_when_possible(
-            ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
-        )
-        self.interactions.click_when_possible(
-            ".pickers .button-material[data-material='%s']" % material,
-            condition = lambda e: e.is_displayed()
-        )
+        self.select_part(part)
+        self.select_material(material)
         self.interactions.click_when_possible(
             ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
             condition = lambda e: e.is_displayed()
