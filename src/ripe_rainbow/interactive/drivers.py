@@ -123,7 +123,7 @@ class SeleniumDriver(InteractiveDriver):
         )
 
     @classmethod
-    def browser(clas):
+    def browser(cls):
         import selenium.webdriver
         browser = appier.conf("SEL_BROWSER", "chrome")
         if browser == "chrome":
