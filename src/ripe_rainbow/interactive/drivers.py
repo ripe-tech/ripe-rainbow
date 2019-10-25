@@ -47,17 +47,14 @@ class InteractiveDriver(object):
     def find_by_name(self, name):
         raise appier.NotImplementedError()
 
-    def focus(self, element):
+    def press_key(self, element, key, ensure = True):
         raise appier.NotImplementedError()
 
-    def press_key(self, element, key):
+    def write_text(self, element, text, ensure = True):
         raise appier.NotImplementedError()
 
-    def write_text(self, element, text):
-        raise appier.NotImplementedError()
-
-    def press_enter(self, element):
-        return self.press_key(element, "enter")
+    def press_enter(self, element, ensure = True):
+        return self.press_key(element, "enter", ensure = ensure)
 
     def click(self, element, ensure = True):
         raise appier.NotImplementedError()
@@ -182,18 +179,20 @@ class SeleniumDriver(InteractiveDriver):
     def find_element_by_name(self, name):
         return self.find_by_name(name)
 
-    def focus(self, element):
-        from selenium.webdriver.common.action_chains import ActionChains
-        actions = ActionChains(self.instance)
-        actions.move_to_element(element)
-        actions.perform()
+    def press_key(self, element, key, ensure = True):
+        # in case the ensure flag is set makes sure that the element
+        # is visible in an interactable way
+        if ensure: self.ensure_visible(element)
 
-    def press_key(self, element, key):
         key = self._resolve_key(key)
         element.send_keys(key)
         return element
 
-    def write_text(self, element, text):
+    def write_text(self, element, text, ensure = True):
+        # in case the ensure flag is set makes sure that the element
+        # is visible in an interactable way
+        if ensure: self.ensure_visible(element)
+
         element.send_keys(text)
         return element
 
@@ -202,7 +201,7 @@ class SeleniumDriver(InteractiveDriver):
 
         try:
             # in case the ensure flag is set makes sure that the element
-            # is visible (in an interactable way) to be then clicked
+            # is visible in an interactable way
             if ensure: self.ensure_visible(element)
 
             # moves the mouse to the element according to the pre-defined
@@ -241,7 +240,7 @@ class SeleniumDriver(InteractiveDriver):
 
         try:
             self.wrap_outer(
-                self._wait(timeout = timeout).until(
+                lambda: self._wait(timeout = timeout).until(
                     lambda d: self._try_visible(element),
                     "Element never became visible"
                 )

@@ -48,23 +48,8 @@ class InteractionsPart(parts.Part):
 
         return self.waits.redirected_to(url)
 
-    def write_text(self, selector, text, condition = None):
-        """
-        Writes the text in the given element, this means having
-        it typed like in a physical keyboard.
-
-        :type selector: String
-        :param selector: The selector for the element to write the text in.
-        :type text: String
-        :param text: The text to write "using the keyboard".
-        :type condition: Function
-        :param condition: The filter the selected element must pass to be selected.
-        :rtype: Element
-        :return: The element with the text changed.
-        """
-
-        # waits for the element to be available at the DOM
-        element = self.waits.visible(selector, condition = condition)
+    def write_text(self, selector, text):
+        element = self.driver.find_element_by_css_selector(selector)
 
         # waits until a valid text change in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -73,7 +58,7 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became writable" % selector
         )
 
-    def press_key(self, selector, key, condition = None):
+    def press_key(self, selector, key):
         """
         Presses the provided key on a certain element, pressed like having
         the proper enter key pressed.
@@ -89,9 +74,7 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The element with the key pressed.
         """
-
-        # waits for the element to be available at the DOM
-        element = self.waits.visible(selector, condition = condition)
+        element = self.driver.find_element_by_css_selector(selector)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -100,7 +83,7 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became interactable" % selector
         )
 
-    def press_enter(self, selector, condition = None):
+    def press_enter(self, selector):
         """
         Presses the enter key on a certain element, pressed like having
         the proper enter key pressed.
@@ -113,9 +96,7 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The element with the enter key pressed.
         """
-
-        # waits for the element to be available at the DOM
-        element = self.waits.visible(selector, condition = condition)
+        element = self.driver.find_element_by_css_selector(selector)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -136,9 +117,7 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The clicked element if there's any otherwise an invalid value.
         """
-
-        # waits for the element to be available at the DOM
-        element = self.waits.visible(selector, condition = condition)
+        element = self.driver.find_element_by_css_selector(selector)
 
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver

@@ -126,7 +126,7 @@ class LogicPart(parts.Part):
         # determines if there's a valid condition provided and if that's
         # not the case sets the default condition value
         has_condition = True if condition else False
-        if not condition: condition = lambda e: True
+        if not condition: condition = lambda e, s: True
 
         # runs the selection operation using the underlying driver
         elements = self.driver.safe(self.driver.find_elements_by_css_selector, selector)

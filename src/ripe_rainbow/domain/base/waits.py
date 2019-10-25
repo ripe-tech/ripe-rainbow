@@ -55,3 +55,4 @@ class WaitsPart(parts.Part):
         element = self.logic.get(selector, condition = condition)
         if not element: return None
         self.driver.ensure_visible(element, timeout = timeout)
+        return True
