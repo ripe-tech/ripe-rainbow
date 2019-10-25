@@ -27,27 +27,27 @@ class RipeWhitePart(parts.Part):
         not waiting for the closing of the modal should improve performance.
         """
 
-        if open: self.interactions.click_when_possible(".size:not(.disabled) .button-size")
+        if open: self.interactions.click(".size:not(.disabled) .button-size")
 
         if gender:
-            self.interactions.click_when_possible(
+            self.interactions.click(
                 ".size .button-gender",
                 condition = lambda element: element.text == gender
             )
 
         if scale:
-            self.interactions.click_when_possible(
+            self.interactions.click(
                 ".size .button-scale",
                 condition = lambda element: element.text == str(scale)
             )
 
-        self.interactions.click_when_possible(
+        self.interactions.click(
             ".size .button-size",
             condition = lambda element: element.text == str(size)
         )
 
-        self.interactions.click_when_possible(".size .button.button-primary.button-apply")
-        if wait_closed: self.waits.is_not_visible(".size .modal")
+        self.interactions.click(".size .button.button-primary.button-apply")
+        if wait_closed: self.waits.not_visible(".size .modal")
 
     def set_part(
         self,
@@ -90,15 +90,15 @@ class RipeWhitePart(parts.Part):
         has been done (to verify the final status).
         """
 
-        self.interactions.click_when_possible(
+        self.interactions.click(
             ".pickers .button-part > p:not(.no-part)",
             condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
         )
-        self.interactions.click_when_possible(
+        self.interactions.click(
             ".pickers .button-material[data-material='%s']" % material,
             condition = lambda e: e.is_displayed()
         )
-        self.interactions.click_when_possible(
+        self.interactions.click(
             ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
             condition = lambda e: e.is_displayed()
         )
@@ -155,7 +155,7 @@ class RipeWhitePart(parts.Part):
         :param color_text: The expected label for the color.
         """
 
-        self.interactions.click_when_possible(
+        self.interactions.click(
             ".pickers .button-part",
             condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
         )

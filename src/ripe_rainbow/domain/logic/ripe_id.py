@@ -15,7 +15,7 @@ class RipeIdPart(parts.Part):
 
         self.driver.get(self.home_url)
 
-        self.interactions.click_when_possible(".button-platforme")
+        self.interactions.click(".button-platforme")
 
         self.waits.redirected_to((self.login_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
@@ -30,7 +30,7 @@ class RipeIdPart(parts.Part):
         self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
 
-        self.interactions.click_when_possible(".form .button-blue")
+        self.interactions.click(".form .button-blue")
 
     def login_wait(self, username = None, password = None, redirect_url = None):
         redirect_url = redirect_url or self.next_url

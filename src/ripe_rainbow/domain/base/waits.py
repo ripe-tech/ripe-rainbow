@@ -22,7 +22,7 @@ class WaitsPart(parts.Part):
         timeout = None
     ):
         return self.until(
-            lambda d: self.assertions.at_url(
+            lambda d: self.logic.at_url(
                 url,
                 params = params,
                 fragment = fragment,
@@ -35,44 +35,23 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
-    def all(self, selector, condition, timeout = None):
+    def visible(self, selector, text = None, timeout = None):
         return self.until(
-            lambda d: self.assertions.all(selector, condition),
-            message = "Elements for '%s' don't match the condition" % selector,
+            lambda d: self._ensure_element(selector, text = text, timeout = timeout),
+            message = "Element '%s' not found or not visible" % selector,
             timeout = timeout
         )
 
-    def element(self, selector, condition = None, timeout = None):
+    def not_visible(self, selector, timeout = None):
         return self.until(
-            lambda d: self.assertions.exists(selector, condition = condition),
-            message = "Element '%s' not found" % selector,
-            timeout = timeout
-        )
-
-    def elements(self, selector, condition = None, timeout = None):
-        return self.until(
-            lambda d: self.assertions.exists_multiple(selector, condition = condition),
-            message = "Elements '%s' not found" % selector,
-            timeout = timeout
-        )
-
-    def text(self, selector, text, timeout = None, ensure = False):
-        return self.until(
-            lambda d: self.assertions.has_text(selector, text, ensure = ensure),
-            message = "Element '%s' with text '%s' not found" % (selector, text),
-            timeout = timeout
-        )
-
-    def is_visible(self, selector, condition = None, timeout = None):
-        return self.until(
-            lambda d: self.assertions.is_visible(selector, condition = condition),
-            message = "Element '%s' is not visible" % selector,
-            timeout = timeout
-        )
-
-    def is_not_visible(self, selector, condition = None, timeout = None):
-        return self.until(
-            lambda d: self.assertions.is_not_visible(selector, condition = condition),
+            lambda d: self.logic.get(selector, condition = lambda e: not e.is_displayed()),
             message = "Element '%s' is visible" % selector,
             timeout = timeout
         )
+
+    def _ensure_element(self, selector, text = None, timeout = None):
+        if text: condition = lambda e, s: self.logic.has_text(e, s, text)
+        else: condition = None
+        element = self.logic.get(selector, condition = condition)
+        if not element: return None
+        self.driver.ensure_visible(element, timeout = timeout)

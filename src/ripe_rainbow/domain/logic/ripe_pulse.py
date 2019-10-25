@@ -22,7 +22,7 @@ class RipePulsePart(parts.Part):
         self.waits.redirected_to(redirect_url)
 
     def click_order(self, number):
-        self.interactions.click_when_possible(".table .id a[href^='/orders/%d']" % number)
+        self.interactions.click(".table .id a[href^='/orders/%d']" % number)
         self.waits.redirected_to(self.order_url(number))
         self.waits.text(".title", "Order #%d" % number)
 

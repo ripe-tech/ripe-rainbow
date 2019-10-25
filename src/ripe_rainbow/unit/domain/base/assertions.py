@@ -5,11 +5,11 @@ import unittest
 
 import ripe_rainbow
 
-class AssertionsPartTest(unittest.TestCase):
+class LogicPartTest(unittest.TestCase):
 
     def test_match_url(self):
         test_case = ripe_rainbow.TestCase()
-        assertions_part = ripe_rainbow.AssertionsPart(test_case)
+        assertions_part = ripe_rainbow.LogicPart(test_case)
 
         self.assertEqual(assertions_part.match_url("http://www.platforme.com", "http://www.platforme.com"), True)
         self.assertEqual(assertions_part.match_url("http://www.platforme.com", "http://www.platforme.come"), False)

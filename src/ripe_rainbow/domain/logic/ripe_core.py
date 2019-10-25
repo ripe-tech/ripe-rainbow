@@ -30,8 +30,8 @@ class RipeCorePart(parts.Part):
         :return: If the assertion was successful or not (propagation).
         """
 
-        element = self.waits.element(selector)
-        return self.assertions.match_url(
+        element = self.waits.visible(selector)
+        return self.logic.match_url(
             element.get_attribute("src"),
             self.swatch_url,
             params = dict(
@@ -61,10 +61,10 @@ class RipeCorePart(parts.Part):
 
         if profile: expected_params["initials_profile"] = profile
 
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector)
         src = element.get_attribute("src")
 
-        return self.assertions.match_url(src, self.compose_url, params = expected_params)
+        return self.logic.match_url(src, self.compose_url, params = expected_params)
 
     def order_url(self, number):
         return "%s/orders/%d" % (self.api_url, number)

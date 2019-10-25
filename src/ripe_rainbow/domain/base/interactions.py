@@ -7,7 +7,7 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def get_url(self, url, params = [], fragment = ""):
+    def goto_url(self, url, params = [], fragment = ""):
         """
         Navigates to a certain URL with given GET parameters and to
         the request fragment.
@@ -48,7 +48,7 @@ class InteractionsPart(parts.Part):
 
         return self.waits.redirected_to(url)
 
-    def write_text(self, selector, text):
+    def write_text(self, selector, text, condition = None):
         """
         Writes the text in the given element, this means having
         it typed like in a physical keyboard.
@@ -57,12 +57,14 @@ class InteractionsPart(parts.Part):
         :param selector: The selector for the element to write the text in.
         :type text: String
         :param text: The text to write "using the keyboard".
+        :type condition: Function
+        :param condition: The filter the selected element must pass to be selected.
         :rtype: Element
         :return: The element with the text changed.
         """
 
         # waits for the element to be available at the DOM
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector, condition = condition)
 
         # waits until a valid text change in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -71,7 +73,7 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became writable" % selector
         )
 
-    def press_key(self, selector, key):
+    def press_key(self, selector, key, condition = None):
         """
         Presses the provided key on a certain element, pressed like having
         the proper enter key pressed.
@@ -82,12 +84,14 @@ class InteractionsPart(parts.Part):
         :type key: String
         :param key: The name of the key that is going to be pressed by
         the keyboard, this name is set on an agnostic way.
+        :type condition: Function
+        :param condition: The filter the selected element must pass to be selected.
         :rtype: Element
         :return: The element with the key pressed.
         """
 
         # waits for the element to be available at the DOM
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector, condition = condition)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -96,7 +100,7 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became interactable" % selector
         )
 
-    def press_enter(self, selector):
+    def press_enter(self, selector, condition = None):
         """
         Presses the enter key on a certain element, pressed like having
         the proper enter key pressed.
@@ -104,12 +108,14 @@ class InteractionsPart(parts.Part):
         :type selector: String
         :param selector: The selector for the element to focus when
         pressing enter.
+        :type condition: Function
+        :param condition: The filter the selected element must pass to be selected.
         :rtype: Element
         :return: The element with the enter key pressed.
         """
 
         # waits for the element to be available at the DOM
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector, condition = condition)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -118,7 +124,7 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became interactable" % selector
         )
 
-    def click_when_possible(self, selector, condition = None):
+    def click(self, selector, condition = None):
         """
         Clicks an element when possible, which happens when that element is both
         visible and "clickable".
@@ -132,7 +138,7 @@ class InteractionsPart(parts.Part):
         """
 
         # waits for the element to be available at the DOM
-        element = self.waits.element(selector, condition = condition)
+        element = self.waits.visible(selector, condition = condition)
 
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver

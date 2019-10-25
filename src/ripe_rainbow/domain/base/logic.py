@@ -5,7 +5,7 @@ import appier
 
 from .. import parts
 
-class AssertionsPart(parts.Part):
+class LogicPart(parts.Part):
 
     def at_url(
         self,
@@ -89,30 +89,24 @@ class AssertionsPart(parts.Part):
         # against the provided URL
         return False
 
-    def has_text(self, selector, text, ensure = False):
-        selector = appier.legacy.u(selector)
+    def has_text(self, element, selector, text):
         text = appier.legacy.u(text)
 
-        element = self.exists(selector)
+        if not element: return None
 
-        if element:
-            # in case the ensure flag is set makes sure that the element is visible
-            # from an interactable point of view
-            if ensure: self.driver.safe(self.driver.ensure_visible, element)
+        # tries to retrieve the text (value) from the element taking into consideration
+        # the kind of element that is being validation
+        if element.tag_name == "input": element_text = element.get_attribute("value")
+        else: element_text = element.text
 
-            # tries to retrieve the text (value) from the element taking into consideration
-            # the kind of element that is being validation
-            if element.tag_name == "input": element_text = element.get_attribute("value")
-            else: element_text = element.text
+        if not element_text == text:
+            self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
+                selector,
+                element_text,
+                text
+            ))
 
-            if not element_text == text:
-                self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
-                    selector,
-                    element_text,
-                    text
-                ))
-
-                return None
+            return None
 
         self.breadcrumbs.debug("Found element '%s' with text '%s'" % (
             selector,
@@ -121,26 +115,14 @@ class AssertionsPart(parts.Part):
 
         return element
 
-    def all(self, selector, condition):
-        elements = self.driver.safe(self.driver.find_elements, selector)
-        matching = [element for element in elements if condition(element)]
-
-        if not len(matching) == len(elements):
-            self.breadcrumbs.debug(
-                "Some elements for the selector '%s' don't fulfill the expected condition" % selector
-            )
-            return None
-
-        return matching
-
-    def exists(self, selector, condition = None):
+    def get(self, selector, condition = None, ensure = True):
         # tries to retrieve the complete set of elements that match
         # the provided selector and fulfill the condition if there's
         # at least one valid returns it otherwise returns invalid
-        matching = self.exists_multiple(selector, condition = condition)
+        matching = self.find(selector, condition = condition, ensure = ensure)
         return matching[0] if len(matching) > 0 else None
 
-    def exists_multiple(self, selector, condition = None):
+    def find(self, selector, condition = None, ensure = True):
         # determines if there's a valid condition provided and if that's
         # not the case sets the default condition value
         has_condition = True if condition else False
@@ -157,7 +139,7 @@ class AssertionsPart(parts.Part):
 
         # runs the filtering operation so that only the elements that match
         # the provided condition are selected (requires at least one to pass)
-        elements = [element for element in elements if condition(element)]
+        elements = [element for element in elements if condition(element, selector)]
 
         if len(elements) == 0:
             self.breadcrumbs.debug("Found elements with '%s' but none matches the condition" % selector)
@@ -169,26 +151,6 @@ class AssertionsPart(parts.Part):
         # returns the complete set of element that exist in the current context
         # and that match the requested condition
         return elements
-
-    def is_visible(self, selector, condition = None):
-        # runs the selector with the requested condition to retrieve a possible
-        # element and returns invalid if there's none
-        element = self.exists(selector, condition = condition)
-        if not element: return None
-
-        # verifies that the element is currently displayed in the screen (visible)
-        # and if not returns an invalid value
-        return element if element.is_displayed() else None
-
-    def is_not_visible(self, selector, condition = None):
-        # runs the selector with the requested condition to retrieve a possible
-        # element and returns invalid if there's none
-        element = self.exists(selector, condition = condition)
-        if not element: return None
-
-        # verifies that the element is not currently displayed in the screen
-        # (invisible) and if not returns an invalid value
-        return None if element.is_displayed() else element
 
     def _normalize_params(self, params):
         if not params: return params
