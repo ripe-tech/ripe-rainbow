@@ -50,7 +50,7 @@ class WaitsPart(parts.Part):
         )
 
     def _ensure_element(self, selector, text = None, timeout = None, ensure = True):
-        if text: condition = lambda e, s: self.logic.has_text(e, s, text)
+        if text: condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, text)
         else: condition = None
         element = self.logic.get(selector, condition = condition)
         if not element: return None

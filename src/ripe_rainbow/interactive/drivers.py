@@ -277,6 +277,8 @@ class SeleniumDriver(InteractiveDriver):
         # be displayed in the desired position, hence the optional sleep
         if sleep: time.sleep(sleep)
 
+        return element
+
     def screenshot(self, file_path):
         self.instance.save_screenshot(file_path)
 
