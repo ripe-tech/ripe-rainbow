@@ -49,7 +49,18 @@ class InteractionsPart(parts.Part):
         return self.waits.redirected_to(url)
 
     def write_text(self, selector, text):
-        element = self.driver.find_element_by_css_selector(selector)
+        """
+        Writes the text in the given element, this means having
+        it typed like in a physical keyboard.
+        :type selector: String
+        :param selector: The selector for the element to write the text in.
+        :type text: String
+        :param text: The text to write "using the keyboard".
+        :rtype: Element
+        :return: The element with the text changed.
+        """
+
+        element = self.waits.element(selector)
 
         # waits until a valid text change in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -69,12 +80,11 @@ class InteractionsPart(parts.Part):
         :type key: String
         :param key: The name of the key that is going to be pressed by
         the keyboard, this name is set on an agnostic way.
-        :type condition: Function
-        :param condition: The filter the selected element must pass to be selected.
         :rtype: Element
         :return: The element with the key pressed.
         """
-        element = self.driver.find_element_by_css_selector(selector)
+        
+        element = self.waits.element(selector)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -96,7 +106,8 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The element with the enter key pressed.
         """
-        element = self.driver.find_element_by_css_selector(selector)
+        
+        element = self.waits.element(selector)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -112,11 +123,12 @@ class InteractionsPart(parts.Part):
 
         :type selector: String
         :param selector: The selector for the element to click.
-        :type condition: Function
-        :param condition: The filter the selected element must pass to be "clickable".
+        :type text: String
+        :param text: The text the selected element must have before being clicked.
         :rtype: Element
         :return: The clicked element if there's any otherwise an invalid value.
         """
+
         element = self.waits.visible(selector, text = text)
 
         # waits until the try click operation is possible meaning that a
