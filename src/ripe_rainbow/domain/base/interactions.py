@@ -105,7 +105,7 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became interactable" % selector
         )
 
-    def click(self, selector, condition = None):
+    def click(self, selector, text = None):
         """
         Clicks an element when possible, which happens when that element is both
         visible and "clickable".
@@ -117,7 +117,7 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The clicked element if there's any otherwise an invalid value.
         """
-        element = self.driver.find_element_by_css_selector(selector)
+        element = self.waits.visible(selector, text = text)
 
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver

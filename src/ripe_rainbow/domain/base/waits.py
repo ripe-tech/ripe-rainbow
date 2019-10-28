@@ -35,24 +35,24 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
-    def visible(self, selector, text = None, timeout = None):
+    def visible(self, selector, text = None, timeout = None, ensure = True):
         return self.until(
-            lambda d: self._ensure_element(selector, text = text, timeout = timeout),
+            lambda d: self._ensure_element(selector, text = text, timeout = timeout, ensure = ensure),
             message = "Element '%s' not found or not visible" % selector,
             timeout = timeout
         )
 
     def not_visible(self, selector, timeout = None):
         return self.until(
-            lambda d: self.logic.get(selector, condition = lambda e: not e.is_displayed()),
+            lambda d: self.logic.get(selector, condition = lambda e, s: not e.is_displayed()),
             message = "Element '%s' is visible" % selector,
             timeout = timeout
         )
 
-    def _ensure_element(self, selector, text = None, timeout = None):
+    def _ensure_element(self, selector, text = None, timeout = None, ensure = True):
         if text: condition = lambda e, s: self.logic.has_text(e, s, text)
         else: condition = None
         element = self.logic.get(selector, condition = condition)
         if not element: return None
-        self.driver.ensure_visible(element, timeout = timeout)
-        return True
+        if ensure: self.driver.ensure_visible(element, timeout = timeout)
+        return element
