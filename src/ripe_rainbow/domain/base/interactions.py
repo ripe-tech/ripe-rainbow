@@ -60,7 +60,7 @@ class InteractionsPart(parts.Part):
         :return: The element with the text changed.
         """
 
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector)
 
         # waits until a valid text change in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -84,7 +84,7 @@ class InteractionsPart(parts.Part):
         :return: The element with the key pressed.
         """
         
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
@@ -107,7 +107,7 @@ class InteractionsPart(parts.Part):
         :return: The element with the enter key pressed.
         """
         
-        element = self.waits.element(selector)
+        element = self.waits.visible(selector)
 
         # waits until a valid key stroke in the element is possible, this
         # overcomes limitations with non interactable elements
