@@ -29,22 +29,11 @@ class RipeWhitePart(parts.Part):
 
         if open: self.interactions.click(".size:not(.disabled) .button-size")
 
-        if gender:
-            self.interactions.click(
-                ".size .button-gender",
-                condition = lambda element: element.text == gender
-            )
+        if gender: self.interactions.click(".size .button-gender", text = gender)
 
-        if scale:
-            self.interactions.click(
-                ".size .button-scale",
-                condition = lambda element: element.text == str(scale)
-            )
+        if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
-        self.interactions.click(
-            ".size .button-size",
-            condition = lambda element: element.text == str(size)
-        )
+        self.interactions.click(".size .button-size", text = str(size))
 
         self.interactions.click(".size .button.button-primary.button-apply")
         if wait_closed: self.waits.not_visible(".size .modal")
@@ -90,18 +79,9 @@ class RipeWhitePart(parts.Part):
         has been done (to verify the final status).
         """
 
-        self.interactions.click(
-            ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
-        )
-        self.interactions.click(
-            ".pickers .button-material[data-material='%s']" % material,
-            condition = lambda e: e.is_displayed()
-        )
-        self.interactions.click(
-            ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color),
-            condition = lambda e: e.is_displayed()
-        )
+        self.interactions.click(".pickers .button-part > p:not(.no-part)", text = self._capitalize_words(part))
+        self.interactions.click(".pickers .button-material[data-material='%s']" % material)
+        self.interactions.click(".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color))
 
         if verify:
             self.assert_part(
@@ -155,14 +135,11 @@ class RipeWhitePart(parts.Part):
         :param color_text: The expected label for the color.
         """
 
-        self.interactions.click(
-            ".pickers .button-part",
-            condition = lambda e: e.is_displayed() and e.text == self._capitalize_words(part)
-        )
+        self.interactions.click(".pickers .button-part", text = self._capitalize_words(part))
 
-        if part_text: self.waits.text(".button-part.active", part_text)
-        if color_text: self.waits.text(".button-color.active", color_text)
-        if material_text: self.waits.text(".button-material.active", material_text)
+        if part_text: self.waits.visible(".button-part.active", text = part_text)
+        if color_text: self.waits.visible(".button-color.active", text = color_text)
+        if material_text: self.waits.visible(".button-material.active", text = material_text)
 
         self.waits.until(
             lambda d: self.core.assert_swatch(
