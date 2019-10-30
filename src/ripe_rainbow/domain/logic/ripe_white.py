@@ -38,6 +38,27 @@ class RipeWhitePart(parts.Part):
         self.interactions.click(".size .button.button-primary.button-apply")
         if wait_closed: self.waits.not_visible(".size .modal")
 
+    def select_part(self, part):
+        self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
+
+    def no_part(self, part, timeout = None):
+        condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, self._capitalize_words(part))
+
+        self.waits.until(
+            lambda d: len(self.logic.find(".pickers .button-part > p", condition = condition)) == 0,
+            "The selector for the part '%s' didn't disappear" % part,
+            timeout = timeout
+        )
+
+    def no_material(self, part, material):
+        self.select_part(part)
+        self.waits.not_visible(".material li[data-material='%s']" % material)
+        self.waits.not_visible(".pickers .button-color[data-material='%s']" % material)
+
+    def no_color(self, part, color):
+        self.select_part(part)
+        self.waits.not_visible(".pickers .button-color[data-color='%s']" % color)
+
     def set_part(
         self,
         brand,
@@ -85,7 +106,7 @@ class RipeWhitePart(parts.Part):
         :param color_swatch: Whether there should be a swatch for the color.
         """
 
-        self.interactions.click(".pickers .button-part > p:not(.no-part)", text = self._capitalize_words(part))
+        self.select_part(part)
         self.interactions.click(".pickers .button-material[data-material='%s']" % material)
         self.interactions.click(".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color))
 
