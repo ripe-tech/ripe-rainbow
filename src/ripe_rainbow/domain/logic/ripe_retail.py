@@ -38,27 +38,16 @@ class RipeRetailPart(parts.Part):
         :param open: If the size modal window should be opened before selection.
         """
 
-        if open: self.interactions.click_when_possible(".size:not(.disabled) .button-size")
+        if open: self.interactions.click(".size:not(.disabled) .button-size")
 
-        if gender:
-            self.interactions.click_when_possible(
-                ".size .button-gender",
-                condition = lambda element: element.text == gender
-            )
+        if gender: self.interactions.click(".size .button-gender", text = gender)
 
-        if scale:
-            self.interactions.click_when_possible(
-                ".size .button-scale",
-                condition = lambda element: element.text == str(scale)
-            )
+        if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
-        self.interactions.click_when_possible(
-            ".size .button-size",
-            condition = lambda element: element.text == str(size)
-        )
+        self.interactions.click(".size .button-size", text = str(size))
 
-        self.interactions.click_when_possible(".size .button.button-primary.button-apply")
-        self.waits.is_not_visible(".size .modal")
+        self.interactions.click(".size .button.button-primary.button-apply")
+        self.waits.not_visible(".size .modal")
 
     def set_part(
         self,
@@ -70,7 +59,8 @@ class RipeRetailPart(parts.Part):
         part_text = None,
         material_text = None,
         color_text = None,
-        verify = True
+        verify = True,
+        has_swatch = True
     ):
         """
         Makes a change to the customization of a part and checks that the pages
@@ -99,13 +89,12 @@ class RipeRetailPart(parts.Part):
         :type verify: bool
         :param verify: If a final assertion should be performed after the selection
         has been done (to verify the final status).
+        :type has_swatch: Boolean
+        :param has_swatch: Whether there should be a swatch.
         """
 
-        self.interactions.click_when_possible(
-            ".pickers .button-part > p:not(.no-part)",
-            condition = lambda e: e.text == part.upper()
-        )
-        self.interactions.click_when_possible(
+        self.interactions.click(".pickers .button-part > p", text = part.upper())
+        self.interactions.click(
             ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color)
         )
 
@@ -118,7 +107,8 @@ class RipeRetailPart(parts.Part):
                 color,
                 part_text = part_text,
                 material_text = material_text,
-                color_text = color_text
+                color_text = color_text,
+                has_swatch = has_swatch
             )
 
     def assert_part(
@@ -130,7 +120,8 @@ class RipeRetailPart(parts.Part):
         color,
         part_text = None,
         material_text = None,
-        color_text = None
+        color_text = None,
+        has_swatch = True
     ):
         """
         Checks that the part pickers have the expected state, meaning that the
@@ -159,31 +150,32 @@ class RipeRetailPart(parts.Part):
         :param material_text: The expected label for the material.
         :type color_text: String
         :param color_text: The expected label for the color.
+        :type has_swatch: Boolean
+        :param has_swatch: Whether there should be a swatch.
         """
 
-        self.interactions.click_when_possible(
-            ".pickers .button-part",
-            condition = lambda e: e.text == part.upper()
-        )
+        self.interactions.click(".pickers .button-part", text = part.upper())
 
-        if part_text: self.waits.text(".button-part.active", part_text)
-        if color_text: self.waits.text(".button-color.active", color_text)
-        if material_text: self.waits.text(".button-material.active", material_text)
+        if part_text: self.waits.visible(".button-part.active", text = part_text)
+        if color_text: self.waits.visible(".button-color.active", text = color_text)
+        if material_text: self.waits.visible(".button-material.active", text = material_text)
 
-        self.waits.until(
-            lambda d: self.core.assert_swatch(
-                ".pickers .button-part.active .swatch > img",
-                brand, model, material, color
-            ),
-            "Part swatch didn't have the expected image."
-        )
-        self.waits.until(
-            lambda d: self.core.assert_swatch(
-                ".pickers .button-color.active .swatch > img",
-                brand, model, material, color
-            ),
-            "Color swatch didn't have the expected image."
-        )
+        if has_swatch:
+            self.waits.until(
+                lambda d: self.core.assert_swatch(
+                    ".pickers .button-part.active .swatch > img",
+                    brand, model, material, color
+                ),
+                "Part swatch didn't have the expected image."
+            )
+
+            self.waits.until(
+                lambda d: self.core.assert_swatch(
+                    ".pickers .button-color.active .swatch > img",
+                    brand, model, material, color
+                ),
+                "Color swatch didn't have the expected image."
+            )
 
     @property
     def retail_url(self):

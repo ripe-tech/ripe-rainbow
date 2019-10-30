@@ -5,7 +5,7 @@ from . import base
 from . import logic
 
 BASE_TUPLES = (
-    ("assertions", base.AssertionsPart),
+    ("logic", base.LogicPart),
     ("interactions", base.InteractionsPart),
     ("waits", base.WaitsPart)
 )

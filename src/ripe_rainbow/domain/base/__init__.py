@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import assertions
 from . import interactions
+from . import logic
 from . import waits
 
-from .assertions import AssertionsPart
 from .interactions import InteractionsPart
+from .logic import LogicPart
 from .waits import WaitsPart
