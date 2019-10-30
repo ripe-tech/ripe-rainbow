@@ -90,7 +90,7 @@ class RipeRetailPart(parts.Part):
         has been done (to verify the final status).
         """
 
-        self.interactions.click(".pickers .button-part > p:not(.no-part)", text = part.upper())
+        self.interactions.click(".pickers .button-part > p", text = part.upper())
         self.interactions.click(
             ".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color)
         )

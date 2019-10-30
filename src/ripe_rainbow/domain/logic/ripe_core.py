@@ -30,7 +30,7 @@ class RipeCorePart(parts.Part):
         :return: If the assertion was successful or not (propagation).
         """
 
-        element = self.waits.visible(selector)
+        element = self.waits.visible(selector, ensure = False)
         return self.logic.match_url(
             element.get_attribute("src"),
             self.swatch_url,
@@ -61,7 +61,7 @@ class RipeCorePart(parts.Part):
 
         if profile: expected_params["initials_profile"] = profile
 
-        element = self.waits.visible(selector)
+        element = self.waits.visible(selector, ensure = False)
         src = element.get_attribute("src")
 
         return self.logic.match_url(src, self.compose_url, params = expected_params)
