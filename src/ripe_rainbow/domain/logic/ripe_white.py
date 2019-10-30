@@ -41,7 +41,7 @@ class RipeWhitePart(parts.Part):
     def select_part(self, part):
         self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
 
-    def no_part(self, part, timeout = None):
+    def assert_no_part(self, part, timeout = None):
         condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, self._capitalize_words(part))
 
         self.waits.until(
@@ -50,12 +50,12 @@ class RipeWhitePart(parts.Part):
             timeout = timeout
         )
 
-    def no_material(self, part, material):
+    def assert_no_material(self, part, material):
         self.select_part(part)
         self.waits.not_visible(".material li[data-material='%s']" % material)
         self.waits.not_visible(".pickers .button-color[data-material='%s']" % material)
 
-    def no_color(self, part, color):
+    def assert_no_color(self, part, color):
         self.select_part(part)
         self.waits.not_visible(".pickers .button-color[data-color='%s']" % color)
 
