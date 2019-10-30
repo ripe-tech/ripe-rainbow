@@ -83,7 +83,7 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The element with the key pressed.
         """
-        
+
         element = self.waits.visible(selector)
 
         # waits until a valid key stroke in the element is possible, this
@@ -104,7 +104,7 @@ class InteractionsPart(parts.Part):
         :rtype: Element
         :return: The element with the enter key pressed.
         """
-        
+
         element = self.waits.visible(selector)
 
         # waits until a valid key stroke in the element is possible, this
