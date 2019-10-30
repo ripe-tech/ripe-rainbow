@@ -101,8 +101,6 @@ class InteractionsPart(parts.Part):
         :type selector: String
         :param selector: The selector for the element to focus when
         pressing enter.
-        :type condition: Function
-        :param condition: The filter the selected element must pass to be selected.
         :rtype: Element
         :return: The element with the enter key pressed.
         """
