@@ -53,9 +53,6 @@ class InteractiveDriver(object):
     def write_text(self, element, text, ensure = True):
         raise appier.NotImplementedError()
 
-    def press_enter(self, element, ensure = True):
-        return self.press_key(element, "enter", ensure = ensure)
-
     def click(self, element, ensure = True):
         raise appier.NotImplementedError()
 
@@ -89,6 +86,9 @@ class InteractiveDriver(object):
 
     def safe(self, method, *args, **kwargs):
         return self.wrap_outer(self.wrap_inner, method, *args, **kwargs)
+
+    def press_enter(self, element, ensure = True):
+        return self.press_key(element, "enter", ensure = ensure)
 
     @property
     def current_url(self):
