@@ -70,8 +70,7 @@ class RipeWhitePart(parts.Part):
         material_text = None,
         color_text = None,
         verify = True,
-        part_swatch = True,
-        color_swatch = True
+        has_swatch = True
     ):
         """
         Makes a change to the customization of a part and checks that the pages
@@ -100,10 +99,8 @@ class RipeWhitePart(parts.Part):
         :type verify: bool
         :param verify: If a final assertion should be performed after the selection
         has been done (to verify the final status).
-        :type part_swatch: Boolean
-        :param part_swatch: Whether there should be a swatch for the part.
-        :type color_swatch: Boolean
-        :param color_swatch: Whether there should be a swatch for the color.
+        :type has_swatch: Boolean
+        :param has_swatch: Whether there should be a swatch.
         """
 
         self.select_part(part)
@@ -120,8 +117,7 @@ class RipeWhitePart(parts.Part):
                 part_text = part_text,
                 material_text = material_text,
                 color_text = color_text,
-                part_swatch = part_swatch,
-                color_swatch = color_swatch
+                has_swatch = has_swatch
             )
 
     def assert_part(
@@ -134,8 +130,7 @@ class RipeWhitePart(parts.Part):
         part_text = None,
         material_text = None,
         color_text = None,
-        part_swatch = True,
-        color_swatch = True
+        has_swatch = True
     ):
         """
         Checks that the part pickers have the expected state, meaning that the
@@ -164,10 +159,8 @@ class RipeWhitePart(parts.Part):
         :param material_text: The expected label for the material.
         :type color_text: String
         :param color_text: The expected label for the color.
-        :type part_swatch: Boolean
-        :param part_swatch: Whether there should be a swatch for the part.
-        :type color_swatch: Boolean
-        :param color_swatch: Whether there should be a swatch for the color.
+        :type has_swatch: Boolean
+        :param has_swatch: Whether there should be a swatch.
         """
 
         self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
@@ -176,21 +169,22 @@ class RipeWhitePart(parts.Part):
         if color_text: self.waits.visible(".button-color.active", text = color_text)
         if material_text: self.waits.visible(".button-material.active", text = material_text)
 
-        if part_swatch: self.waits.until(
-            lambda d: self.core.assert_swatch(
-                ".pickers .button-part.active .swatch > img",
-                brand, model, material, color
-            ),
-            "Part swatch didn't have the expected image."
-        )
+        if has_swatch:
+            self.waits.until(
+                lambda d: self.core.assert_swatch(
+                    ".pickers .button-part.active .swatch > img",
+                    brand, model, material, color
+                ),
+                "Part swatch didn't have the expected image."
+            )
 
-        if color_swatch: self.waits.until(
-            lambda d: self.core.assert_swatch(
-                ".pickers .button-color.active .swatch > img",
-                brand, model, material, color
-            ),
-            "Color swatch didn't have the expected image."
-        )
+            self.waits.until(
+                lambda d: self.core.assert_swatch(
+                    ".pickers .button-color.active .swatch > img",
+                    brand, model, material, color
+                ),
+                "Color swatch didn't have the expected image."
+            )
 
     def url_model(self, model, brand):
         return "%s/?model=%s&brand=%s" % (self.white_url, model, brand)
