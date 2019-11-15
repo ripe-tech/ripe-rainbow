@@ -19,7 +19,7 @@ rainbow
 ## Configuration
 
 | Name | Type | Default | Description |
-| ----- | ----- | ----- |
+| ----- | ----- | ----- | ----- |
 | **LEVEL** | `str` | `INFO` | Controls the verbosity level of the attached logger. |
 | **FILTER** | `str` | `None` | The filter regex to be used by some of the loaders. |
 | **DRIVER** | `str` | `selenium` | The driver to be used for the interactive mode. |
