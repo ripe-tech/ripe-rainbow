@@ -84,7 +84,7 @@ class RipeWhitePart(parts.Part):
 
         self.interactions.click(".pickers .button-part > p:not(.no-part)", text = self._capitalize_words(part))
         self.interactions.click(".pickers .button-material[data-material='%s']" % material)
-        self.interactions.click(".pickers .button-color[data-material='%s'][data-color='%s']" % (material, color))
+        self.interactions.click(".pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))
 
         if verify:
             self.assert_part(
@@ -145,7 +145,7 @@ class RipeWhitePart(parts.Part):
         self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
 
         if part_text: self.waits.visible(".button-part.active", text = part_text)
-        if color_text: self.waits.visible(".button-color.active", text = color_text)
+        if color_text: self.waits.visible(".button-color-option.active", text = color_text)
         if material_text: self.waits.visible(".button-material.active", text = material_text)
 
         if has_swatch:
@@ -159,7 +159,7 @@ class RipeWhitePart(parts.Part):
 
             self.waits.until(
                 lambda d: self.core.assert_swatch(
-                    ".pickers .button-color.active .swatch > img",
+                    ".pickers .button-color-option.active .swatch > img",
                     brand, model, material, color
                 ),
                 "Color swatch didn't have the expected image."
