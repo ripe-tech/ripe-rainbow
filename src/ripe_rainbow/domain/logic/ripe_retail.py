@@ -200,10 +200,13 @@ class RipeRetailPart(parts.Part):
 
     @property
     def retail_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-retail-ci.platforme.com")
-        base_url = appier.conf("RETAIL_URL", base_url)
-        base_url = appier.conf("RIPE_RETAIL_URL", base_url)
-        return base_url
+        ripe_suffix = appier.conf("RIPE_SUFFIX", None)
+        if ripe_suffix: retail_url = "https://ripe-retail-%s.platforme.com" % ripe_suffix
+        else: retail_url = "http://localhost:8080"
+        retail_url = appier.conf("BASE_URL", retail_url)
+        retail_url = appier.conf("RETAIL_URL", retail_url)
+        retail_url = appier.conf("RIPE_RETAIL_URL", retail_url)
+        return retail_url
 
     @property
     def username(self):

@@ -202,10 +202,13 @@ class RipeWhitePart(parts.Part):
 
     @property
     def white_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-white-ci.platforme.com")
-        base_url = appier.conf("WHITE_URL", base_url)
-        base_url = appier.conf("RIPE_WHITE_URL", base_url)
-        return base_url
+        ripe_suffix = appier.conf("RIPE_SUFFIX", None)
+        if ripe_suffix: white_url = "https://ripe-white-%s.platforme.com" % ripe_suffix
+        else: white_url = "http://localhost:3000"
+        white_url = appier.conf("BASE_URL", white_url)
+        white_url = appier.conf("WHITE_URL", white_url)
+        white_url = appier.conf("RIPE_WHITE_URL", white_url)
+        return white_url
 
     def _capitalize_words(self, sentence):
         return " ".join(map(lambda s: s.capitalize(), sentence.split(" ")))

@@ -23,10 +23,13 @@ class RipeCopperPart(parts.Part):
 
     @property
     def copper_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-copper-ci.platforme.com")
-        base_url = appier.conf("COPPER_URL", base_url)
-        base_url = appier.conf("RIPE_COPPER_URL", base_url)
-        return base_url
+        ripe_suffix = appier.conf("RIPE_SUFFIX", None)
+        if ripe_suffix: copper_url = "https://ripe-copper-%s.platforme.com" % ripe_suffix
+        else: copper_url = "http://localhost:3000"
+        copper_url = appier.conf("BASE_URL", copper_url)
+        copper_url = appier.conf("COPPER_URL", copper_url)
+        copper_url = appier.conf("RIPE_COPPER_URL", copper_url)
+        return copper_url
 
     @property
     def base_url(self):

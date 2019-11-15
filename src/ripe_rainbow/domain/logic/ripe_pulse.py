@@ -32,10 +32,13 @@ class RipePulsePart(parts.Part):
 
     @property
     def pulse_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-pulse-ci.platforme.com")
-        base_url = appier.conf("PULSE_URL", base_url)
-        base_url = appier.conf("RIPE_PULSE_URL", base_url)
-        return base_url
+        ripe_suffix = appier.conf("RIPE_SUFFIX", None)
+        if ripe_suffix: pulse_url = "https://ripe-pulse-%s.platforme.com" % ripe_suffix
+        else: pulse_url = "http://localhost:3000"
+        pulse_url = appier.conf("BASE_URL", pulse_url)
+        pulse_url = appier.conf("PULSE_URL", pulse_url)
+        pulse_url = appier.conf("RIPE_PULSE_URL", pulse_url)
+        return pulse_url
 
     @property
     def base_url(self):

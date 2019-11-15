@@ -76,7 +76,10 @@ class RipeCorePart(parts.Part):
 
     @property
     def core_url(self):
-        core_url = appier.conf("CORE_URL", "https://ripe-core-ci.platforme.com")
+        ripe_suffix = appier.conf("RIPE_SUFFIX", None)
+        if ripe_suffix: core_url = "https://ripe-core-%s.platforme.com" % ripe_suffix
+        else: core_url = "http://localhost:8080"
+        core_url = appier.conf("CORE_URL", core_url)
         core_url = appier.conf("RIPE_CORE_URL", core_url)
         return core_url
 

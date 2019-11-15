@@ -38,11 +38,14 @@ class AdminPart(parts.Part):
 
     @property
     def root_url(self):
-        base_url = appier.conf("BASE_URL", "https://ripe-core-ci.platforme.com")
-        base_url = appier.conf("CORE_URL", base_url)
-        base_url = appier.conf("RIPE_CORE_URL", base_url)
-        base_url = appier.conf("ADMIN_URL", base_url)
-        return appier.conf("RIPE_ADMIN_URL", base_url)
+        ripe_suffix = appier.conf("RIPE_SUFFIX", None)
+        if ripe_suffix: root_url = "https://ripe-core-%s.platforme.com" % ripe_suffix
+        else: root_url = "http://localhost:8080"
+        root_url = appier.conf("BASE_URL", root_url)
+        root_url = appier.conf("CORE_URL", root_url)
+        root_url = appier.conf("RIPE_CORE_URL", root_url)
+        root_url = appier.conf("ADMIN_URL", root_url)
+        return appier.conf("RIPE_ADMIN_URL", root_url)
 
     @property
     def admin_url(self):
