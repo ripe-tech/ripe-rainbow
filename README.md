@@ -41,7 +41,7 @@ rainbow
 
 | Name | Type | Default |  Description |
 | ----- | ----- | ----- | ----- |
-| **RIPE_SUFFIX** | `str` | `None` | If defined the RIPE product URLs are suffixed with this value (eg: `-sbx` implies `https://ripe-pulse-sbx.platforme.com`). |
+| **RIPE_SUFFIX** | `str` | `None` | If defined the RIPE product URLs are suffixed with this value (eg: `sbx` implies `https://ripe-pulse-sbx.platforme.com`). |
 | **RIPE_CORE_URL** | `str` | `http://localhost:8080` | The base URL to the RIPE Core instance to be used for tests. |
 | **CORE_URL** | `str` | `http://localhost:8080` | Same as `RIPE_CORE_URL`. |
 | **RIPE_RETAIL_URL** | `str` | `http://localhost:3000` | The base URL to the RIPE Retail instance to be used for tests. |
