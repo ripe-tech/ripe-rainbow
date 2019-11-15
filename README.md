@@ -43,6 +43,10 @@ rainbow
 | ----- | ----- | ----- | ----- |
 | **RIPE_SUFFIX** | `str` | `None` | If defined the RIPE product URLs are suffixed with this value (eg: `sbx` implies `https://ripe-pulse-sbx.platforme.com`). |
 | **RIPE_CORE_URL** | `str` | `http://localhost:8080` | The base URL to the RIPE Core instance to be used for tests. |
+| **RIPE_CORE_USERNAME** | `str` | `root` | The username of an admin user to be used to access RIPE Core, it is also used in the provision operation. |
+| **CORE_USERNAME** | `str` | `root` | Same as `RIPE_CORE_USERNAME`. |
+| **RIPE_CORE_PASSWORD** | `str` | `root` | The password of an admin user to be used to access RIPE Core, it is also used in the provision operation. |
+| **CORE_PASSWORD** | `str` | `root` | Same as `RIPE_CORE_PASSWORD`. |
 | **CORE_URL** | `str` | `http://localhost:8080` | Same as `RIPE_CORE_URL`. |
 | **RIPE_RETAIL_URL** | `str` | `http://localhost:3000` | The base URL to the RIPE Retail instance to be used for tests. |
 | **RETAIL_URL** | `str` | `http://localhost:8080` | Same as `RIPE_RETAIL_URL`. |
