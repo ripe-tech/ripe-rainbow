@@ -44,7 +44,7 @@ class WaitsPart(parts.Part):
 
     def not_visible(self, selector, timeout = None):
         return self.until(
-            lambda d: self.logic.get(selector, condition = lambda e, s: not e.is_displayed()),
+            lambda d: not self.logic.get(selector, condition = lambda e, s: e.is_displayed()),
             message = "Element '%s' is visible" % selector,
             timeout = timeout
         )
