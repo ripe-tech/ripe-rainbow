@@ -35,7 +35,7 @@ class RipeWhitePart(parts.Part):
 
         self.interactions.click(".size .button-size", text = str(size))
 
-        self.interactions.click(".size .button.button-primary.button-apply")
+        self.interactions.click(".size .button.button-apply")
         if wait_closed: self.waits.not_visible(".size .modal")
 
     def select_part(self, part):
