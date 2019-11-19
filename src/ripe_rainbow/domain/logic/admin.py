@@ -48,6 +48,22 @@ class AdminPart(parts.Part):
         return appier.conf("RIPE_ADMIN_URL", root_url)
 
     @property
+    def username(self):
+        username = appier.conf("CORE_USERNAME", "root")
+        username = appier.conf("RIPE_CORE_USERNAME", username)
+        username = appier.conf("ADMIN_USERNAME", username)
+        username = appier.conf("RIPE_ADMIN_USERNAME", username)
+        return username
+
+    @property
+    def password(self):
+        password = appier.conf("CORE_PASSWORD", "root")
+        password = appier.conf("RIPE_CORE_PASSWORD", password)
+        password = appier.conf("ADMIN_PASSWORD", password)
+        password = appier.conf("RIPE_ADMIN_PASSWORD", password)
+        return password
+
+    @property
     def admin_url(self):
         return "%s/admin" % self.root_url
 
