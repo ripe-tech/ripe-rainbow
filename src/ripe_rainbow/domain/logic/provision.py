@@ -27,6 +27,10 @@ class ProvisionPart(parts.Part):
         api = api or self.export_api(base = base, ctx = ctx)
         api.reset_database()
 
+    def restore(self, api = None, reset = True):
+        if reset: self.reset(api = api)
+        self.ripe_core_minimal()
+
     def ripe_core(self, names = None, base_url = None, reset = True):
         cls = self.__class__
 
