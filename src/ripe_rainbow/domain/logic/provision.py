@@ -69,7 +69,7 @@ class ProvisionPart(parts.Part):
 
     def ripe_core_restore(self, reset = True):
         if reset: self.ripe_core_reset()
-        self.ripe_core_minimal()
+        self.ripe_core_minimal(reset = False)
 
     def ripe_core_minimal(self, names = None, base_url = None, reset = True):
         return self.ripe_core(
@@ -106,7 +106,7 @@ class ProvisionPart(parts.Part):
 
     def ripe_retail_restore(self, reset = True):
         if reset: self.ripe_retail_reset()
-        self.ripe_retail_minimal()
+        self.ripe_retail_minimal(reset = False)
 
     def ripe_retail_minimal(self, names = None, base_url = None, reset = True):
         return self.ripe_retail(
