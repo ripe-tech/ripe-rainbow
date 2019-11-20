@@ -29,10 +29,12 @@ class TestCase(appier.Observable):
         level = appier.conf("LEVEL", level)
         level = appier.conf("RAINBOW_LEVEL", level)
         level = logging.getLevelName(level.upper())
+        formatter = logging.Formatter("[breadcrumbs] %%(asctime)s [%%(levelname)s] %s%%(message)s")
         logger = logging.getLogger(name)
         handler = logging.StreamHandler()
         logger.addHandler(handler)
         handler.setLevel(level)
+        handler.setFormatter(formatter)
         logger.setLevel(level)
         TestCase._logger = logger
         return logger
