@@ -15,7 +15,7 @@ class TestCase(appier.Observable):
         appier.Observable.__init__(self, *args, **kwargs)
         self.runner = kwargs.get("runner", None)
         self.loader = kwargs.get("loader", None)
-        self.logger = kwargs.get("logger", self.__class__._build_logger())
+        self.logger = kwargs.get("logger", self.__class__._build_logger(default = True))
         self.breadcrumbs = kwargs.get(
             "breadcrumbs",
             self.__class__._build_logger(
@@ -24,8 +24,9 @@ class TestCase(appier.Observable):
         )
 
     @classmethod
-    def _build_logger(cls, name = "ripe-rainbow", level = "INFO"):
-        if hasattr(TestCase, "_logger"): return TestCase._logger
+    def _build_logger(cls, name = "ripe-rainbow", level = "INFO", default = False):
+        name_i = "_logger_" + name
+        if hasattr(TestCase, name_i): return getattr(TestCase, name_i)
         level = appier.conf("LEVEL", level)
         level = appier.conf("RAINBOW_LEVEL", level)
         level = logging.getLevelName(level.upper())
@@ -36,7 +37,7 @@ class TestCase(appier.Observable):
         handler.setLevel(level)
         handler.setFormatter(formatter)
         logger.setLevel(level)
-        TestCase._logger = logger
+        setattr(TestCase, name_i, logger)
         return logger
 
     def before(self):

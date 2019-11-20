@@ -494,13 +494,14 @@ class SeleniumDriver(InteractiveDriver):
                 y = element_height - 1
             )
 
-    def _move_to_offset(self, element, x = 0, y = 0):
+    def _move_to_offset(self, element, x = 0, y = 0, safe = False):
         from selenium.webdriver.common.action_chains import ActionChains
 
         # creates an action chain that will move the mouse into the
         # target offset of coordinates relative to the element
         actions = ActionChains(self.instance)
-        actions.move_to_element_with_offset(element, x, y)
+        if safe: actions.move_to_element_with_offset(element, x, y)
+        else: actions.w3c_actions.pointer_action.move_to(element, x, y)
         actions.perform()
 
         # returns the element that currently has the mouse pointing
