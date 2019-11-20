@@ -27,9 +27,9 @@ class ProvisionPart(parts.Part):
         api = api or self.export_api(base = base, ctx = ctx)
         api.reset_database()
 
-    def restore(self, api = None, reset = True):
-        if reset: self.reset(api = api)
-        self.ripe_core_minimal()
+    def ripe_all_restore(self, reset = True):
+        self.ripe_core_restore(reset = reset)
+        self.ripe_retail_restore(reset = reset)
 
     def ripe_core(self, names = None, base_url = None, reset = True):
         cls = self.__class__
@@ -64,15 +64,19 @@ class ProvisionPart(parts.Part):
             data = dict(items = items)
             api.import_model(model, data)
 
+    def ripe_core_reset(self):
+        self.reset(base = self.core, ctx = "core")
+
+    def ripe_core_restore(self, reset = True):
+        if reset: self.ripe_core_reset()
+        self.ripe_core_minimal()
+
     def ripe_core_minimal(self, names = None, base_url = None, reset = True):
         return self.ripe_core(
             names = names or ("account.json", ),
             base_url = base_url or "https://cdn.platforme.com/data/ripe_core_minimal/%s",
             reset = reset
         )
-
-    def ripe_core_reset(self):
-        self.reset(base = self.core, ctx = "core")
 
     def ripe_retail(self, names = None, base_url = None, reset = True):
         cls = self.__class__
@@ -97,6 +101,13 @@ class ProvisionPart(parts.Part):
             data = dict(items = items)
             api.import_model(model, data)
 
+    def ripe_retail_reset(self):
+        self.reset(base = self.retail, ctx = "retail")
+
+    def ripe_retail_restore(self, reset = True):
+        if reset: self.ripe_retail_reset()
+        self.ripe_retail_minimal()
+
     def ripe_retail_minimal(self, names = None, base_url = None, reset = True):
         return self.ripe_retail(
             names = names or ("account.json", ),
@@ -112,9 +123,6 @@ class ProvisionPart(parts.Part):
 
     def ripe_retail_emilio_pucci(self):
         self._ripe_retail_extra("emilio_pucci")
-
-    def ripe_retail_reset(self):
-        self.reset(base = self.retail, ctx = "retail")
 
     @property
     def api(self):
