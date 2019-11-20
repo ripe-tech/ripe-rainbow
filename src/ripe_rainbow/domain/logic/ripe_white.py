@@ -27,13 +27,13 @@ class RipeWhitePart(parts.Part):
         not waiting for the closing of the modal should improve performance.
         """
 
-        if open: self.interactions.click(".size:not(.disabled) .button-size")
+        if open: self.interactions.click(".size:not(.disabled) > .button-size")
 
         if gender: self.interactions.click(".size .button-gender", text = gender)
 
         if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
-        self.interactions.click(".size .button-size", text = str(size))
+        self.interactions.click(".size .sizes .button-size", text = str(size))
 
         self.interactions.click(".size .button.button-apply")
         if wait_closed: self.waits.not_visible(".size .modal")
