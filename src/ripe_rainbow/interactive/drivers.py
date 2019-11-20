@@ -501,12 +501,34 @@ class SeleniumDriver(InteractiveDriver):
         # target offset of coordinates relative to the element
         actions = ActionChains(self.instance)
         if safe: actions.move_to_element_with_offset(element, x, y)
-        else: actions.w3c_actions.pointer_action.move_to(element, x, y)
+        else: self._move_to_unsafe(actions, element, x, y)
         actions.perform()
 
         # returns the element that currently has the mouse pointing
         # to it according to the defined offset (if possible)
         return element
+
+    def _move_to_unsafe(self, actions, element, x = 0, y = 0, duration = 5):
+        instance = actions.w3c_actions.pointer_action
+
+        if not x == None or not y == None:
+            element_rect = element.rect
+            left_offset = element_rect["width"] / 2
+            top_offset = element_rect["height"] / 2
+            left = left_offset * -1 + (x or 0)
+            top = top_offset * -1 + (y or 0)
+        else:
+            left = 0
+            top = 0
+
+        instance.source.create_pointer_move(
+            duration = duration,
+            x = int(left),
+            y = int(top),
+            origin = element
+        )
+
+        return instance
 
     def _move_outside(self, element, raise_e = True):
         """
