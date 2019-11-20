@@ -135,7 +135,7 @@ class InteractionsPart(parts.Part):
         :return: The clicked element if there's any otherwise an invalid value.
         """
 
-        element = self.waits.visible(selector, text = text)
+        element = self.waits.visible(selector, text = text, ensure = False)
 
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
