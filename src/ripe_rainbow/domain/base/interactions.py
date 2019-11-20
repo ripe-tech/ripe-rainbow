@@ -7,7 +7,7 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def goto_url(self, url, params = [], fragment = ""):
+    def goto_url(self, url, params = [], fragment = "", wait = True):
         """
         Navigates to a certain URL with given GET parameters and to
         the request fragment.
@@ -15,6 +15,9 @@ class InteractionsPart(parts.Part):
         The operation is always going to be performed using a GET
         request as that's the only available request method from
         the browser.
+
+        By default the redirection is waited to verify that the final
+        redirection is performed.
 
         :type url: String
         :param url: The URL to navigate to, this should represent only
@@ -25,6 +28,9 @@ class InteractionsPart(parts.Part):
         :type fragment: String
         :param fragment: The fragment string to be added to the last part
         of the URL to be built.
+        :type wait: bool
+        :param wait: If the engine should wait until the browser URL bar
+        is set to the destination URL (could pose issues with HTTP redirection).
         :rtype: bool
         :return: The result of the redirection, if it was verified by
         the browser.
@@ -45,6 +51,8 @@ class InteractionsPart(parts.Part):
         if fragment: url += "#" + fragment
 
         self.driver.get(url)
+
+        if not wait: return
 
         return self.waits.redirected_to(url)
 
