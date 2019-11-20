@@ -38,17 +38,17 @@ class ProvisionPart(parts.Part):
             "account.json",
             "availability_rule.json",
             "ddp_rules.json",
-            "exchange_rates.json",
-            "extra_duty_rules.json",
+            "exchange_rate.json",
+            "extra_duty_rule.json",
             "factory_rule.json",
-            "hs_code_maps.json",
-            "hs_code_rules.json",
+            "hs_code_map.json",
+            "hs_code_rule.json",
             "letter_rule.json",
             "order_state.json",
             "order.json",
             "price_rule.json",
             "product.json",
-            "shipping_rules.json"
+            "shipping_rule.json"
         )
 
         base_url = base_url or "https://cdn.platforme.com/data/ripe_core/%s"
