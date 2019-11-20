@@ -32,6 +32,7 @@ class TestCase(appier.Observable):
         level = logging.getLevelName(level.upper())
         formatter = logging.Formatter("%%(asctime)s [%s] [%%(levelname)s] %%(message)s" % name)
         logger = logging.getLogger(name)
+        logger.parent = None
         handler = logging.StreamHandler()
         logger.addHandler(handler)
         handler.setLevel(level)
