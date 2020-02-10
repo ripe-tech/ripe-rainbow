@@ -135,11 +135,14 @@ class InteractionsPart(parts.Part):
         :return: The clicked element if there's any otherwise an invalid value.
         """
 
-        element = self.waits.visible(selector, text = text, ensure = False)
-
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
         return self.waits.until(
-            lambda d: self.driver.safe(self.driver.click, element),
+            lambda d: self._click(selector, text = text),
             "Element '%s' found but never became clickable" % selector
         )
+
+    def _click(self, selector, text = None):
+        element = self.waits._ensure_element(selector, text = text, ensure = False)
+        if not element: return None
+        self.driver.safe(self.driver.click, element)
