@@ -143,6 +143,22 @@ class InteractionsPart(parts.Part):
         )
 
     def _click(self, selector, text = None):
+        """
+        Inner method that takes the selector and the possible text value of
+        a target element and tries to run a click operation in it.
+
+        This method is ready to be used within a waits environment so that
+        proper repetition may happen.
+
+        :type selector: String
+        :param selector: The selector for the element to click.
+        :type text: String
+        :param text: The text the selected element must have before being clicked.
+        :rtype: Element
+        :return: The clicked element if there's any otherwise an invalid value.
+        """
+
         element = self.waits._ensure_element(selector, text = text, ensure = False)
         if not element: return None
         self.driver.safe(self.driver.click, element)
+        return element
