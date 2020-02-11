@@ -160,5 +160,4 @@ class InteractionsPart(parts.Part):
 
         element = self.waits._ensure_element(selector, text = text, ensure = False)
         if not element: return None
-        self.driver.safe(self.driver.click, element)
-        return element
+        return self.driver.safe(self.driver.click, element)
