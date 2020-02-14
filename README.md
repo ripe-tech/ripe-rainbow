@@ -48,7 +48,7 @@ rainbow
 | **CORE_USERNAME** | `str` | `root` | Same as `RIPE_CORE_USERNAME`. |
 | **RIPE_CORE_PASSWORD** | `str` | `root` | The password of an admin user to be used to access RIPE Core, it is also used in the provision operation. |
 | **CORE_PASSWORD** | `str` | `root` | Same as `RIPE_CORE_PASSWORD`. |
-| **RIPE_RETAIL_URL** | `str` | `http://localhost:3000` | The base URL to the RIPE Retail instance to be used for tests. |
+| **RIPE_RETAIL_URL** | `str` | `http://localhost:8080` | The base URL to the RIPE Retail instance to be used for tests. |
 | **RETAIL_URL** | `str` | `http://localhost:8080` | Same as `RIPE_RETAIL_URL`. |
 | **RIPE_RETAIL_USERNAME** | `str` | `root` | The username of an admin user to be used to access RIPE Retail, it is also used in the provision operation. |
 | **RETAIL_USERNAME** | `str` | `root` | Same as `RIPE_RETAIL_USERNAME`. |
