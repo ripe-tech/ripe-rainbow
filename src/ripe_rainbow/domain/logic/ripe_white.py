@@ -6,6 +6,7 @@ import appier
 from .. import parts
 
 class RipeWhitePart(parts.Part):
+
     def select_size(self, size, gender = None, scale = None, open = True, wait_closed = True):
         """
         Opens the size selection window, selects the proper scale and size and
@@ -162,6 +163,10 @@ class RipeWhitePart(parts.Part):
         :param color_text: The expected label for the color.
         :type has_swatch: Boolean
         :param has_swatch: Whether there should be a swatch.
+        :type select_part: Boolean
+        :param select_part: If it's true then the part that is being asserted
+        is clicked before the assertions start. This is mandatory when the part
+        is not selected, but unnecessary otherwise.
         """
 
         if select_part: self.select_part(part)
