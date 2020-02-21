@@ -6,7 +6,6 @@ import appier
 from .. import parts
 
 class RipeWhitePart(parts.Part):
-
     def select_size(self, size, gender = None, scale = None, open = True, wait_closed = True):
         """
         Opens the size selection window, selects the proper scale and size and
@@ -117,7 +116,8 @@ class RipeWhitePart(parts.Part):
                 part_text = part_text,
                 material_text = material_text,
                 color_text = color_text,
-                has_swatch = has_swatch
+                has_swatch = has_swatch,
+                select_part = False
             )
 
     def assert_part(
@@ -130,7 +130,8 @@ class RipeWhitePart(parts.Part):
         part_text = None,
         material_text = None,
         color_text = None,
-        has_swatch = True
+        has_swatch = True,
+        select_part = True
     ):
         """
         Checks that the part pickers have the expected state, meaning that the
@@ -163,7 +164,7 @@ class RipeWhitePart(parts.Part):
         :param has_swatch: Whether there should be a swatch.
         """
 
-        self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
+        if select_part: self.select_part(part)
 
         if part_text: self.waits.visible(".button-part.active", text = part_text)
         if color_text: self.waits.visible(".button-color-option.active", text = color_text)
