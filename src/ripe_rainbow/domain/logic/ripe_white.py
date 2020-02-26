@@ -114,7 +114,8 @@ class RipeWhitePart(parts.Part):
                 part_text = part_text,
                 material_text = material_text,
                 color_text = color_text,
-                has_swatch = has_swatch
+                has_swatch = has_swatch,
+                select_part = False
             )
 
     def assert_part(
@@ -127,7 +128,8 @@ class RipeWhitePart(parts.Part):
         part_text = None,
         material_text = None,
         color_text = None,
-        has_swatch = True
+        has_swatch = True,
+        select_part = True
     ):
         """
         Checks that the part pickers have the expected state, meaning that the
@@ -158,9 +160,14 @@ class RipeWhitePart(parts.Part):
         :param color_text: The expected label for the color.
         :type has_swatch: Boolean
         :param has_swatch: Whether there should be a swatch.
+        :type select_part: Boolean
+        :param select_part: If it's true then the part that is being asserted
+        is clicked before the assertions start. This is mandatory when the part
+        is not selected, but unnecessary otherwise. Using this option may imply
+        performance degradation as the part selection incurs animation.
         """
 
-        self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
+        if select_part: self.select_part(part)
 
         if part_text: self.waits.visible(".button-part.active", text = part_text)
         if color_text: self.waits.visible(".button-color-option.active", text = color_text)
