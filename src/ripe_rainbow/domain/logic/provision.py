@@ -24,6 +24,7 @@ class ProvisionPart(parts.Part):
         cls._CACHE.clear()
 
     def reset(self, api = None, base = None, ctx = None):
+        if not self.provision: return
         api = api or self.export_api(base = base, ctx = ctx)
         api.reset_database()
 
@@ -33,6 +34,8 @@ class ProvisionPart(parts.Part):
 
     def ripe_core(self, names = None, base_url = None, reset = True):
         cls = self.__class__
+
+        if not self.provision: return
 
         names = names or (
             "account.json",
@@ -82,6 +85,8 @@ class ProvisionPart(parts.Part):
 
     def ripe_retail(self, names = None, base_url = None, reset = True):
         cls = self.__class__
+
+        if not self.provision: return
 
         names = names or (
             "account.json",
@@ -158,6 +163,10 @@ class ProvisionPart(parts.Part):
         )
         setattr(self, name, admin_api)
         return admin_api
+
+    @property
+    def provision(self):
+        return appier.conf("PROVISION", True, cast = bool)
 
     def _ripe_retail_extra(self, brand, reset = False):
         url_prefix = "https://cdn.platforme.com/data/ripe_retail_%s/" % brand
