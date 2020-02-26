@@ -47,7 +47,7 @@ class RipeRetailPart(parts.Part):
         self.waits.not_visible(".size .modal")
 
     def select_part(self, part):
-        self.interactions.click(".pickers .button-part > p", text = part.upper())
+        self.interactions.click(".pickers .button-part[data-part='%s']" % part)
 
     def assert_no_part(self, part, timeout = None):
         condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, part.upper())
