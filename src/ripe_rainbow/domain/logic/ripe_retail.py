@@ -39,13 +39,10 @@ class RipeRetailPart(parts.Part):
         """
 
         if open: self.interactions.click(".size:not(.disabled) .button-size")
-
         if gender: self.interactions.click(".size .button-gender", text = gender)
-
         if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
         self.interactions.click(".size .button-size", text = str(size))
-
         self.interactions.click(".size .button.button-apply")
         self.waits.not_visible(".size .modal")
 
@@ -187,7 +184,7 @@ class RipeRetailPart(parts.Part):
                     ".pickers .button-part.active .swatch > img",
                     brand, model, material, color
                 ),
-                "Part swatch didn't have the expected image."
+                "Part swatch didn't have the expected image"
             )
 
             self.waits.until(
@@ -195,7 +192,7 @@ class RipeRetailPart(parts.Part):
                     ".pickers .button-color-option.active .swatch > img",
                     brand, model, material, color
                 ),
-                "Color swatch didn't have the expected image."
+                "Color swatch didn't have the expected image"
             )
 
     @property

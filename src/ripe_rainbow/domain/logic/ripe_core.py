@@ -50,7 +50,7 @@ class RipeCorePart(parts.Part):
                 initials,
                 profile = profile
             ),
-            "Personalization image was not the expected one."
+            "Personalization image was not the expected one"
         )
 
     def assert_initials_image(self, selector, model, initials, profile = None):
