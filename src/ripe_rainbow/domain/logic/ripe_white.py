@@ -166,7 +166,8 @@ class RipeWhitePart(parts.Part):
         :type select_part: Boolean
         :param select_part: If it's true then the part that is being asserted
         is clicked before the assertions start. This is mandatory when the part
-        is not selected, but unnecessary otherwise.
+        is not selected, but unnecessary otherwise. Using this option may imply
+        performance degradation as the part selection incurs animation.
         """
 
         if select_part: self.select_part(part)
