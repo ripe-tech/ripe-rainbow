@@ -28,18 +28,15 @@ class RipeWhitePart(parts.Part):
         """
 
         if open: self.interactions.click(".size:not(.disabled) > .button-size")
-
         if gender: self.interactions.click(".size .button-gender", text = gender)
-
         if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
         self.interactions.click(".size .sizes .button-size", text = str(size))
-
         self.interactions.click(".size .button.button-apply")
         if wait_closed: self.waits.not_visible(".size .modal")
 
     def select_part(self, part):
-        self.interactions.click(".pickers .button-part > p", text = self._capitalize_words(part))
+        self.interactions.click(".pickers .button-part[data-part='%s']" % part)
 
     def assert_no_part(self, part, timeout = None):
         condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, self._capitalize_words(part))
@@ -175,7 +172,7 @@ class RipeWhitePart(parts.Part):
                     ".pickers .button-part.active .swatch > img",
                     brand, model, material, color
                 ),
-                "Part swatch didn't have the expected image."
+                "Part swatch didn't have the expected image"
             )
 
             self.waits.until(
@@ -183,7 +180,7 @@ class RipeWhitePart(parts.Part):
                     ".pickers .button-color-option.active .swatch > img",
                     brand, model, material, color
                 ),
-                "Color swatch didn't have the expected image."
+                "Color swatch didn't have the expected image"
             )
 
     def url_model(self, model, brand):
