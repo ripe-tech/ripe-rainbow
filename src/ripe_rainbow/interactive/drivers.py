@@ -108,15 +108,15 @@ class InteractiveDriver(object):
         return self.press_key(element, "enter", ensure = ensure)
 
     @property
-    def tab_count(self):
-        raise appier.NotImplementedError()
-
-    @property
     def current_url(self):
         raise appier.NotImplementedError()
 
     @property
     def current_tab(self):
+        raise appier.NotImplementedError()
+
+    @property
+    def tab_count(self):
         raise appier.NotImplementedError()
 
     def _wait(self, timeout = None):
