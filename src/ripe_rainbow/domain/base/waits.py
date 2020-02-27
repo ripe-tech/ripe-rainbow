@@ -35,6 +35,16 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def nr_tabs(self, nr_tabs, timeout = None):
+        return self.until(
+            lambda d: self.driver.nr_tabs == nr_tabs,
+            message = "Expecting the number of tabs to be '%s' but is '%s'" % (
+                nr_tabs,
+                self.driver.nr_tabs
+            ),
+            timeout = timeout
+        )
+
     def visible(self, selector, text = None, timeout = None, ensure = True):
         return self.until(
             lambda d: self._ensure_element(selector, text = text, timeout = timeout, ensure = ensure),

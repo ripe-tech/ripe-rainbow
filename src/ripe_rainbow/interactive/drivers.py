@@ -78,6 +78,16 @@ class InteractiveDriver(object):
     def screenshot(self, file_path):
         raise appier.NotImplementedError()
 
+    def switch_tab(self, tab):
+        raise appier.NotImplementedError()
+
+    def close_tab(self, tab = None):
+        if self.nr_tabs <= 1: raise errors.CloseTabError(message = "There is only a single tab, so you can't close it")
+        if tab >= self.nr_tabs: raise errors.UnexistingTabError(tab = tab, tabs = self.nr_tabs)
+
+        tab = tab if tab else self.current_tab
+        return self._close_tab(tab)
+
     def wrap_outer(self, method, *args, **kwargs):
         return method(*args, **kwargs)
 
@@ -91,7 +101,15 @@ class InteractiveDriver(object):
         return self.press_key(element, "enter", ensure = ensure)
 
     @property
+    def nr_tabs(self):
+        raise appier.NotImplementedError()
+
+    @property
     def current_url(self):
+        raise appier.NotImplementedError()
+
+    @property
+    def current_tab(self):
         raise appier.NotImplementedError()
 
     def _wait(self, timeout = None):
@@ -284,6 +302,23 @@ class SeleniumDriver(InteractiveDriver):
     def screenshot(self, file_path):
         self.instance.save_screenshot(file_path)
 
+    def switch_tab(self, tab):
+        try:
+            new_window_handle = self.instance.window_handles[tab]
+            self.instance.switch_to.window(new_window_handle)
+        except IndexError:
+            raise errors.UnexistingTabError(tab = tab, tabs = self.nr_tabs)
+
+    def _close_tab(self, tab):
+        initial_tab = self.current_tab
+
+        tab_window_handle = self.instance.window_handles[tab]
+        self.instance.switch_to.window(tab_window_handle)
+        self.instance.close()
+
+        if initial_tab == tab: self.switch_tab(max(0, initial_tab - 1))
+        else: self.switch_tab(initial_tab)
+
     def wrap_outer(self, method, *args, **kwargs):
         from selenium.common.exceptions import TimeoutException
         try:
@@ -313,6 +348,14 @@ class SeleniumDriver(InteractiveDriver):
     @property
     def current_url(self):
         return self.instance.current_url
+
+    @property
+    def current_tab(self):
+        return self.instance.window_handles.index(self.instance.current_window_handle)
+
+    @property
+    def nr_tabs(self):
+        return len(self.instance.window_handles)
 
     @property
     def instance(self):
