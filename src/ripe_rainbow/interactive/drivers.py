@@ -649,7 +649,7 @@ class SeleniumDriver(InteractiveDriver):
             down = Keys.DOWN,
             page_up = Keys.PAGE_UP,
             page_down = Keys.PAGE_DOWN,
-            esc = Keys.ESC,
+            esc = Keys.ESCAPE,
             cmd = Keys.COMMAND,
             ctrl = Keys.CONTROL,
             tab = Keys.TAB,
