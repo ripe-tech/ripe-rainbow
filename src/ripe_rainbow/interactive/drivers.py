@@ -82,18 +82,7 @@ class InteractiveDriver(object):
         raise appier.NotImplementedError()
 
     def close_tab(self, tab = None):
-        if self.tab_count <= 1:
-            raise errors.CloseTabError(
-                message = "There is only a single tab, so you can't close it"
-            )
-        if tab >= self.tab_count:
-            raise errors.UnexistingTabError(
-                tab = tab,
-                tab_count = self.tab_count
-            )
-
-        tab = tab if tab else self.current_tab
-        return self._close_tab(tab)
+        raise appier.NotImplementedError()
 
     def wrap_outer(self, method, *args, **kwargs):
         return method(*args, **kwargs)
@@ -316,15 +305,29 @@ class SeleniumDriver(InteractiveDriver):
         except IndexError:
             raise errors.UnexistingTabError(tab = tab, tab_count = self.tab_count)
 
-    def _close_tab(self, tab):
-        initial_tab = self.current_tab
+    def close_tab(self, tab = None):
+        tab = tab or self.current_tab
+
+        if self.tab_count <= 1:
+            raise errors.CloseTabError(
+                message = "There is only a single tab, so you can't close it"
+            )
+        if tab >= self.tab_count:
+            raise errors.UnexistingTabError(
+                tab = tab,
+                tab_count = self.tab_count
+            )
+
+        # saves the current tab in question so that we can restore
+        # its selection at the end of the operation
+        current_tab = self.current_tab
 
         tab_window_handle = self.instance.window_handles[tab]
         self.instance.switch_to.window(tab_window_handle)
         self.instance.close()
 
-        if initial_tab == tab: self.switch_tab(max(0, initial_tab - 1))
-        else: self.switch_tab(initial_tab)
+        if current_tab == tab: self.switch_tab(max(0, current_tab - 1))
+        else: self.switch_tab(current_tab)
 
     def wrap_outer(self, method, *args, **kwargs):
         from selenium.common.exceptions import TimeoutException
