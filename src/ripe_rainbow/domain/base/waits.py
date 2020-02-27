@@ -35,6 +35,16 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def tab_count(self, tab_count, timeout = None):
+        return self.until(
+            lambda d: self.driver.tab_count == tab_count,
+            message = "Expecting the number of browser tabs to be '%s' but is '%s'" % (
+                tab_count,
+                self.driver.tab_count
+            ),
+            timeout = timeout
+        )
+
     def visible(self, selector, text = None, timeout = None, ensure = True):
         return self.until(
             lambda d: self._ensure_element(selector, text = text, timeout = timeout, ensure = ensure),
