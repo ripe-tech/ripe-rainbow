@@ -82,8 +82,15 @@ class InteractiveDriver(object):
         raise appier.NotImplementedError()
 
     def close_tab(self, tab = None):
-        if self.nr_tabs <= 1: raise errors.CloseTabError(message = "There is only a single tab, so you can't close it")
-        if tab >= self.nr_tabs: raise errors.UnexistingTabError(tab = tab, tabs = self.nr_tabs)
+        if self.tab_count <= 1:
+            raise errors.CloseTabError(
+                message = "There is only a single tab, so you can't close it"
+            )
+        if tab >= self.tab_count:
+            raise errors.UnexistingTabError(
+                tab = tab,
+                tab_count = self.tab_count
+            )
 
         tab = tab if tab else self.current_tab
         return self._close_tab(tab)
@@ -101,7 +108,7 @@ class InteractiveDriver(object):
         return self.press_key(element, "enter", ensure = ensure)
 
     @property
-    def nr_tabs(self):
+    def tab_count(self):
         raise appier.NotImplementedError()
 
     @property
@@ -307,7 +314,7 @@ class SeleniumDriver(InteractiveDriver):
             new_window_handle = self.instance.window_handles[tab]
             self.instance.switch_to.window(new_window_handle)
         except IndexError:
-            raise errors.UnexistingTabError(tab = tab, tabs = self.nr_tabs)
+            raise errors.UnexistingTabError(tab = tab, tab_count = self.tab_count)
 
     def _close_tab(self, tab):
         initial_tab = self.current_tab
@@ -354,7 +361,7 @@ class SeleniumDriver(InteractiveDriver):
         return self.instance.window_handles.index(self.instance.current_window_handle)
 
     @property
-    def nr_tabs(self):
+    def tab_count(self):
         return len(self.instance.window_handles)
 
     @property

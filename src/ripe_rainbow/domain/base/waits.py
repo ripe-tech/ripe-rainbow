@@ -35,12 +35,12 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
-    def nr_tabs(self, nr_tabs, timeout = None):
+    def tab_count(self, tab_count, timeout = None):
         return self.until(
-            lambda d: self.driver.nr_tabs == nr_tabs,
-            message = "Expecting the number of tabs to be '%s' but is '%s'" % (
-                nr_tabs,
-                self.driver.nr_tabs
+            lambda d: self.driver.tab_count == tab_count,
+            message = "Expecting the number of browser tabs to be '%s' but is '%s'" % (
+                tab_count,
+                self.driver.tab_count
             ),
             timeout = timeout
         )
