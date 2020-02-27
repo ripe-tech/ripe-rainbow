@@ -172,7 +172,7 @@ class RipeRetailPart(parts.Part):
         :param has_swatch: Whether there should be a swatch.
         """
 
-        self.interactions.click(".pickers .button-part", text = part.upper())
+        self.select_part(part)
 
         if part_text: self.waits.visible(".button-part.active", text = part_text)
         if color_text: self.waits.visible(".button-color-option.active", text = color_text)
