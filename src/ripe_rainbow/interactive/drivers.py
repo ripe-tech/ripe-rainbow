@@ -648,7 +648,12 @@ class SeleniumDriver(InteractiveDriver):
             up = Keys.UP,
             down = Keys.DOWN,
             page_up = Keys.PAGE_UP,
-            page_down = Keys.PAGE_DOWN
+            page_down = Keys.PAGE_DOWN,
+            esc = Keys.ESC,
+            cmd = Keys.COMMAND,
+            ctrl = Keys.CONTROL,
+            tab = Keys.TAB,
+            shift = Keys.SHIFT
         )
         return KEYS[name]
 
