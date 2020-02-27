@@ -19,6 +19,10 @@ class UnexistingTabError(CloseTabError):
 
     def __init__(self, *args, **kwargs):
         appier.AppierException.__init__(self, *args)
-        tab = kwargs.get("tab")
-        tab_count = kwargs.get("tab_count")
-        self.reason = "Tab '%s' doesn't exist, there are only %d tabs" % (tab, tab_count)
+        tab = kwargs["tab"]
+        tab_count = kwargs.get("tab_count", None)
+        if tab_count:
+            self.reason = "Tab '%s' doesn't exist, there are only %d tabs" %\
+                (tab, tab_count)
+        else:
+            self.reason = "Tab '%s' doesn't exist" % tab
