@@ -8,6 +8,23 @@ import appier
 
 from .. import errors
 
+LOG_LEVELS = (
+    "FINEST",
+    "FINER",
+    "FINE",
+    "INFO",
+    "WARNING",
+    "SEVERE"
+)
+
+LOG_LEVELS_M = dict(
+    FINEST = "debug",
+    FINER = "debug",
+    FINE = "info",
+    WARNING = "warn",
+    SEVERE = "error"
+)
+
 class InteractiveDriver(object):
 
     def __init__(self, owner):
@@ -713,13 +730,18 @@ class SeleniumDriver(InteractiveDriver):
         )
         return KEYS[name]
 
-    def _flush_log(self, levels = ("INFO", "WARN", "ERROR")):
+    def _flush_log(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
         try: log = self.instance.get_log("browser")
         except WebDriverException: log = []
+
         for item in log:
             if not item["level"] in levels: continue
-            self.owner.breadcrumbs.info(log)
+            if not "message" in item: continue
+            level, message = item["level"], item["message"]
+            level_n = LOG_LEVELS_M.get(level, "info")
+            level_m = getattr(self.owner.breadcrumbs, level_n)
+            level_m(message)
 
     def __is_visible(self, element):
         """
