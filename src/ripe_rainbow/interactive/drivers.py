@@ -139,6 +139,7 @@ class SeleniumDriver(InteractiveDriver):
         browser = appier.conf("SEL_BROWSER", "chrome")
         if browser == "chrome":
             options = selenium.webdriver.ChromeOptions()
+            options.add_argument("--disable-gpu")
             options.add_argument("--disable-extensions")
             options.add_argument("--headless")
             if sys.platform.startswith("linux"):
