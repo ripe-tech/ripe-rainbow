@@ -8,6 +8,23 @@ import appier
 
 from .. import errors
 
+LOG_LEVELS = (
+    "FINEST",
+    "FINER",
+    "FINE",
+    "INFO",
+    "WARNING",
+    "SEVERE"
+)
+
+LOG_LEVELS_M = dict(
+    FINEST = "debug",
+    FINER = "debug",
+    FINE = "info",
+    WARNING = "warn",
+    SEVERE = "error"
+)
+
 class InteractiveDriver(object):
 
     def __init__(self, owner):
@@ -156,6 +173,7 @@ class SeleniumDriver(InteractiveDriver):
         elif browser == "firefox":
             options = selenium.webdriver.FirefoxOptions()
             options.headless = True
+            options.set_preference("devtools.console.stdout.content", True)
             instance = selenium.webdriver.Firefox(options = options)
             try:
                 name = instance.capabilities.get("browserName", None)
@@ -397,7 +415,7 @@ class SeleniumDriver(InteractiveDriver):
             )
         else:
             raise appier.OperationalError(
-                message = "Unknown browser '%s'" % self.brownser
+                message = "Unknown browser '%s'" % self.browser
             )
 
         # in case the browser should be started maximized, then
@@ -426,7 +444,8 @@ class SeleniumDriver(InteractiveDriver):
         cls._instance.quit()
         cls._instance = None
 
-    def _selenium_options(self, browser):
+    def _selenium_options(self, browser = None):
+        browser = browser or self.browser
         return getattr(self, "_selenium_options_%s" % browser)()
 
     def _selenium_options_chrome(self):
@@ -479,7 +498,12 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
         capabilities = DesiredCapabilities.CHROME
-        capabilities["loggingPrefs"] = dict(browser = "ALL")
+        capabilities["loggingPrefs"] = dict(
+            browser = "ALL",
+            driver = "ALL",
+            client = "ALL",
+            performance = "ALL"
+        )
 
         return capabilities
 
@@ -487,7 +511,12 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
         capabilities = DesiredCapabilities.FIREFOX
-        capabilities["loggingPrefs"] = dict(browser = "ALL")
+        capabilities["loggingPrefs"] = dict(
+            browser = "ALL",
+            driver = "ALL",
+            client = "ALL",
+            performance = "ALL"
+        )
 
         return capabilities
 
@@ -713,13 +742,31 @@ class SeleniumDriver(InteractiveDriver):
         )
         return KEYS[name]
 
-    def _flush_log(self, levels = ("INFO", "WARN", "ERROR")):
+    def _flush_log(self, levels = LOG_LEVELS, browser = None):
+        browser = browser or self.browser
+        return getattr(self, "_flush_log_%s" % browser)()
+
+    def _flush_log_chrome(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
-        try: log = self.instance.get_log("browser")
-        except WebDriverException: log = []
-        for item in log:
-            if not item["level"] in levels: continue
-            self.owner.breadcrumbs.info(log)
+
+        self.owner.breadcrumbs.info("--- BROWSER LOGS ---")
+
+        for name in ("browser", "client", "driver", "performance"):
+
+            try: log = self.instance.get_log(name)
+            except WebDriverException as exception:
+                self.owner.breadcrumbs.warn(exception)
+                log = []
+
+            for item in log:
+                if not item["level"] in levels: continue
+                if not "message" in item: continue
+                level, message = item["level"], item["message"]
+                level_n = LOG_LEVELS_M.get(level, "info")
+                level_m = getattr(self.owner.breadcrumbs, level_n)
+                level_m(message)
+        
+        self.owner.breadcrumbs.info("--- END BROWSER LOGS ---")
 
     def __is_visible(self, element):
         """
