@@ -140,7 +140,9 @@ class SeleniumDriver(InteractiveDriver):
         if browser == "chrome":
             options = selenium.webdriver.ChromeOptions()
             options.add_argument("--disable-gpu")
+            options.add_argument("--disable-infobars")
             options.add_argument("--disable-extensions")
+            options.add_argument("--disable-browser-side-navigation")
             options.add_argument("--headless")
             if sys.platform.startswith("linux"):
                 options.add_argument("--disable-dev-shm-usage")
