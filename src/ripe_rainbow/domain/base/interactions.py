@@ -68,6 +68,8 @@ class InteractionsPart(parts.Part):
         :return: The element with the text changed.
         """
 
+        # waits until the element is visible for the selector and then
+        # retrieves the reference to it to be able to write text
         element = self.waits.visible(selector)
 
         # waits until a valid text change in the element is possible, this
@@ -92,6 +94,8 @@ class InteractionsPart(parts.Part):
         :return: The element with the key pressed.
         """
 
+        # waits until the element is visible for the selector and then
+        # retrieves the reference to it to be able to press the key
         element = self.waits.visible(selector)
 
         # waits until a valid key stroke in the element is possible, this
@@ -113,6 +117,8 @@ class InteractionsPart(parts.Part):
         :return: The element with the enter key pressed.
         """
 
+        # waits until the element is visible for the selector and then
+        # retrieves the reference to it to be able to press enter
         element = self.waits.visible(selector)
 
         # waits until a valid key stroke in the element is possible, this
@@ -140,6 +146,30 @@ class InteractionsPart(parts.Part):
         return self.waits.until(
             lambda d: self._click(selector, text = text),
             "Element '%s' found but never became clickable" % selector
+        )
+
+    def highlight(self, selector, text = None):
+        # waits until the element is visible for the selector and then
+        # retrieves the reference to it to be able to press enter
+        element = self.waits.visible(selector, text = text)
+
+        # waits until the highlight operation is possible for the element
+        # that has just been ensured as visible
+        return self.waits.until(
+            lambda d: self.driver.safe(self.driver.highlight, element),
+            "Element '%s' found but was not possible to highlight it" % selector
+        )
+
+    def dehighlight(self, selector, text = None):
+        # waits until the element is visible for the selector and then
+        # retrieves the reference to it to be able to press enter
+        element = self.waits.visible(selector, text = text)
+
+        # waits until the dehighlight operation is possible for the element
+        # that has just been ensured as visible
+        return self.waits.until(
+            lambda d: self.driver.safe(self.driver.dehighlight, element),
+            "Element '%s' found but was not possible to dehighlight it" % selector
         )
 
     def _click(self, selector, text = None):

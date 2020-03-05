@@ -117,9 +117,19 @@ class LogicPart(parts.Part):
 
     def get(self, selector, condition = None, ensure = True):
         # tries to retrieve the complete set of elements that match
-        # the provided selector and fulfill the condition if there's
-        # at least one valid returns it otherwise returns invalid
+        # the provided selector and fulfill the condition
         matching = self.find(selector, condition = condition, ensure = ensure)
+
+        # verifies if there are too many elements selected and raises
+        # a warning as that probably indicated that the selector is broad
+        if len(matching) > 1:
+            self.breadcrumbs.warning(
+                "Found more than one element for selector '%s', "
+                "more specific selector is required" % selector
+            )
+
+        # returns the properly selected element in case there are valid
+        # matches or an invalid value otherwise
         return matching[0] if len(matching) > 0 else None
 
     def find(self, selector, condition = None, ensure = True):

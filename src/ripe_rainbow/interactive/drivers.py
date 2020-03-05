@@ -92,6 +92,12 @@ class InteractiveDriver(object):
 
         raise appier.NotImplementedError()
 
+    def highlight(self, elements):
+        raise appier.NotImplementedError()
+
+    def dehighlight(self, elements):
+        raise appier.NotImplementedError()
+
     def screenshot(self, file_path):
         raise appier.NotImplementedError()
 
@@ -307,6 +313,20 @@ class SeleniumDriver(InteractiveDriver):
         # returns the element back to the caller method, ready to be used
         # in a chained call strategy of execution
         return element
+
+    def highlight(self, elements):
+        if not isinstance(elements, (list, tuple)):
+            elements = (elements,)
+        for element in elements:
+            self.__highlight(element)
+        return elements
+
+    def dehighlight(self, elements):
+        if not isinstance(elements, (list, tuple)):
+            elements = (elements,)
+        for element in elements:
+            self.__dehighlight(element)
+        return elements
 
     def screenshot(self, file_path):
         self.instance.save_screenshot(file_path)
@@ -824,9 +844,36 @@ class SeleniumDriver(InteractiveDriver):
             )
 
         # changes the background color of the target element to make
-        # it highlighted in constract with the other elements
+        # it highlighted in contrast with the other elements
         self.instance.execute_script(
             "arguments[0].style.backgroundColor = \"%s\";" % color,
+            element,
+        )
+
+        # in case the sleep value is set, then wait a certain amount of time
+        # to make sure the UI operations are visible, taking into consideration
+        # that due to things like transition and animations the visual operations
+        # may take some time to be presented on screen
+        if sleep: time.sleep(sleep)
+
+    def __dehighlight(self, element, sleep = None, safe = True):
+        # in case the safe flag is set then both the transition and the
+        # animation settings are re-enabled to make sure that the visual
+        # updates are restored back to the original CSS values
+        if safe:
+            self.instance.execute_script(
+                "arguments[0].style.transition = \"\";",
+                element,
+            )
+            self.instance.execute_script(
+                "arguments[0].style.animation = \"\";",
+                element,
+            )
+
+        # removes the background color value back to the "original" unset value
+        # so that top level CSS can take action
+        self.instance.execute_script(
+            "arguments[0].style.backgroundColor = \"\";",
             element,
         )
 
