@@ -809,10 +809,29 @@ class SeleniumDriver(InteractiveDriver):
         self.instance.execute_script("delete window._handler")
         self.instance.execute_script("delete window._entered")
 
-    def __highlight(self, element, color = "#ff0000"):
+    def __highlight(self, element, color = "#ff0000", sleep = None, safe = True):
+        # in case the safe flag is set then both the transition and the
+        # animation settings are disabled to make sure that the visual
+        # updates are made immediately
+        if safe:
+            self.instance.execute_script(
+                "arguments[0].style.transition = \"none\";",
+                element,
+            )
+            self.instance.execute_script(
+                "arguments[0].style.animation = \"none\";",
+                element,
+            )
+
         # changes the background color of the target element to make
         # it highlighted in constract with the other elements
         self.instance.execute_script(
             "arguments[0].style.backgroundColor = \"%s\";" % color,
             element,
         )
+
+        # in case the sleep value is set, then wait a certain amount of time
+        # to make sure the UI operations are visible, taking into consideration
+        # that due to things like transition and animations the visual operations
+        # may take some time to be presented on screen
+        if sleep: time.sleep(sleep)
