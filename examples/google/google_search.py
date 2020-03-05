@@ -14,7 +14,7 @@ class GoogleSearchTest(google_base.GoogleTest):
         self.interactions.write_text("div.a4bIc > input", "Platforme")
         self.interactions.press_enter("div.a4bIc > input")
 
-        self.waits.visible("div.g:nth-child(1) h3 > span", text = "Platforme")
+        self.waits.visible("div.g:nth-child(1) h3", text = "Platforme")
 
     @ripe_rainbow.test()
     def search_google(self):
@@ -23,4 +23,4 @@ class GoogleSearchTest(google_base.GoogleTest):
         self.interactions.write_text("div.a4bIc > input", "Google")
         self.interactions.press_enter("div.a4bIc > input")
 
-        self.waits.visible("div.g:nth-child(1) h3 > span", text = "Google")
+        self.waits.visible("div.g:nth-child(1) h3", text = "Google")
