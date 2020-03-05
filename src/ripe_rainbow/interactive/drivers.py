@@ -266,12 +266,9 @@ class SeleniumDriver(InteractiveDriver):
         # this ensures that the cursor is not "moving over" the element
         self._move_outside(element, raise_e = False)
 
-        # sets the initial value of the "entered" global variable and then registers the mouse
-        # over event listener that will change the entered flag value
-        self.instance.execute_script("window._entered = false")
-        self.instance.execute_script("window._handler = function() { window._entered = true; };")
-        self.instance.execute_script("arguments[0].addEventListener(\"mouseenter\", window._handler, true);", element)
-        self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler, true);", element)
+        # "installs" the global event listeners for visibility detection
+        # on the current target element, to be used by the try visible test
+        self.__install_listener(element)
 
         try:
             self.wrap_outer(
@@ -281,16 +278,7 @@ class SeleniumDriver(InteractiveDriver):
                 )
             )
         finally:
-            self.instance.execute_script("delete window._entered")
-            self.instance.execute_script("delete window._handler")
-            self.instance.execute_script(
-                "arguments[0].removeEventListener(\"mouseenter\", window._handler);",
-                element
-            )
-            self.instance.execute_script(
-                "arguments[0].removeEventListener(\"mouseover\", window._handler);",
-                element
-            )
+            self.__uninstall_listener(element)
 
         # returns the element object so that in can be chained in multiple
         # operations (functional design decision)
@@ -765,7 +753,7 @@ class SeleniumDriver(InteractiveDriver):
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.breadcrumbs, level_n)
                 level_m(message)
-        
+
         self.owner.breadcrumbs.info("--- END BROWSER LOGS ---")
 
     def __is_visible(self, element):
@@ -794,3 +782,25 @@ class SeleniumDriver(InteractiveDriver):
             element
         ): return True
         return False
+
+    def __install_listener(self, element):
+        # sets the initial value of the "entered" global variable and then registers the mouse
+        # over event listener that will change the entered flag value
+        self.instance.execute_script("window._entered = false")
+        self.instance.execute_script("window._handler = function() { window._entered = true; };")
+        self.instance.execute_script("arguments[0].addEventListener(\"mouseenter\", window._handler, true);", element)
+        self.instance.execute_script("arguments[0].addEventListener(\"mouseover\", window._handler, true);", element)
+
+    def __uninstall_listener(self, element):
+        # removes the complete set of global variables and event listeners associated with
+        # the "global strategy" for visibility detection of an element
+        self.instance.execute_script(
+            "arguments[0].removeEventListener(\"mouseover\", window._handler);",
+            element
+        )
+        self.instance.execute_script(
+            "arguments[0].removeEventListener(\"mouseenter\", window._handler);",
+            element
+        )
+        self.instance.execute_script("delete window._handler")
+        self.instance.execute_script("delete window._entered")
