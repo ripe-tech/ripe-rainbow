@@ -219,6 +219,7 @@ class LogicPart(parts.Part):
             element._selector,
             condition = element._condition
         ).id == element.id
+
         element._ensure_same = _ensure_same
         element._highlight = _highlight
         element._lowlight = _lowlight
