@@ -697,7 +697,7 @@ class SeleniumDriver(InteractiveDriver):
         # of the current screen (best possible strategy)
         if strategy == "scroll_to": self.scroll_to(element)
 
-        # moves the element back to the outside of it and so that there's
+        # moves the element back to the outside of it, so that there's
         # a mouse movement one more time (skeptical move)
         self._move_outside(element, raise_e = False)
 
@@ -770,11 +770,16 @@ class SeleniumDriver(InteractiveDriver):
 
     def __is_visible(self, element):
         """
-        Internal method that verifies the visibility/intractability
+        Internal method that verifies the visibility/interactability
         of the provided element taking into account a series of
         previously inserted setup operation.
 
-        Should be used with proper care to avoid unwanted behaviour.
+        There are two strategies within this method one that uses the
+        entered flag on window (previously installed handlers) and
+        another (unsafer) that uses the :hover query selector.
+
+        Should be used with proper care to avoid unwanted behaviour as
+        it's considered an extremely low level function.
 
         :type element: Element
         :param element: The element to validated for visibility and/or

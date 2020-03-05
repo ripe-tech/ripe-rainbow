@@ -141,6 +141,8 @@ class LogicPart(parts.Part):
         # the provided condition are selected (requires at least one to pass)
         elements = [element for element in elements if condition(element, selector)]
 
+        # prints the proper debug message for diagnostics taking into account
+        # the kind of selection that has been performed in the elements
         if len(elements) == 0:
             self.breadcrumbs.debug("Found elements with '%s' but none matches the condition" % selector)
         elif has_condition:
