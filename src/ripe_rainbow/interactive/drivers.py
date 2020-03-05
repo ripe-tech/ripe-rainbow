@@ -95,7 +95,7 @@ class InteractiveDriver(object):
     def highlight(self, elements):
         raise appier.NotImplementedError()
 
-    def dehighlight(self, elements):
+    def lowlight(self, elements):
         raise appier.NotImplementedError()
 
     def screenshot(self, file_path):
@@ -321,11 +321,11 @@ class SeleniumDriver(InteractiveDriver):
             self.__highlight(element)
         return elements
 
-    def dehighlight(self, elements):
+    def lowlight(self, elements):
         if not isinstance(elements, (list, tuple)):
             elements = (elements,)
         for element in elements:
-            self.__dehighlight(element)
+            self.__lowlight(element)
         return elements
 
     def screenshot(self, file_path):
@@ -458,6 +458,7 @@ class SeleniumDriver(InteractiveDriver):
 
     def _selenium_options(self, browser = None):
         browser = browser or self.browser
+        if not hasattr(self, "_selenium_options_%s" % browser): return None
         return getattr(self, "_selenium_options_%s" % browser)()
 
     def _selenium_options_chrome(self):
@@ -761,6 +762,7 @@ class SeleniumDriver(InteractiveDriver):
 
     def _flush_log(self, levels = LOG_LEVELS, browser = None):
         browser = browser or self.browser
+        if not hasattr(self, "_flush_log_%s" % browser): return
         return getattr(self, "_flush_log_%s" % browser)()
 
     def _flush_log_chrome(self, levels = LOG_LEVELS):
@@ -857,7 +859,7 @@ class SeleniumDriver(InteractiveDriver):
         # may take some time to be presented on screen
         if sleep: time.sleep(sleep)
 
-    def __dehighlight(self, element, sleep = None, safe = True):
+    def __lowlight(self, element, sleep = None, safe = True):
         # in case the safe flag is set then both the transition and the
         # animation settings are re-enabled to make sure that the visual
         # updates are restored back to the original CSS values

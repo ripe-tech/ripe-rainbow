@@ -204,6 +204,13 @@ class LogicPart(parts.Part):
             if element._is_same(): return
             message = message or "Element (%s) is not the same" % element._text()
             raise Exception(message)
+
+        def _highlight():
+            self.driver.highlight(element)
+
+        def _lowlight():
+            self.driver.lowlight(element)
+
         element._selector = selector
         element._condition = condition
         element._condition_description = getattr(condition, "_description", None)
@@ -213,5 +220,8 @@ class LogicPart(parts.Part):
             condition = element._condition
         ).id == element.id
         element._ensure_same = _ensure_same
+        element._highlight = _highlight
+        element._lowlight = _lowlight
+
         element._attr = lambda k, v = None: self.driver.instance.execute_script("arguments[0].%s = \"%s\";" % (k, v), element) if\
             v else self.driver.instance.execute_script("return arguments[0].%s;" % k, element)

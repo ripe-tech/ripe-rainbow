@@ -163,16 +163,16 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but was not possible to highlight it" % selector
         )
 
-    def dehighlight(self, selector, text = None):
+    def lowlight(self, selector, text = None):
         # waits until the element is visible for the selector and then
         # retrieves the reference to it to be able to press enter
         element = self.waits.visible(selector, text = text)
 
-        # waits until the dehighlight operation is possible for the element
+        # waits until the lowlight operation is possible for the element
         # that has just been ensured as visible
         return self.waits.until(
-            lambda d: self.driver.safe(self.driver.dehighlight, element),
-            "Element '%s' found but was not possible to dehighlight it" % selector
+            lambda d: self.driver.safe(self.driver.lowlight, element),
+            "Element '%s' found but was not possible to lowlight it" % selector
         )
 
     @property
