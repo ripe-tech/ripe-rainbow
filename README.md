@@ -21,6 +21,7 @@ rainbow
 | Name | Type | Default | Description |
 | ----- | ----- | ----- | ----- |
 | **LEVEL** | `str` | `INFO` | Controls the verbosity level of the attached logger. |
+| **SILENT** | `bool` | `False` | If the test execution should run under silent mode (no stdout from logs). |
 | **FILTER** | `str` | `None` | The filter regex to be used by some of the loaders. |
 | **DRIVER** | `str` | `selenium` | The driver to be used for the interactive mode. |
 | **TIMEOUT** | `int` | `15` | The timeout in seconds to be used by default for interactions under the interactive testing mode. |
@@ -30,6 +31,8 @@ rainbow
 | **STACKTRACES_PATH** | `bool` | `.` | The base path to be used to save the stacktraces log. |
 | **SCREENSHOTS** | `bool` | `False` | If screenshots should be save on failure of tests. |
 | **SCREENSHOTS_PATH** | `bool` | `.` | The base path to be used to save the screenshots. |
+| **STORE_LOGS** | `bool` | `False` | If the log files from the multiple logs should be store in case of test failure. |
+| **LOGS_PATH** | `bool` | `.` | The base path to be used to save the log files on failure. |
 | **SEL_SECURE** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) engine should be executed under a secure approach (should be slower). |
 | **SEL_BROWSER** | `str` | `chrome` | The browser engine that is going to be used by Selenium (eg: `chrome`, `firefox`). |
 | **SEL_MAXIMIZED** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode. |

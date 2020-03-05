@@ -7,7 +7,7 @@ from .. import parts
 
 class InteractionsPart(parts.Part):
 
-    def goto_url(self, url, params = [], fragment = "", wait = True):
+    def goto_url(self, url, redirect_url = None, params = [], fragment = "", wait = True):
         """
         Navigates to a certain URL with given GET parameters and to
         the request fragment.
@@ -22,6 +22,9 @@ class InteractionsPart(parts.Part):
         :type url: String
         :param url: The URL to navigate to, this should represent only
         the base URL without GET parameters and fragment.
+        :type redirect_url: String
+        :param redirect_url: The target URL of the redirection (if different
+        from the target one) to be used in the wait verification.
         :type params: list
         :param params: A list of (key, values) tuples representing
         the GET query parameters to be added to the base URL
@@ -54,7 +57,7 @@ class InteractionsPart(parts.Part):
 
         if not wait: return
 
-        return self.waits.redirected_to(url)
+        return self.waits.redirected_to(redirect_url or url)
 
     def write_text(self, selector, text):
         """
@@ -171,6 +174,10 @@ class InteractionsPart(parts.Part):
             lambda d: self.driver.safe(self.driver.dehighlight, element),
             "Element '%s' found but was not possible to dehighlight it" % selector
         )
+
+    @property
+    def url(self):
+        return self.driver.current_url
 
     def _click(self, selector, text = None):
         """

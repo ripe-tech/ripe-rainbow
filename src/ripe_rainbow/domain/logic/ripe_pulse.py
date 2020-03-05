@@ -14,7 +14,7 @@ class RipePulsePart(parts.Part):
         self.id.login_wait(redirect_url = redirect_url)
 
     def logout(self):
-        self.driver.get(self.signout_url)
+        self.interactions.goto_url(self.signout_url, redirect_url = self.home_url)
 
     def logout_wait(self, redirect_url = None):
         redirect_url = redirect_url or self.home_url

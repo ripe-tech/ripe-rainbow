@@ -18,14 +18,14 @@ class RipeIdPart(parts.Part):
         self.interactions.click(".button-platforme")
 
         self.waits.redirected_to((self.login_url, redirect_url))
-        if self.driver.current_url.startswith(redirect_url): return
+        if self.interactions.url.startswith(redirect_url): return
 
         self.interactions.write_text(".form input[name='username']", username)
         self.interactions.write_text(".form input[name='password']", password)
         self.interactions.press_enter(".form input[name='password']")
 
         self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
-        if self.driver.current_url.startswith(redirect_url): return
+        if self.interactions.url.startswith(redirect_url): return
 
         self.interactions.click(".form .button-blue")
 

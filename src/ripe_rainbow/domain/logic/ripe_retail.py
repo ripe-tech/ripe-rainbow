@@ -10,12 +10,9 @@ class RipeRetailPart(parts.Part):
     def login(self, username, password):
         self.interactions.goto_url(self.login_url)
 
-        form = self.driver.find_element(".form")
-        username_input = form.find_element_by_name("username")
-        self.driver.write_text(username_input, username)
-        password_input = form.find_element_by_name("password")
-        self.driver.write_text(password_input, password)
-        self.driver.press_enter(password_input)
+        self.interactions.write_text(".form input[name='username']", username)
+        self.interactions.write_text(".form input[name='password']", password)
+        self.interactions.press_enter(".form input[name='password']")
 
     def login_wait(self, username, password):
         self.login(username, password)

@@ -7,6 +7,7 @@ import appier
 
 import logging
 
+from . import util
 from . import errors
 
 class TestCase(appier.Observable):
@@ -22,30 +23,74 @@ class TestCase(appier.Observable):
                 name = "ripe-rainbow-breadcrumbs"
             )
         )
+        self.browser_logger = kwargs.get(
+            "browser_logger",
+            self.__class__._build_logger(
+                name = "ripe-rainbow-browser"
+            )
+        )
 
     @classmethod
-    def _build_logger(cls, name = "ripe-rainbow", level = "INFO", default = False):
+    def _build_logger(
+        cls,
+        name = "ripe-rainbow",
+        level = "INFO",
+        silent = False,
+        default = False
+    ):
+        # builds the unique instance base level name for the logger
+        # and then verifies it is already registered in the class, if
+        # that's the case returns the logger instance immediately
         name_i = "_logger_" + name
+        memory_i = "_memory_" + name
         if hasattr(TestCase, name_i): return getattr(TestCase, name_i)
+
+        # "computes" the proper verbosity level to be applied to the
+        # standard output stream logger handler
         level = appier.conf("LEVEL", level)
         level = appier.conf("RAINBOW_LEVEL", level)
         level = logging.getLevelName(level.upper())
+
+        # "calculates" the final value for the silent mode (no standard
+        # stream handlers) taking the configuration values into consideration
+        silent = appier.conf("SILENT", silent, cast = bool)
+        silent = appier.conf("RAINBOW_SILENT", silent, cast = bool)
+
         formatter = logging.Formatter("%%(asctime)s [%s] [%%(levelname)s] %%(message)s" % name)
+
         logger = logging.getLogger(name)
         logger.parent = None
-        handler = logging.StreamHandler()
-        logger.addHandler(handler)
-        handler.setLevel(level)
-        handler.setFormatter(formatter)
-        logger.setLevel(level)
+        logger.setLevel(logging.DEBUG)
+
+        if not silent:
+            handler = logging.StreamHandler()
+            handler.setLevel(level)
+            handler.setFormatter(formatter)
+            handler._name = name
+            logger.addHandler(handler)
+
+        memory_handler = appier.MemoryHandler()
+        memory_handler.setLevel(logging.DEBUG)
+        memory_handler.setFormatter(formatter)
+        memory_handler._name = name
+        logger.addHandler(memory_handler)
+
         setattr(TestCase, name_i, logger)
+        setattr(TestCase, memory_i, memory_handler)
+
+        memory_handlers = getattr(TestCase, "_memory_handlers", [])
+        memory_handlers.append(memory_handler)
+        setattr(TestCase, "_memory_handlers", memory_handlers)
+
         return logger
 
     def before(self):
         pass
 
     def after(self):
-        pass
+        memory_handlers = getattr(TestCase, "_memory_handlers", [])
+        for memory_handler in memory_handlers:
+            memory_handler.clear()
 
     def succeeded(self, test, ctx = None):
         pass

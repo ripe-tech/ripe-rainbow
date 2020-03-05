@@ -32,8 +32,10 @@ class InteractiveTestCase(test_cases.TestCase):
 
     def failed(self, test, exception, ctx = None):
         test_cases.TestCase.failed(self, test, exception)
+        self.driver._flush_log()
         self._stacktrace(test, ctx = ctx)
         self._screenshot(test, ctx = ctx)
+        self._store_logs(test, ctx = ctx)
 
     def load_driver(self, start = True):
         driver_s = appier.conf("DRIVER", "selenium")
@@ -80,3 +82,20 @@ class InteractiveTestCase(test_cases.TestCase):
         screen_path = os.path.abspath(screen_path)
         screen_path = os.path.normpath(screen_path)
         self.driver.screenshot(screen_path)
+
+    def _store_logs(self, test, ctx = None):
+        if not appier.conf("STORE_LOGS", True, cast = bool): return
+        if not self.driver: return
+        ctx = ctx or {}
+        index = ctx.get("index", 0)
+        repeat = ctx.get("repeat", 1)
+        extra_s = "-%d" % (index + 1) if repeat > 1 else ""
+        base_path = appier.conf("LOGS_PATH", ".")
+        test_name = util.test_fullname(test)
+        if not os.path.exists(base_path): os.makedirs(base_path)
+        memory_handlers = getattr(test_cases.TestCase, "_memory_handlers", [])
+        for memory_handler in memory_handlers:
+            log_path = os.path.join(base_path, test_name + extra_s + ".%s.log" % memory_handler._name)
+            log_path = os.path.abspath(log_path)
+            log_path = os.path.normpath(log_path)
+            memory_handler.flush_to_file(log_path, clear = False)

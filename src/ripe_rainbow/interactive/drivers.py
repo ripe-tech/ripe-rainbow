@@ -766,13 +766,11 @@ class SeleniumDriver(InteractiveDriver):
     def _flush_log_chrome(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
 
-        self.owner.breadcrumbs.info("--- BROWSER LOGS ---")
-
         for name in ("browser", "client", "driver", "performance"):
 
             try: log = self.instance.get_log(name)
             except WebDriverException as exception:
-                self.owner.breadcrumbs.warn(exception)
+                self.owner.browser_logger.warn(exception)
                 log = []
 
             for item in log:
@@ -780,10 +778,8 @@ class SeleniumDriver(InteractiveDriver):
                 if not "message" in item: continue
                 level, message = item["level"], item["message"]
                 level_n = LOG_LEVELS_M.get(level, "info")
-                level_m = getattr(self.owner.breadcrumbs, level_n)
-                level_m(message)
-
-        self.owner.breadcrumbs.info("--- END BROWSER LOGS ---")
+                level_m = getattr(self.owner.browser_logger, level_n)
+                level_m(message.strip())
 
     def __is_visible(self, element):
         """
