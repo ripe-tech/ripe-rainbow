@@ -39,11 +39,10 @@ class RipeWhitePart(parts.Part):
         self.interactions.click(".pickers .button-part[data-part='%s']" % part)
 
     def assert_no_part(self, part, timeout = None):
-        condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, self._capitalize_words(part))
-
-        self.waits.until(
-            lambda d: len(self.logic.find(".pickers .button-part > p", condition = condition)) == 0,
-            "The selector for the part '%s' didn't disappear" % part,
+        self.waits.not_visible(
+            ".pickers .button-part > p",
+            text = self._capitalize_words(part),
+            message = "The selector for the part '%s' didn't disappear" % part,
             timeout = timeout
         )
 

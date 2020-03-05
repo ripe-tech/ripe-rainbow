@@ -280,7 +280,7 @@ class SeleniumDriver(InteractiveDriver):
             self.wrap_outer(
                 lambda: self._wait(timeout = timeout).until(
                     lambda d: self._try_visible(element),
-                    "Element never became visible"
+                    "Element (%s) never became visible" % element._text()
                 )
             )
         except Exception:

@@ -9,7 +9,7 @@ class WaitsPart(parts.Part):
         return self.driver.wrap_outer(
             lambda: self.driver._wait(timeout = timeout).until(
                 lambda *args: self.driver.wrap_inner(method, *args),
-                message = message
+                message = message or "Method was not validated"
             )
         )
 
@@ -19,6 +19,7 @@ class WaitsPart(parts.Part):
         params = None,
         fragment = None,
         starts_with = False,
+        message = None,
         timeout = None
     ):
         return self.until(
@@ -28,41 +29,89 @@ class WaitsPart(parts.Part):
                 fragment = fragment,
                 starts_with = starts_with
             ),
-            message = "Expecting the page to be '%s' but is '%s'" % (
+            message = message or "Expecting the page to be '%s' but is '%s'" % (
                 url,
                 self.driver.current_url
             ),
             timeout = timeout
         )
 
-    def tab_count(self, tab_count, timeout = None):
+    def tab_count(self, tab_count, message = None, timeout = None):
         return self.until(
             lambda d: self.driver.tab_count == tab_count,
-            message = "Expecting the number of browser tabs to be '%s' but is '%s'" % (
+            message = message or "Expecting the number of browser tabs to be '%s' but is '%s'" % (
                 tab_count,
                 self.driver.tab_count
             ),
             timeout = timeout
         )
 
-    def visible(self, selector, text = None, timeout = None, ensure = True):
+    def visible(
+        self,
+        selector,
+        text = None,
+        ensure = True,
+        message = None,
+        timeout = None
+    ):
         return self.until(
-            lambda d: self._ensure_element(selector, text = text, timeout = timeout, ensure = ensure),
-            message = "Element '%s' not found or not visible" % selector,
+            lambda d: self._get_element(
+                selector,
+                text = text,
+                timeout = timeout,
+                displayed = True,
+                visible = ensure
+            ),
+            message = message or "Element '%s' not found or not visible" % selector,
             timeout = timeout
         )
 
-    def not_visible(self, selector, timeout = None):
+    def not_visible(
+        self,
+        selector,
+        text = None,
+        ensure = False,
+        message = None,
+        timeout = None
+    ):
         return self.until(
-            lambda d: not self.logic.get(selector, condition = lambda e, s: e.is_displayed()),
-            message = "Element '%s' is visible" % selector,
+            lambda d: not self._get_element(
+                selector,
+                text = text,
+                timeout = timeout,
+                displayed = True,
+                visible = ensure
+            ),
+            message = message or "Element '%s' was found and is visible" % selector,
             timeout = timeout
         )
 
-    def _ensure_element(self, selector, text = None, timeout = None, ensure = True):
-        if text: condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, text)
-        else: condition = None
+    def _get_element(
+        self,
+        selector,
+        text = None,
+        timeout = None,
+        displayed = True,
+        visible = True
+    ):
+        condition = None
+        if text:
+            condition = self._build_condition(
+                lambda e, s: self.logic.has_text(e, s, text),
+                description = "text='%s'" % text
+            )
         element = self.logic.get(selector, condition = condition)
         if not element: return None
-        if ensure: self.driver.ensure_visible(element, timeout = timeout)
+        if displayed:
+            try: self.driver.scroll_to(element)
+            except Exception: return None
+            result = element.is_displayed()
+            if not result: return None
+        if visible:
+            try: self.driver.ensure_visible(element, timeout = timeout)
+            except Exception: return None
         return element
+
+    def _build_condition(self, callable, description = None):
+        callable._description = description
+        return callable

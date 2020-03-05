@@ -188,6 +188,11 @@ class InteractionsPart(parts.Part):
         :return: The clicked element if there's any otherwise an invalid value.
         """
 
-        element = self.waits._ensure_element(selector, text = text, ensure = False)
+        element = self.waits._get_element(
+            selector,
+            text = text,
+            displayed = False,
+            visible = False
+        )
         if not element: return None
         return self.driver.safe(self.driver.click, element)

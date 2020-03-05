@@ -13,19 +13,16 @@ class RipeIdPart(parts.Part):
         if not username or not password:
             self.skip(message = "No RIPE ID credentials available")
 
-        self.driver.get(self.home_url)
+        self.interactions.goto_url(self.home_url)
 
         self.interactions.click(".button-platforme")
 
         self.waits.redirected_to((self.login_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
 
-        form = self.driver.find_element(".form")
-        username_input = form.find_element_by_name("username")
-        self.driver.write_text(username_input, username)
-        password_input = form.find_element_by_name("password")
-        self.driver.write_text(password_input, password)
-        self.driver.press_enter(password_input)
+        self.interactions.write_text(".form input[name='username']", username)
+        self.interactions.write_text(".form input[name='password']", password)
+        self.interactions.press_enter(".form input[name='password']")
 
         self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
         if self.driver.current_url.startswith(redirect_url): return
@@ -42,7 +39,7 @@ class RipeIdPart(parts.Part):
         self.waits.redirected_to(redirect_url)
 
     def logout(self):
-        self.driver.get(self.logout_url)
+        self.interactions.goto_url(self.logout_url)
 
     def logout_wait(self, redirect_url = None):
         redirect_url = redirect_url or self.login_url

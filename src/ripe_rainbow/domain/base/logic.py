@@ -89,15 +89,28 @@ class LogicPart(parts.Part):
         # against the provided URL
         return False
 
-    def has_text(self, element, selector, text):
+    def has_text(self, element, selector, text, safe = True):
         text = appier.legacy.u(text)
 
         if not element: return None
 
         # tries to retrieve the text (value) from the element taking into consideration
         # the kind of element that is being validation
-        if element.tag_name == "input": element_text = element.get_attribute("value")
-        else: element_text = element.text
+        if element.tag_name == "input":
+            # retrieves the DOM value attribute for the element as the
+            # textual representation for it
+            element_text = element.get_attribute("value")
+        else:
+            # scroll the current viewport to the element selection so that it's
+            # safer to verify the text content of it, the underlying driver under
+            # some conditions requires viewport visibility to verify the text
+            if safe: self.driver.safe(self.driver.scroll_to, element)
+
+            # retrieves the visual textual representation of the element as the
+            # value for the element text, this value is only guaranteed to be valid
+            # in case the element is visible on the viewport (display not none and
+            # opacity greater than zero)
+            element_text = element.text
 
         if not element_text == text:
             self.breadcrumbs.debug("Element '%s' found but has text '%s' instead of '%s'" % (
@@ -115,10 +128,10 @@ class LogicPart(parts.Part):
 
         return element
 
-    def get(self, selector, condition = None, ensure = True):
+    def get(self, selector, condition = None):
         # tries to retrieve the complete set of elements that match
         # the provided selector and fulfill the condition
-        matching = self.find(selector, condition = condition, ensure = ensure)
+        matching = self.find(selector, condition = condition)
 
         # verifies if there are too many elements selected and raises
         # a warning as that probably indicated that the selector is broad
@@ -132,7 +145,7 @@ class LogicPart(parts.Part):
         # matches or an invalid value otherwise
         return matching[0] if len(matching) > 0 else None
 
-    def find(self, selector, condition = None, ensure = True):
+    def find(self, selector, condition = None):
         # determines if there's a valid condition provided and if that's
         # not the case sets the default condition value
         has_condition = True if condition else False
@@ -150,6 +163,16 @@ class LogicPart(parts.Part):
         # runs the filtering operation so that only the elements that match
         # the provided condition are selected (requires at least one to pass)
         elements = [element for element in elements if condition(element, selector)]
+        
+        # iterates over the complete set of selected elements to monkey patch
+        # them with the extra domain specific symbols to allow extra information
+        # and interaction to be accessible at an element level
+        for element in elements:
+            self._patch_element(
+                element,
+                selector = selector,
+                condition = condition
+            )
 
         # prints the proper debug message for diagnostics taking into account
         # the kind of selection that has been performed in the elements
@@ -175,3 +198,15 @@ class LogicPart(parts.Part):
             if not key in first: return False
             if not first[key] == second[key]: return False
         return True
+    
+    def _patch_element(self, element, selector = None, condition = None):
+        element._selector = selector
+        element._condition = condition
+        element._condition_description = getattr(condition, "_description", None)
+        element._text = lambda: "%s %s" % (element._selector, element._condition_description or "")
+        element._is_same = lambda: self.get(
+            element._selector,
+            condition = element._condition
+        ).id == element.id
+        element._attr = lambda k, v = None: self.driver.instance.execute_script("arguments[0].%s = \"%s\";" % (k, v), element) if\
+            v else self.driver.instance.execute_script("return arguments[0].%s;" % k, element)

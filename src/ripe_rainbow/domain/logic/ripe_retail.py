@@ -8,7 +8,7 @@ from .. import parts
 class RipeRetailPart(parts.Part):
 
     def login(self, username, password):
-        self.driver.get(self.login_url)
+        self.interactions.goto_url(self.login_url)
 
         form = self.driver.find_element(".form")
         username_input = form.find_element_by_name("username")
@@ -50,11 +50,10 @@ class RipeRetailPart(parts.Part):
         self.interactions.click(".pickers .button-part[data-part='%s']" % part)
 
     def assert_no_part(self, part, timeout = None):
-        condition = lambda e, s: self.driver.scroll_to(e) and self.logic.has_text(e, s, part.upper())
-
-        self.waits.until(
-            lambda d: len(self.logic.find(".pickers .button-part > p", condition = condition)) == 0,
-            "The selector for the part '%s' didn't disappear" % part,
+        self.waits.not_visible(
+            ".pickers .button-part > p",
+            text = part.upper(),
+            message = "The selector for the part '%s' didn't disappear" % part,
             timeout = timeout
         )
 
