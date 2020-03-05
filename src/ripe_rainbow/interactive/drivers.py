@@ -283,7 +283,7 @@ class SeleniumDriver(InteractiveDriver):
                     "Element (%s) never became visible" % element._text()
                 )
             )
-        except Exception:
+        except errors.TimeoutError:
             try: self.__highlight(element)
             except Exception: pass
             raise
