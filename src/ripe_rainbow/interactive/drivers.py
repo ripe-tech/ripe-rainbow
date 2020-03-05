@@ -686,6 +686,11 @@ class SeleniumDriver(InteractiveDriver):
     def _try_visible(self, element, strategy = "scroll_to"):
         from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
+        # makes sure that the element in testing is still the same that
+        # has been originally selected (avoiding possible new elements with
+        # the same selection criteria from being used)
+        element._ensure_same()
+
         # prints some debug information on the retry of the visibility
         # test for the element in question
         self.owner.breadcrumbs.debug("Trying visibility on element '%s'" % element.id)
