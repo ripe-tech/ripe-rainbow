@@ -200,10 +200,22 @@ class LogicPart(parts.Part):
         return True
 
     def _patch_element(self, element, selector = None, condition = None):
+        def _is_same():
+            _element = self.get(element._selector, condition = element._condition)
+            return _element.id == element.id
+
         def _ensure_same(message = None):
             if element._is_same(): return
             message = message or "Element (%s) is not the same" % element._text()
-            raise Exception(message)
+            raise appier.OperationalError(message = message)
+
+        def _text():
+            description_s = " %s" % element._condition_description if element._condition_description else ""
+            return "%s%s" % (element._selector, description_s)
+
+        def _attr(key, value):
+            if value: return self.driver.instance.execute_script("arguments[0].%s = \"%s\";" % (key, value), element)
+            return self.driver.instance.execute_script("return arguments[0].%s;" % key, element)
 
         def _highlight():
             self.driver.highlight(element)
@@ -214,15 +226,10 @@ class LogicPart(parts.Part):
         element._selector = selector
         element._condition = condition
         element._condition_description = getattr(condition, "_description", None)
-        element._text = lambda: "%s%s" % (element._selector, " %s" % element._condition_description if element._condition_description else "")
-        element._is_same = lambda: self.get(
-            element._selector,
-            condition = element._condition
-        ).id == element.id
 
+        element._is_same = _is_same
         element._ensure_same = _ensure_same
+        element._text = _text
+        element._attr = _attr
         element._highlight = _highlight
         element._lowlight = _lowlight
-
-        element._attr = lambda k, v = None: self.driver.instance.execute_script("arguments[0].%s = \"%s\";" % (k, v), element) if\
-            v else self.driver.instance.execute_script("return arguments[0].%s;" % k, element)

@@ -234,6 +234,8 @@ class SeleniumDriver(InteractiveDriver):
         # is visible in an interactable way
         if ensure: self.ensure_visible(element)
 
+        # sends the complete set of keys defined in the text
+        # to the element and then returns it
         element.send_keys(text)
         return element
 
