@@ -277,6 +277,10 @@ class SeleniumDriver(InteractiveDriver):
                     "Element never became visible"
                 )
             )
+        except Exception:
+            try: self.__highlight(element)
+            except Exception: pass
+            raise
         finally:
             self.__uninstall_listener(element)
 
@@ -804,3 +808,11 @@ class SeleniumDriver(InteractiveDriver):
         )
         self.instance.execute_script("delete window._handler")
         self.instance.execute_script("delete window._entered")
+
+    def __highlight(self, element, color = "#ff0000"):
+        # changes the background color of the target element to make
+        # it highlighted in constract with the other elements
+        self.instance.execute_script(
+            "arguments[0].style.backgroundColor = \"%s\";" % color,
+            element,
+        )
