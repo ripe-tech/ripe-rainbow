@@ -140,6 +140,7 @@ class SeleniumDriver(InteractiveDriver):
         InteractiveDriver.__init__(self, owner)
         self.secure = appier.conf("SEL_SECURE", False, cast = bool)
         self.browser = appier.conf("SEL_BROWSER", "chrome")
+        self.browser_cache = appier.conf("SEL_BROWSER_CACHE", True, cast = bool)
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
@@ -160,6 +161,7 @@ class SeleniumDriver(InteractiveDriver):
     def browser(cls):
         import selenium.webdriver
         browser = appier.conf("SEL_BROWSER", "chrome")
+        browser_cache = appier.conf("SEL_BROWSER_CACHE", True, cast = bool)
         if browser == "chrome":
             options = selenium.webdriver.ChromeOptions()
             options.add_argument("--disable-gpu")
@@ -167,6 +169,8 @@ class SeleniumDriver(InteractiveDriver):
             options.add_argument("--disable-extensions")
             options.add_argument("--disable-browser-side-navigation")
             options.add_argument("--headless")
+            if not browser_cache:
+                options.add_argument("--disable-application-cache")
             if sys.platform.startswith("linux"):
                 options.add_argument("--disable-dev-shm-usage")
                 options.add_argument("--no-sandbox")
@@ -472,7 +476,15 @@ class SeleniumDriver(InteractiveDriver):
 
         # adds some of the default arguments to be used for the
         # execution of the Google Chrome instance
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-infobars")
         options.add_argument("--disable-extensions")
+        options.add_argument("--disable-browser-side-navigation")
+
+        # in case the browser cache is disabled then add the correct
+        # argument to the list of command line arguments
+        if not self.browser_cache:
+            options.add_argument("--disable-application-cache")
 
         # in case the headless mode was selected then an
         # extra argument is added to the set of options
@@ -542,9 +554,11 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
         profile = FirefoxProfile()
-        profile.set_preference("browser.cache.disk.enable", False)
-        profile.set_preference("browser.cache.memory.enable", False)
-        profile.set_preference("browser.cache.offline.enable", False)
+
+        if not self.browser_cache:
+            profile.set_preference("browser.cache.disk.enable", False)
+            profile.set_preference("browser.cache.memory.enable", False)
+            profile.set_preference("browser.cache.offline.enable", False)
 
         return profile
 

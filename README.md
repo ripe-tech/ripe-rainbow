@@ -35,6 +35,7 @@ rainbow
 | **LOGS_PATH** | `bool` | `.` | The base path to be used to save the log files on failure. |
 | **SEL_SECURE** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) engine should be executed under a secure approach (should be slower). |
 | **SEL_BROWSER** | `str` | `chrome` | The browser engine that is going to be used by Selenium (eg: `chrome`, `firefox`). |
+| **SEL_BROWSER_CACHE** | `bool` | `True` | If the [Selenium](https://www.seleniumhq.org) driver should be with browser cache enabled. |
 | **SEL_MAXIMIZED** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode. |
 | **SEL_HEADLESS** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode. |
 | **SEL_WINDOW_SIZE** | `str` | `1920x1080` | Resolution (in pixels) that the [Selenium](https://www.seleniumhq.org) driver will use for the window. |
