@@ -175,6 +175,12 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but was not possible to lowlight it" % selector
         )
 
+    def switch_tab(self, tab):
+        self.driver.switch_tab(tab)
+
+    def close_tab(self, tab = None):
+        self.driver.close_tab(tab)
+
     @property
     def url(self):
         return self.driver.current_url
