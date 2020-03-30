@@ -38,6 +38,12 @@ class RipeWhitePart(parts.Part):
     def select_part(self, part):
         self.interactions.click(".pickers .button-part[data-part='%s']" % part)
 
+    def select_material(self, material):
+        self.interactions.click(".pickers .button-material[data-material='%s']" % material)
+
+    def select_color(self, material, color):
+        self.interactions.click(".pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))
+
     def assert_no_part(self, part, timeout = None):
         self.waits.not_visible(
             ".pickers .button-part > p",
@@ -100,8 +106,8 @@ class RipeWhitePart(parts.Part):
         """
 
         self.select_part(part)
-        self.interactions.click(".pickers .button-material[data-material='%s']" % material)
-        self.interactions.click(".pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))
+        self.select_material(material)
+        self.select_color(material, color)
 
         if verify:
             self.assert_part(
