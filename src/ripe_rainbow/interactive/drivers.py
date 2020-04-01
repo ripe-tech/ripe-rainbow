@@ -49,6 +49,15 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def clear_cookies(self):
+        raise appier.NotImplementedError()
+
+    def clear_local_storage(self):
+        raise appier.NotImplementedError()
+
+    def clear_session_storage(self):
+        raise appier.NotImplementedError()
+
     def get_key(self, name):
         raise appier.NotImplementedError()
 
@@ -202,6 +211,15 @@ class SeleniumDriver(InteractiveDriver):
     def stop(self):
         self._flush_log()
         InteractiveDriver.stop(self)
+
+    def clear_cookies(self):
+        self.instance.delete_all_cookies()
+
+    def clear_local_storage(self):
+        self.instance.execute_script("localStorage.clear();")
+
+    def clear_session_storage(self):
+        self.instance.execute_script("sessionStorage.clear();")
 
     def get(self, url):
         return self.instance.get(url)
