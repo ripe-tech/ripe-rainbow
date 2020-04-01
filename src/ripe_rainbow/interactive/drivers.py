@@ -216,10 +216,10 @@ class SeleniumDriver(InteractiveDriver):
         self.instance.delete_all_cookies()
 
     def clear_local_storage(self):
-        self.instance.execute_script('localStorage.clear();')
+        self.instance.execute_script("localStorage.clear();")
 
     def clear_session_storage(self):
-        self.instance.execute_script('sessionStorage.clear();')
+        self.instance.execute_script("sessionStorage.clear();")
 
     def get(self, url):
         return self.instance.get(url)
