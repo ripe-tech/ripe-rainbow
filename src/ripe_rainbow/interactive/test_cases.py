@@ -26,9 +26,6 @@ class InteractiveTestCase(test_cases.TestCase):
 
     def after(self):
         if self.driver:
-            self.driver.clear_cookies()
-            self.driver.clear_local_storage()
-            self.driver.clear_session_storage()
             self.driver.stop()
             self.driver = None
         test_cases.TestCase.after(self)

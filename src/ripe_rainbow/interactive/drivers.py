@@ -49,6 +49,11 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def clear_storage(self):
+        self.clear_cookies()
+        self.clear_local_storage()
+        self.clear_session_storage()
+
     def clear_cookies(self):
         raise appier.NotImplementedError()
 
