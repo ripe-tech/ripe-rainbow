@@ -7,6 +7,9 @@ from .. import parts
 
 class RipeWhitePart(parts.Part):
 
+    def authorize(self):
+        self.id.authorize()
+
     def select_size(self, size, gender = None, scale = None, open = True, wait_closed = True):
         """
         Opens the size selection window, selects the proper scale and size and
@@ -208,6 +211,10 @@ class RipeWhitePart(parts.Part):
     @property
     def home_url(self):
         return "%s/" % self.white_url
+
+    @property
+    def next_url(self):
+        return self.home_url
 
     @property
     def white_url(self):

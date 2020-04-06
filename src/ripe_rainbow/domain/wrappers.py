@@ -33,6 +33,7 @@ RETAIL_TUPLES = (
 
 WHITE_TUPLES = (
     ("provision", logic.ProvisionPart),
+    ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
     ("white", logic.RipeWhitePart)
 )
