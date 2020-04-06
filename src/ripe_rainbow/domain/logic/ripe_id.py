@@ -8,23 +8,11 @@ from .. import parts
 class RipeIdPart(parts.Part):
 
     def login(self, username = None, password = None, redirect_url = None):
-        username = appier.conf("RIPE_ID_USERNAME", username)
-        password = appier.conf("RIPE_ID_PASSWORD", password)
-        if not username or not password:
-            self.skip(message = "No RIPE ID credentials available")
-
         self.interactions.goto_url(self.home_url)
 
         self.interactions.click(".button-platforme")
+        self.authorize(redirect_url = redirect_url)
 
-        self.waits.redirected_to((self.login_url, redirect_url))
-        if self.interactions.url.startswith(redirect_url): return
-
-        self.interactions.write_text(".form input[name='username']", username)
-        self.interactions.write_text(".form input[name='password']", password)
-        self.interactions.press_enter(".form input[name='password']")
-
-        self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
         if self.interactions.url.startswith(redirect_url): return
 
         self.interactions.click(".form .button-blue")
@@ -45,6 +33,22 @@ class RipeIdPart(parts.Part):
         redirect_url = redirect_url or self.login_url
         self.logout()
         self.waits.redirected_to(redirect_url)
+
+    def authorize(self, username = None, password = None, redirect_url = None):
+        redirect_url = redirect_url or self.next_url
+        username = appier.conf("RIPE_ID_USERNAME", username)
+        password = appier.conf("RIPE_ID_PASSWORD", password)
+        if not username or not password:
+            self.skip(message = "No RIPE ID credentials available")
+
+        self.waits.redirected_to((self.login_url, redirect_url))
+        if self.interactions.url.startswith(redirect_url): return
+
+        self.interactions.write_text(".form input[name='username']", username)
+        self.interactions.write_text(".form input[name='password']", password)
+        self.interactions.press_enter(".form input[name='password']")
+
+        self.waits.redirected_to((self.oauth_authorize_url, redirect_url))
 
     @property
     def id_url(self):
