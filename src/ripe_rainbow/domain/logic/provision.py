@@ -122,9 +122,6 @@ class ProvisionPart(parts.Part):
             reset = reset
         )
 
-    def ripe_retail_dummy(self):
-        self._ripe_retail_extra("dummy")
-
     def ripe_retail_sergio_rossi(self):
         self._ripe_retail_extra("sergio_rossi")
 
