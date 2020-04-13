@@ -30,26 +30,26 @@ class RipeWhitePart(parts.Part):
         not waiting for the closing of the modal should improve performance.
         """
 
-        if open: self.interactions.click(".size:not(.disabled) > .button-size")
+        if open: self.interactions.click(".content .size:not(.disabled) > .button-size")
         if gender: self.interactions.click(".size .button-gender", text = gender)
         if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
         self.interactions.click(".size .sizes .button-size", text = str(size))
-        self.interactions.click(".size .button.button-apply")
-        if wait_closed: self.waits.not_visible(".size .modal")
+        self.interactions.click(".content .size .button.button-apply")
+        if wait_closed: self.waits.not_visible(".content .size .modal")
 
     def select_part(self, part):
-        self.interactions.click(".pickers .button-part[data-part='%s']" % part)
+        self.interactions.click(".content .pickers .button-part[data-part='%s']" % part)
 
     def select_material(self, material):
-        self.interactions.click(".pickers .button-material[data-material='%s']" % material)
+        self.interactions.click(".content .pickers .button-material[data-material='%s']" % material)
 
     def select_color(self, material, color):
-        self.interactions.click(".pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))
+        self.interactions.click(".content .pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))
 
     def assert_no_part(self, part, timeout = None):
         self.waits.not_visible(
-            ".pickers .button-part > p",
+            ".content .pickers .button-part > p",
             text = self._capitalize_words(part),
             message = "The selector for the part '%s' didn't disappear" % part,
             timeout = timeout
@@ -58,11 +58,11 @@ class RipeWhitePart(parts.Part):
     def assert_no_material(self, part, material):
         self.select_part(part)
         self.waits.not_visible(".material li[data-material='%s']" % material)
-        self.waits.not_visible(".pickers .button-color[data-material='%s']" % material)
+        self.waits.not_visible(".content .pickers .button-color[data-material='%s']" % material)
 
     def assert_no_color(self, part, color):
         self.select_part(part)
-        self.waits.not_visible(".pickers .button-color[data-color='%s']" % color)
+        self.waits.not_visible(".content .pickers .button-color[data-color='%s']" % color)
 
     def set_part(
         self,
@@ -184,7 +184,7 @@ class RipeWhitePart(parts.Part):
         if has_swatch:
             self.waits.until(
                 lambda d: self.core.assert_swatch(
-                    ".pickers .button-part.active .swatch > img",
+                    ".content .pickers .button-part.active .swatch > img",
                     brand, model, material, color
                 ),
                 "Part swatch didn't have the expected image"
@@ -192,7 +192,7 @@ class RipeWhitePart(parts.Part):
 
             self.waits.until(
                 lambda d: self.core.assert_swatch(
-                    ".pickers .button-color-option.active .swatch > img",
+                    ".content .pickers .button-color-option.active .swatch > img",
                     brand, model, material, color
                 ),
                 "Color swatch didn't have the expected image"
