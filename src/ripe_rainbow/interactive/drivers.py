@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import time
 
@@ -176,6 +177,8 @@ class SeleniumDriver(InteractiveDriver):
         import selenium.webdriver
         browser = appier.conf("SEL_BROWSER", "chrome")
         browser_cache = appier.conf("SEL_BROWSER_CACHE", True, cast = bool)
+        fix_path = appier.conf("SEL_FIX_PATH", True, cast = bool)
+        if fix_path: cls._fix_path()
         if browser == "chrome":
             options = selenium.webdriver.ChromeOptions()
             options.add_argument("--disable-gpu")
@@ -212,6 +215,16 @@ class SeleniumDriver(InteractiveDriver):
             name = name,
             version = version
         )
+
+    @classmethod
+    def _fix_path(cls, paths = ("/usr/local/bin",)):
+        path = os.environ.get("PATH", "")
+        separator = ";" if os.name == "nt" else ":"
+        path_s = path.split(separator)
+        for _path in paths:
+            if _path in path_s: continue
+            path_s.append(_path)
+        os.environ["PATH"] = separator.join(path_s)
 
     def stop(self):
         self._flush_log()

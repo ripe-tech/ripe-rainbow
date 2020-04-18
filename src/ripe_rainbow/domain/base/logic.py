@@ -81,9 +81,20 @@ class LogicPart(parts.Part):
             # with the complete set of items for acceptance criteria
             return True
 
+        # builds the string representation of the expected value(s) so that it's
+        # easier to diagnose possible problems in the URL expectation
+        expected_s = " OR ".join(expected)
+        args_l = []
+        if params: args_l.append("params = %s" % params)
+        if fragment: args_l.append("fragment = %s" % fragment)
+        args_l.append("starts_with = %s" % str(starts_with))
+        args_l.append("strict = %s" % str(strict))
+        args_s = ", ".join(args_l)
+        expected_s += " (%s)" % args_s
+
         # prints a debug message on the breadcrumbs logger indicating that there's
         # a missmatch in the verification of the URL
-        self.breadcrumbs.debug("Provided URL is '%s' and not '%s'" % (url, expected))
+        self.breadcrumbs.debug("Provided URL is '%s' and not '%s'" % (url, expected_s))
 
         # returns the invalid value as none of the expected URL was able to be validated
         # against the provided URL
