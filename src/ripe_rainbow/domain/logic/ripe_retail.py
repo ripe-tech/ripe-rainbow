@@ -35,7 +35,7 @@ class RipeRetailPart(parts.Part):
         :param open: If the size modal window should be opened before selection.
         """
 
-        if open: self.interactions.click(".size:not(.disabled) .button-size", text = "SELECT SIZE")
+        if open: self.interactions.click(".size:not(.disabled) > .button-size")
         if gender: self.interactions.click(".size .button-gender", text = gender)
         if scale: self.interactions.click(".size .button-scale", text = str(scale))
 
