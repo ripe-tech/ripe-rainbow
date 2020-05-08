@@ -43,17 +43,6 @@ class RipeCorePart(parts.Part):
         )
 
     def wait_initials_image(self, selector, model, initials, profile = None):
-        return self.waits.until(
-            lambda d: self.assert_initials_image(
-                selector,
-                model,
-                initials,
-                profile = profile
-            ),
-            "Personalization image was not the expected one"
-        )
-
-    def assert_initials_image(self, selector, model, initials, profile = None):
         expected_params = dict(
             initials = initials,
             model = model
@@ -61,10 +50,10 @@ class RipeCorePart(parts.Part):
 
         if profile: expected_params["initials_profile"] = profile
 
-        element = self.waits.visible(selector, ensure = False)
-        src = element.get_attribute("src")
+        return self.assert_image(selector, self.compose_url, params = expected_params)
 
-        return self.logic.match_url(src, self.compose_url, params = expected_params)
+    def wait_image(self, selector, params = None):
+        return self.waits.has_src(selector, self.compose_url, params = params)
 
     def order_url(self, number):
         return "%s/orders/%d" % (self.api_url, number)

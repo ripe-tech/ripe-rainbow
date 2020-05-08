@@ -139,6 +139,10 @@ class LogicPart(parts.Part):
 
         return element
 
+    def has_src(self, element, url, params = None):
+        src = element.get_attribute("src")
+        return self.logic.match_url(src, url, params = params)
+
     def get(self, selector, condition = None):
         # tries to retrieve the complete set of elements that match
         # the provided selector and fulfill the condition
