@@ -50,7 +50,7 @@ class RipeCorePart(parts.Part):
 
         if profile: expected_params["initials_profile"] = profile
 
-        return self.assert_image(selector, self.compose_url, params = expected_params)
+        return self.wait_image(selector, params = expected_params)
 
     def wait_image(self, selector, params = None):
         return self.waits.has_src(selector, self.compose_url, params = params)
