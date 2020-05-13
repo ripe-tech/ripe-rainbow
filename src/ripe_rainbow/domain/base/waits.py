@@ -46,6 +46,13 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def has_src(self, selector, url, params = None, ensure = False):
+        element = self.waits.visible(selector, ensure = ensure)
+        return self.waits.until(
+            lambda d: self.logic.has_src(element, url, params = params),
+            "'src' attribute was not the expected one"
+        )
+
     def visible(
         self,
         selector,
