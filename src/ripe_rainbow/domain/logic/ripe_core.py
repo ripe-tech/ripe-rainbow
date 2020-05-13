@@ -43,14 +43,9 @@ class RipeCorePart(parts.Part):
         )
 
     def wait_initials_image(self, selector, model, initials, profile = None):
-        expected_params = dict(
-            initials = initials,
-            model = model
-        )
-
-        if profile: expected_params["initials_profile"] = profile
-
-        return self.wait_image(selector, params = expected_params)
+        params = dict(model = model, initials = initials)
+        if profile: params["initials_profile"] = profile
+        return self.wait_image(selector, params = params)
 
     def wait_image(self, selector, params = None):
         return self.waits.has_src(selector, self.compose_url, params = params)
