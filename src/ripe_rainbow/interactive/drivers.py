@@ -159,6 +159,7 @@ class SeleniumDriver(InteractiveDriver):
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
+        self.mobile_device = appier.conf("SEL_MOBILE_DEVICE", "Nexus 5")
         self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
         self.service_args = appier.conf("SEL_SERVICE_ARGS", [], cast = list)
 
@@ -509,6 +510,10 @@ class SeleniumDriver(InteractiveDriver):
         # crates the base object for the options to be used by
         # the Google Chrome browser
         options = selenium.webdriver.ChromeOptions()
+        if self.owner.is_mobile: options.add_experimental_option(
+            "mobileEmulation",
+            dict(deviceName = self.mobile_device)
+        )
 
         # adds some of the default arguments to be used for the
         # execution of the Google Chrome instance
@@ -544,6 +549,7 @@ class SeleniumDriver(InteractiveDriver):
         # crates the base object for the options to be used by
         # the Mozilla Firefox browser
         options = selenium.webdriver.FirefoxOptions()
+        if self.owner.is_mobile: self.owner.skip("Firefox can't run tests that require a mobile device")
 
         # in case the headless instance option is set propagates
         # it to the Firefox options object

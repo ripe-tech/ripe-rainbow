@@ -99,3 +99,7 @@ class InteractiveTestCase(test_cases.TestCase):
             log_path = os.path.abspath(log_path)
             log_path = os.path.normpath(log_path)
             memory_handler.flush_to_file(log_path, clear = False)
+
+    @property
+    def is_mobile(self):
+        return False
