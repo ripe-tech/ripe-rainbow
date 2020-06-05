@@ -40,7 +40,8 @@ rainbow
 | **SEL_MAXIMIZED** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode. |
 | **SEL_HEADLESS** | `bool` | `False` | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode. |
 | **SEL_WINDOW_SIZE** | `str` | `1920x1080` | Resolution (in pixels) that the [Selenium](https://www.seleniumhq.org) driver will use for the window. |
-| **SEL_MOBILE_DEVICE** | `str` | `Nexus 5` | The mobile device to emulate when running mobile tests. |
+| **SEL_WINDOW_SIZE_MOBILE** | `str` | `360x640` | Resolution (in pixels) that the [Selenium](https://www.seleniumhq.org) driver will use for the window in tests that require a mobile viewport. |
+| **SEL_PIXEL_RATIO_MOBILE** | `int` | `3` | The pixel ratio to use when running tests tgat require a mobile viewport. |
 | **SEL_SERVICE_ARGS** | `list` | `[]` | List of command line args to be passed to the driver service that interacts with the browser. |
 | **SEL_POLL_FREQUENCY** | `float` | `None` | The frequency (in seconds) to run the [busy waiting](https://en.wikipedia.org/wiki/Busy_waiting) polling operation on the Selenium `wait` operation. |
 | **RIPE_ID_USERNAME** | `str` | `None` | The username to be used for the RIPE ID authentication. |
