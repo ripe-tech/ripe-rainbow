@@ -575,7 +575,10 @@ class SeleniumDriver(InteractiveDriver):
         # crates the base object for the options to be used by
         # the Mozilla Firefox browser
         options = selenium.webdriver.FirefoxOptions()
-        if self.owner.is_mobile: self.owner.skip("Firefox can't run tests that require a mobile device")
+
+        # in case mobile emulation is requested the current test
+        # must be skipped as there's no support available
+        if self.mobile_emulation: self.owner.skip("Firefox can't run tests that require a mobile device")
 
         # in case the headless instance option is set propagates
         # it to the Firefox options object
