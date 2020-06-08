@@ -40,9 +40,14 @@ class InteractiveTestCase(test_cases.TestCase):
     def load_driver(self, start = True):
         driver_s = appier.conf("DRIVER", "selenium")
         driver_s = self.options.get("driver", driver_s)
-        driver = drivers.InteractiveDriver.driver_g(driver_s)(self)
+        driver_c = drivers.InteractiveDriver.driver_g(driver_s)
+        driver = driver_c(self, **self.driver_args)
         if start: driver.start()
         return driver
+
+    @property
+    def driver_args(self):
+        return dict()
 
     def _stacktrace(self, test, ctx = None):
         if not appier.conf("STACKTRACES", False, cast = bool): return
@@ -99,7 +104,3 @@ class InteractiveTestCase(test_cases.TestCase):
             log_path = os.path.abspath(log_path)
             log_path = os.path.normpath(log_path)
             memory_handler.flush_to_file(log_path, clear = False)
-
-    @property
-    def is_mobile(self):
-        return False
