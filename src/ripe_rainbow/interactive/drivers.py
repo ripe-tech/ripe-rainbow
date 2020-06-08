@@ -164,7 +164,7 @@ class SeleniumDriver(InteractiveDriver):
         self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
         self.service_args = appier.conf("SEL_SERVICE_ARGS", [], cast = list)
         self.secure = kwargs.get("secure", self.secure)
-        self.chrome = kwargs.get("chrome", self.chrome)
+        self.browser = kwargs.get("browser", self.browser)
         self.browser_cache = kwargs.get("browser_cache", self.browser_cache)
         self.maximized = kwargs.get("maximized", self.maximized)
         self.headless = kwargs.get("headless", self.headless)
