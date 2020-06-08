@@ -28,7 +28,7 @@ LOG_LEVELS_M = dict(
 
 class InteractiveDriver(object):
 
-    def __init__(self, owner):
+    def __init__(self, owner, **kwargs):
         self.owner = owner
 
     @staticmethod
@@ -151,16 +151,30 @@ class InteractiveDriver(object):
 
 class SeleniumDriver(InteractiveDriver):
 
-    def __init__(self, owner):
-        InteractiveDriver.__init__(self, owner)
+    def __init__(self, owner, **kwargs):
+        InteractiveDriver.__init__(self, owner, **kwargs)
         self.secure = appier.conf("SEL_SECURE", False, cast = bool)
         self.browser = appier.conf("SEL_BROWSER", "chrome")
         self.browser_cache = appier.conf("SEL_BROWSER_CACHE", True, cast = bool)
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
+        self.pixel_ratio = appier.conf("SEL_PIXEL_RATIO", 1, cast = int)
+        self.mobile_emulation = appier.conf("SEL_MOBILE_EMULATION", False, cast = bool)
         self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
         self.service_args = appier.conf("SEL_SERVICE_ARGS", [], cast = list)
+        self.secure = kwargs.get("secure", self.secure)
+        self.chrome = kwargs.get("chrome", self.chrome)
+        self.browser_cache = kwargs.get("browser_cache", self.browser_cache)
+        self.maximized = kwargs.get("maximized", self.maximized)
+        self.headless = kwargs.get("headless", self.headless)
+        self.window_size = kwargs.get("resolution", self.window_size)
+        self.window_size = kwargs.get("window_size", self.window_size)
+        self.pixel_ratio = kwargs.get("pixel_ratio", self.pixel_ratio)
+        self.mobile_emulation = kwargs.get("mobile", self.mobile_emulation)
+        self.mobile_emulation = kwargs.get("mobile_emulation", self.mobile_emulation)
+        self.poll_frequency = kwargs.get("poll_frequency", self.poll_frequency)
+        self.service_args = kwargs.get("service_args", self.service_args)
 
     @classmethod
     def label(cls):
@@ -510,6 +524,23 @@ class SeleniumDriver(InteractiveDriver):
         # the Google Chrome browser
         options = selenium.webdriver.ChromeOptions()
 
+        # in case the mobile emulation is required then an extra
+        # experimental option is added to allow custom behaviour
+        # (including touch and pixel ratio)
+        if self.mobile_emulation:
+            width, height = (int(value) for value in self.window_size.split("x", 1))
+            options.add_experimental_option(
+                "mobileEmulation",
+                dict(
+                    deviceMetrics = dict(
+                        width = width,
+                        height = height,
+                        pixelRatio = self.pixel_ratio,
+                        touch = False
+                    )
+                )
+            )
+
         # adds some of the default arguments to be used for the
         # execution of the Google Chrome instance
         options.add_argument("--disable-gpu")
@@ -544,6 +575,10 @@ class SeleniumDriver(InteractiveDriver):
         # crates the base object for the options to be used by
         # the Mozilla Firefox browser
         options = selenium.webdriver.FirefoxOptions()
+
+        # in case mobile emulation is requested the current test
+        # must be skipped as there's no support available
+        if self.mobile_emulation: self.owner.skip("Firefox can't run tests that require a mobile device")
 
         # in case the headless instance option is set propagates
         # it to the Firefox options object

@@ -7,7 +7,6 @@ import appier
 
 import logging
 
-from . import util
 from . import errors
 
 class TestCase(appier.Observable):
