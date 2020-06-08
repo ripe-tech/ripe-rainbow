@@ -168,8 +168,10 @@ class SeleniumDriver(InteractiveDriver):
         self.browser_cache = kwargs.get("browser_cache", self.browser_cache)
         self.maximized = kwargs.get("maximized", self.maximized)
         self.headless = kwargs.get("headless", self.headless)
+        self.window_size = kwargs.get("resolution", self.window_size)
         self.window_size = kwargs.get("window_size", self.window_size)
         self.pixel_ratio = kwargs.get("pixel_ratio", self.pixel_ratio)
+        self.mobile_emulation = kwargs.get("mobile", self.mobile_emulation)
         self.mobile_emulation = kwargs.get("mobile_emulation", self.mobile_emulation)
         self.poll_frequency = kwargs.get("poll_frequency", self.poll_frequency)
         self.service_args = kwargs.get("service_args", self.service_args)
@@ -521,16 +523,22 @@ class SeleniumDriver(InteractiveDriver):
         # crates the base object for the options to be used by
         # the Google Chrome browser
         options = selenium.webdriver.ChromeOptions()
+
+        # in case the mobile emulation is required then an extra
+        # experimental option is added to allow custom behaviour
+        # (including touch and pixel ratio)
         if self.mobile_emulation:
             width, height = (int(value) for value in self.window_size.split("x", 1))
             options.add_experimental_option(
                 "mobileEmulation",
-                dict(deviceMetrics = dict(
-                    width = width,
-                    height = height,
-                    pixelRatio = self.pixel_ratio,
-                    touch = False
-                ))
+                dict(
+                    deviceMetrics = dict(
+                        width = width,
+                        height = height,
+                        pixelRatio = self.pixel_ratio,
+                        touch = False
+                    )
+                )
             )
 
         # adds some of the default arguments to be used for the
