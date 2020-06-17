@@ -211,7 +211,11 @@ class LogicPart(parts.Part):
         if strict: return first == second
         for key in second:
             if not key in first: return False
-            if not first[key] == second[key]: return False
+            is_sequence = isinstance(first[key], (list, tuple)) and\
+                isinstance(second[key], (list, tuple))
+            is_equal = sorted(first[key]) == sorted(second[key]) if\
+                is_sequence else first[key] == second[key]
+            if not is_equal: return False
         return True
 
     def _patch_element(self, element, selector = None, condition = None):
