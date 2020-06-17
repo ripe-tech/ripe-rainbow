@@ -29,6 +29,26 @@ class LogicPartTest(unittest.TestCase):
             params = dict(param1 = "value1")
         ), True)
         self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param1=value2",
+            "http://www.platforme.com",
+            params = dict(param1 = ["value1", "value2"])
+        ), True)
+        self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param1=value2",
+            "http://www.platforme.com",
+            params = dict(param1 = ["value2", "value1"])
+        ), True)
+        self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param1=value2",
+            "http://www.platforme.com",
+            params = dict(param1 = ["value1", "value2", "value3"])
+        ), False)
+
+    def test_match_url_strict(self):
+        test_case = ripe_rainbow.TestCase()
+        logic_part = ripe_rainbow.LogicPart(test_case)
+
+        self.assertEqual(logic_part.match_url(
             "http://www.platforme.com?param1=value1&param2=value2",
             "http://www.platforme.com",
             params = dict(param1 = "value1"),
@@ -48,3 +68,17 @@ class LogicPartTest(unittest.TestCase):
             fragment = "anchor1",
             strict = True
         ), True)
+        self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param1=value2#anchor1",
+            "http://www.platforme.com",
+            params = dict(param1 = ["value1", "value2"]),
+            fragment = "anchor1",
+            strict = True
+        ), True)
+        self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param1=value2#anchor1",
+            "http://www.platforme.com",
+            params = dict(param1 = ["value2", "value1"]),
+            fragment = "anchor1",
+            strict = True
+        ), False)
