@@ -115,6 +115,9 @@ class PathLoader(Loader):
                 _module_dir_path = os.path.normpath(os.path.abspath(_module_dir_path))
                 if _module_dir_path == module_dir_path: break
                 module_dir_path = _module_dir_path
+
+            # creates the context by joining the list of chunks present
+            # in the context list
             ctx = ".".join(ctx_l)
         else:
             ctx = None
