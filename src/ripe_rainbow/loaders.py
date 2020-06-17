@@ -33,17 +33,7 @@ class PathLoader(Loader):
         # to load all of the test classes contained in them
         for module in modules:
 
-            # uses the path to the module containing the test to try
-            # to gather some context to the test, this means that the
-            # name of the directory is going to be used as some kind
-            # of context for the test execution
-            module_path = module.__file__ if hasattr(module, "__file__") else None
-            module_path = module_path or None
-            if module_path:
-                module_path = os.path.normpath(os.path.abspath(module_path))
-                ctx = os.path.basename(os.path.dirname(module_path))
-            else:
-                ctx = None
+            ctx = self._resolve_ctx(module)
 
             for name in dir(module):
                 value = getattr(module, name)
@@ -95,3 +85,37 @@ class PathLoader(Loader):
                 finally:
                     sys.path.remove(path)
         return modules
+
+    def _resolve_ctx(self, module):
+        # uses the path to the module containing the test to try
+        # to gather some context to the test, this means that the
+        # name of the directory is going to be used as some kind
+        # of context for the test execution
+        module_path = module.__file__ if hasattr(module, "__file__") else None
+        module_path = module_path or None
+        if module_path:
+            # creates the list that is going to hold the "chunks" that
+            # are going to be joined to created the complete context
+            ctx_l = []
+
+            # starts the execution by "introducing" the name of the current
+            # module's directory into the execution logic
+            module_path = os.path.normpath(os.path.abspath(module_path))
+            module_dir_path = os.path.dirname(module_path)
+            module_dir_path = os.path.normpath(os.path.abspath(module_dir_path))
+
+            # iterates over the complete set of parent package directories
+            # (considering that a package is a directory that contains `__init__.py`)
+            # until one that is not a parent one is found
+            while True:
+                if not module_dir_path: break
+                if not "__init__.py" in os.listdir(module_dir_path): break
+                ctx_l.insert(0, os.path.basename(module_dir_path))
+                _module_dir_path = os.path.join(module_dir_path, "..")
+                _module_dir_path = os.path.normpath(os.path.abspath(_module_dir_path))
+                if _module_dir_path == module_dir_path: break
+                module_dir_path = _module_dir_path
+            ctx = ".".join(ctx_l)
+        else:
+            ctx = None
+        return ctx
