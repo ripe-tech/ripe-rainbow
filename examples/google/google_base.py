@@ -22,7 +22,7 @@ class GoogleTest(ripe_rainbow.InteractiveTestCase):
         if self.is_tablet:
             args.update(
                 mobile = True,
-                device = "ipad11",
+                device = "galaxytab3",
                 resolution = "768x1024",
                 pixel_ratio = 3
             )
