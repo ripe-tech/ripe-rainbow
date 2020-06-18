@@ -18,9 +18,15 @@ from . import interactive
 class Runner(object):
 
     def __init__(self, loader = None, filter = None):
-        self.loader = loader or self.loader_default
+        # sets the global configuration driven values in the current
+        # instance, to be used internally
         self.filter = appier.conf("FILTER", filter)
         self.repeat = appier.conf("REPEAT", 1, cast = int)
+        self.tests_path = appier.conf("TESTS_PATH", ".")
+
+        # updates the current loader with the default loader if required
+        # and initializes the on finish callback storage
+        self.loader = loader or self.loader_default
         self.on_finish = []
 
         # creates the regular expression object that is going to
@@ -229,4 +235,4 @@ class ConsoleRunner(Runner):
 
     @property
     def loader_default(self):
-        return loaders.PathLoader(".")
+        return loaders.PathLoader(self.tests_path)

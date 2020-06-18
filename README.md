@@ -26,6 +26,7 @@ rainbow
 | **DRIVER**               | `str`   | `selenium`  | The driver to be used for the interactive mode.                                                                                                      |
 | **TIMEOUT**              | `int`   | `15`        | The timeout in seconds to be used by default for interactions under the interactive testing mode.                                                    |
 | **REPEAT**               | `int`   | `1`         | The number of times to repeat the execution of the tests.                                                                                            |
+| **TESTS_PATH**           | `str`   | `.`         | The base path to be used in the loading of the test cases.                                                                                           |
 | **PROVISION**            | `bool`  | `True`      | If the provision operations should be performed.                                                                                                     |
 | **STACKTRACES**          | `bool`  | `False`     | If "stacktrace" log should be stored on failure of tests.                                                                                            |
 | **STACKTRACES_PATH**     | `bool`  | `.`         | The base path to be used to save the stacktraces log.                                                                                                |
