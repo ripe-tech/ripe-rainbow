@@ -459,6 +459,9 @@ class SeleniumDriver(InteractiveDriver):
     @property
     def instance(self):
         cls = self.__class__
+
+        # in case there's already an instance defined in the class
+        # and it is still considered valid then re-uses it
         if hasattr(cls, "_instance") and cls._instance:
             return cls._instance
 
