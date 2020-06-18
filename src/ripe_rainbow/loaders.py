@@ -16,8 +16,15 @@ class Loader(object):
 
 class PathLoader(Loader):
 
-    def __init__(self, path = None):
-        self.path = path or "."
+    def __init__(
+        self,
+        path = ".",
+        extension = ".py",
+        exclusion = ("setup.py",)
+    ):
+        self.path = path
+        self.extension = extension
+        self.exclusion = exclusion
         self.path = os.path.expanduser(self.path)
         self.path = os.path.abspath(self.path)
         self.path = os.path.normpath(self.path)
@@ -27,6 +34,9 @@ class PathLoader(Loader):
 
     def _load_classes(self, path, recursive = True):
         classes = []
+
+        # runs the loading of the modules for the current path using
+        # a possible recursive approach
         modules = self._load_modules(path, recursive = recursive)
 
         # iterates over the complete set of loaded modules to try
@@ -76,7 +86,7 @@ class PathLoader(Loader):
             full_path = os.path.join(path, name)
             if os.path.isdir(full_path) and recursive:
                 modules += self._load_modules(full_path, recursive = recursive)
-            elif name.endswith(".py"):
+            elif not name in self.exclusion and name.endswith(self.extension):
                 sys.path.insert(0, path)
                 try:
                     modules.append(__import__(base_name))
