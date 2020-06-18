@@ -7,6 +7,7 @@ import time
 
 import appier
 
+from .. import info
 from .. import errors
 
 LOG_LEVELS = (
@@ -135,6 +136,10 @@ class InteractiveDriver(object):
         return self.press_key(element, "enter", ensure = ensure)
 
     @property
+    def options(self):
+        raise appier.NotImplementedError()
+
+    @property
     def current_url(self):
         raise appier.NotImplementedError()
 
@@ -158,6 +163,7 @@ class SeleniumDriver(InteractiveDriver):
         self.browser_cache = appier.conf("SEL_BROWSER_CACHE", True, cast = bool)
         self.maximized = appier.conf("SEL_MAXIMIZED", False, cast = bool)
         self.headless = appier.conf("SEL_HEADLESS", False, cast = bool)
+        self.device = appier.conf("SEL_DEVICE", None)
         self.window_size = appier.conf("SEL_WINDOW_SIZE", "1920x1080")
         self.pixel_ratio = appier.conf("SEL_PIXEL_RATIO", 1, cast = int)
         self.mobile_emulation = appier.conf("SEL_MOBILE_EMULATION", False, cast = bool)
@@ -168,6 +174,7 @@ class SeleniumDriver(InteractiveDriver):
         self.browser_cache = kwargs.get("browser_cache", self.browser_cache)
         self.maximized = kwargs.get("maximized", self.maximized)
         self.headless = kwargs.get("headless", self.headless)
+        self.device = kwargs.get("device", self.device)
         self.window_size = kwargs.get("resolution", self.window_size)
         self.window_size = kwargs.get("window_size", self.window_size)
         self.pixel_ratio = kwargs.get("pixel_ratio", self.pixel_ratio)
@@ -445,6 +452,22 @@ class SeleniumDriver(InteractiveDriver):
             return None
 
     @property
+    def options(self):
+        return dict(
+            secure = self.secure,
+            browser = self.browser,
+            browser_cache = self.browser_cache,
+            maximized = self.maximized,
+            headless = self.headless,
+            device = self.device,
+            window_size = self.window_size,
+            pixel_ratio = self.pixel_ratio,
+            mobile_emulation = self.mobile_emulation,
+            poll_frequency = self.poll_frequency,
+            service_args = self.service_args
+        )
+
+    @property
     def current_url(self):
         return self.instance.current_url
 
@@ -462,10 +485,19 @@ class SeleniumDriver(InteractiveDriver):
 
         # in case there's already an instance defined in the class
         # and it is still considered valid then re-uses it
-        if hasattr(cls, "_instance") and cls._instance:
+        if hasattr(cls, "_instance") and cls._instance and\
+            hasattr(cls, "_options") and self.options == cls._options:
             return cls._instance
 
         import selenium.webdriver
+
+        # in case there's an instance currently available destroys it
+        # to avoid possible collision (garbage collection)
+        self._destroy_instance()
+
+        # "saves" the currently set options so that they can be used
+        # in the definition of the instance to be created
+        cls._options = self.options
 
         if self.browser == "chrome":
             # creates the underlying instance of the Chrome driver
@@ -514,6 +546,7 @@ class SeleniumDriver(InteractiveDriver):
             return
         cls._instance.quit()
         cls._instance = None
+        cls._options = None
 
     def _selenium_options(self, browser = None):
         browser = browser or self.browser
@@ -529,20 +562,20 @@ class SeleniumDriver(InteractiveDriver):
 
         # in case the mobile emulation is required then an extra
         # experimental option is added to allow custom behaviour
-        # (including touch and pixel ratio)
+        # (including touch, pixel ratio and user agent)
         if self.mobile_emulation:
             width, height = (int(value) for value in self.window_size.split("x", 1))
-            options.add_experimental_option(
-                "mobileEmulation",
-                dict(
-                    deviceMetrics = dict(
-                        width = width,
-                        height = height,
-                        pixelRatio = self.pixel_ratio,
-                        touch = False
-                    )
+            user_agent = info.USER_AGENTS.get(self.device, None) if self.device else None
+            emulation_options = dict(
+                deviceMetrics = dict(
+                    width = width,
+                    height = height,
+                    pixelRatio = self.pixel_ratio,
+                    touch = False
                 )
             )
+            if user_agent: emulation_options["userAgent"] = user_agent
+            options.add_experimental_option("mobileEmulation", emulation_options)
 
         # adds some of the default arguments to be used for the
         # execution of the Google Chrome instance

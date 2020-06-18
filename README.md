@@ -40,6 +40,7 @@ rainbow
 | **SEL_FIX_PATH**         | `bool`  | `True`      | If the [Selenium](https://www.seleniumhq.org) driver should try to fix the environment path.                                                         |
 | **SEL_MAXIMIZED**        | `bool`  | `False`     | If the [Selenium](https://www.seleniumhq.org) driver should be started in "maximized" (window) mode.                                                 |
 | **SEL_HEADLESS**         | `bool`  | `False`     | If the [Selenium](https://www.seleniumhq.org) driver should be started in "headless" (window) mode.                                                  |
+| **SEL_DEVICE**           | `str`   | `None`      | If a specific device should be emulated by changing some internal settings (eg: user-agent in usage), possible values include: `iphone10`, `nexus5`  |
 | **SEL_WINDOW_SIZE**      | `str`   | `1920x1080` | Resolution (in pixels) that the [Selenium](https://www.seleniumhq.org) driver will use for the window.                                               |
 | **SEL_PIXEL_RATIO**      | `int`   | `1`         | The pixel ratio that the [Selenium](https://www.seleniumhq.org) driver will use, should be used mostly for device testing.                           |
 | **SEL_MOBILE_EMULATION** | `bool`  | `False`     | If the [Selenium](https://www.seleniumhq.org) driver should use the mobile emulation mode (available for Chrome).                                    |
