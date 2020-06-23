@@ -1,4 +1,4 @@
-# [![RIPE Rainbow](res/logo.png)](https://tech.platforme.com)
+<h1><a href="https://tech.platforme.com"><img src="res/logo.svg" alt="RIPE Rainbow" height="60" style="height: 60px;"></a></h1>
 
 **Bringing happiness to the RIPE world through testing 🌈**
 
