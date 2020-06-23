@@ -341,7 +341,6 @@ class RipeWhitePart(parts.Part):
                 "Color swatch didn't have the expected image"
             )
         
-
     def url_model(self, model, brand):
         return "%s/?model=%s&brand=%s" % (self.white_url, model, brand)
 
