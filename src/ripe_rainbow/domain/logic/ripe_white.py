@@ -173,6 +173,8 @@ class RipeWhitePart(parts.Part):
         If the text parameters are passed an extra set of assertions are going
         to be performed to validate expected behaviour.
 
+        This method is aimed at the mobile version of the parts selector.
+
         :type brand: String
         :param brand: The brand of the model being customized.
         :type model: String
@@ -309,6 +311,8 @@ class RipeWhitePart(parts.Part):
         Notice that this assertion requires the changing of the current visual
         state, in the sense that the part tab is going to be switched to the
         one that is going to be asserted.
+
+        This method is aimed at the mobile version of the parts selector.
 
         :type brand: String
         :param brand: The brand of the model being customized.
