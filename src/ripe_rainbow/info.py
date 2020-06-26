@@ -4,7 +4,7 @@
 import sys
 
 NAME = "RIPE Rainbow"
-VERSION = "0.7.19"
+VERSION = "0.7.20"
 RAINBOW = "🌈"
 LABEL = "%s %s %s" % (NAME, VERSION, RAINBOW)
 PLATFORM = "%s %d.%d.%d.%s %s" % (
