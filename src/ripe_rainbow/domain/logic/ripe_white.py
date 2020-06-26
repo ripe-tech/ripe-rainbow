@@ -51,10 +51,10 @@ class RipeWhitePart(parts.Part):
         self.interactions.click(".content-mobile .pickers .button-part[data-part='%s']" % part)
 
     def select_material_mobile(self, material):
-        self.interactions.click(".content-mobile  .pickers .button-material[data-material='%s']" % material)
+        self.interactions.click(".content-mobile .pickers .button-material[data-material='%s']" % material)
 
     def select_color_mobile(self, material, color):
-        self.interactions.click(".content-mobile  .pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))    
+        self.interactions.click(".content-mobile .pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color))
 
     def assert_no_part(self, part, timeout = None):
         self.waits.not_visible(
@@ -340,7 +340,7 @@ class RipeWhitePart(parts.Part):
                 ),
                 "Color swatch didn't have the expected image"
             )
-        
+
     def url_model(self, model, brand):
         return "%s/?model=%s&brand=%s" % (self.white_url, model, brand)
 
