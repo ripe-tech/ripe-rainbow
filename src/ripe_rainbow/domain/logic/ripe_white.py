@@ -45,6 +45,8 @@ class RipeWhitePart(parts.Part):
 
         Notice that if the "open" flag is unset the window is not opened.
 
+        This method is aimed at the mobile version of the size selector.
+
         :type size: String
         :param size: The size to be picked.
         :type gender: String
