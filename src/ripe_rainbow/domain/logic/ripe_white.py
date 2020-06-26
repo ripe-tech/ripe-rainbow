@@ -38,6 +38,33 @@ class RipeWhitePart(parts.Part):
         self.interactions.click(".content .size .button.button-apply")
         if wait_closed: self.waits.not_visible(".content .size .modal")
 
+    def select_size_mobile(self, size, gender = None, scale = None, wait_closed = True):
+        """
+        Opens the size selection window, selects the proper scale and size and
+        applies that configuration by clicking 'Apply' and closing the window.
+
+        Notice that if the "open" flag is unset the window is not opened.
+
+        :type size: String
+        :param size: The size to be picked.
+        :type gender: String
+        :param gender: The gender that is going to be picked.
+        :type scale: String
+        :param scale: The scale that is going to be picked.
+        :type open: Boolean
+        :param open: If the size modal window should be opened before selection.
+        :type wait_closed: Boolean
+        :param wait_closed: Whether it should wait for the size modal to be closed,
+        not waiting for the closing of the modal should improve performance.
+        """
+
+        if gender: self.interactions.click(".size .button-gender", text = gender)
+        if scale: self.interactions.click(".size .button-scale", text = str(scale))
+
+        self.interactions.click(".size .sizes .button-size", text = str(size))
+        self.interactions.click(".content-mobile .size .button.button-apply")
+        if wait_closed: self.waits.not_visible(".content-mobile .size .modal")
+
     def select_part(self, part):
         self.interactions.click(".content .pickers .button-part[data-part='%s']" % part)
 
