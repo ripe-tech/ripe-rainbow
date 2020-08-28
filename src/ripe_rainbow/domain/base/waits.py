@@ -46,6 +46,17 @@ class WaitsPart(parts.Part):
             timeout = timeout
         )
 
+    def to_context_webview(self, index = 0, message = None, timeout = None):
+        self.until(
+            lambda d: self.driver.count_contexts_webview > index,
+            message = message or "Expecting the number of contexts to be at least '%s' but is '%s'" % (
+                index + 1,
+                self.driver.count_contexts_webview
+            ),
+            timeout = timeout
+        )
+        return self.driver.to_context_webview(index)
+
     def has_src(self, selector, url, params = None, ensure = False):
         element = self.waits.visible(selector, ensure = ensure)
         return self.waits.until(

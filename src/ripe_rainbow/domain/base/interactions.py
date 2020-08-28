@@ -176,10 +176,13 @@ class InteractionsPart(parts.Part):
         )
 
     def switch_tab(self, tab):
-        self.driver.switch_tab(tab)
+        return self.driver.switch_tab(tab)
+
+    def to_context_native(self):
+        return self.driver.to_context_native()
 
     def close_tab(self, tab = None):
-        self.driver.close_tab(tab)
+        return self.driver.close_tab(tab)
 
     @property
     def url(self):

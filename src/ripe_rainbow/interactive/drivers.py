@@ -1008,3 +1008,233 @@ class SeleniumDriver(InteractiveDriver):
         # that due to things like transition and animations the visual operations
         # may take some time to be presented on screen
         if sleep: time.sleep(sleep)
+
+class AppiumDriver(InteractiveDriver):
+    def __init__(self, owner, **kwargs):
+        InteractiveDriver.__init__(self, owner, **kwargs)
+        self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
+
+    @classmethod
+    def label(cls):
+        import appium.version
+        return "Appium %s" % appium.version.version
+
+    @property
+    def options(self):
+        return dict(
+            poll_frequency = self.poll_frequency
+        )
+
+    def find_element(self, selector):
+        if self.in_native:
+            return self.find_element_by_accessibility_id(selector)
+        else:
+            return self.find_element_by_css_selector(selector)
+
+    def find_elements(self, selector):
+        if self.in_native:
+            return self.find_elements_by_accessibility_id(selector)
+        else:
+            return self.find_elements_by_css_selector(selector)
+
+    def find_element_by_css_selector(self, selector):
+        return self.instance.find_element_by_css_selector(selector)
+
+    def find_elements_by_css_selector(self, selector):
+        return self.instance.find_elements_by_css_selector(selector)
+
+    def find_element_by_accessibility_id(self, id):
+        return self.instance.find_element_by_accessibility_id(id)
+
+    def find_elements_by_accessibility_id(self, id):
+        return self.instance.find_elements_by_accessibility_id(id)
+
+    @property
+    def instance(self):
+        cls = self.__class__
+
+        # in case there's already an instance defined in the class
+        # and it is still considered valid then re-uses it
+        if hasattr(cls, "_instance") and cls._instance and\
+            hasattr(cls, "_options") and self.options == cls._options:
+            return cls._instance
+
+        import appium.webdriver
+
+        # in case there's an instance currently available destroys it
+        # to avoid possible collision (garbage collection)
+        self._destroy_instance()
+
+        # "saves" the currently set options so that they can be used
+        # in the definition of the instance to be created
+        cls._options = self.options
+
+        # creates the underlying instance of the Appium driver
+        # that is going to be used in the concrete execution
+        cls._instance = appium.webdriver.Remote(
+            "http://localhost:4723/wd/hub",
+            desired_capabilities = dict(
+                avd = "Nexus_5X_API_29_x86",
+                platformName = "Android",
+                deviceName = "Android Emulator",
+                appPackage = "com.platforme.ripe_robin",
+                appActivity = "com.platforme.ripe_robin.MainActivity"
+            )
+        )
+
+        # registers the destroy instance method to be called once
+        # the runner is finished (proper cleanup)
+        self.owner.runner.add_on_finish(self._destroy_instance)
+
+        # returns the final instance of the driver to the caller
+        # so that it can be used for operation
+        return cls._instance
+
+    def _destroy_instance(self):
+        cls = self.__class__
+        if not hasattr(cls, "_instance") or not self._instance:
+            return
+        cls._instance.quit()
+        cls._instance = None
+        cls._options = None
+
+    # -------> NEW METHODS
+    def to_context_webview(self, index = 0):
+        webview_contexts = [context for context in self.contexts if self._is_webview(context)]
+        self.instance.switch_to.context(webview_contexts[index])
+
+    def to_context_native(self):
+        self.instance.switch_to.context(self.contexts[0])
+
+    @property
+    def context(self):
+        return self.instance.context
+
+    @property
+    def contexts(self):
+        return self.instance.contexts
+
+    @property
+    def count_contexts_webview(self):
+        return len([context for context in self.contexts if self._is_webview(context)])
+
+    @property
+    def in_native(self):
+        return self.context == "NATIVE_APP"
+
+    @property
+    def in_webview(self):
+        return self._is_webview(self.context)
+
+    def _is_webview(self, context):
+        return context.startswith("WEBVIEW_")
+
+    def _flush_log(self):
+        from selenium.common.exceptions import WebDriverException
+
+        for name in ("driver", "server"):
+            try: log = self.instance.get_log(name)
+            except WebDriverException as exception:
+                self.owner.browser_logger.warn(exception)
+                log = []
+
+            for item in log:
+                if not item["level"] in levels: continue
+                if not "message" in item: continue
+                level, message = item["level"], item["message"]
+                level_n = LOG_LEVELS_M.get(level, "info")
+                level_m = getattr(self.owner.browser_logger, level_n)
+                level_m(message.strip())
+
+    # --------> TO DO
+    def ensure_visible(self, element, timeout = None):
+        return element
+
+    def scroll_to(self, element, position = "center", sleep = None):
+        return element
+
+    def _move_to(self, element, pivot = "center"):
+        pass
+
+    # --------> EXACT COPIES
+    def press_key(self, element, key, ensure = True):
+        # in case the ensure flag is set makes sure that the element
+        # is visible in an interactable way
+        if ensure: self.ensure_visible(element)
+
+        key = self._resolve_key(key)
+        element.send_keys(key)
+        return element
+
+    def write_text(self, element, text, ensure = True):
+        # in case the ensure flag is set makes sure that the element
+        # is visible in an interactable way
+        if ensure: self.ensure_visible(element)
+
+        # sends the complete set of keys defined in the text
+        # to the element and then returns it
+        element.send_keys(text)
+        return element
+
+    def click(self, element, ensure = True):
+        from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
+
+        try:
+            # in case the ensure flag is set makes sure that the element
+            # is visible in an interactable way
+            if ensure: self.ensure_visible(element)
+
+            # moves the mouse to the element according to the pre-defined
+            # pivot, this will allow proper clicking
+            self._move_to(element)
+
+            # runs the click operation directly on the element without any
+            # kind of previous interaction as expected
+            element.click()
+        except (
+            ElementClickInterceptedException,
+            ElementNotVisibleException,
+            WebDriverException
+        ) as exception:
+            self.owner.breadcrumbs.debug("Element is not \"clickable\" because: %s (%s)" % (
+                exception,
+                exception.__class__
+            ))
+            return None
+
+        # returns the element object to the caller so that it can
+        # be piped in a chain of operations
+        return element
+
+    def wrap_inner(self, method, *args, **kwargs):
+        """
+        Wraps the method being waited on to tolerate some exceptions since
+        in most cases these are transitory conditions that shouldn't break
+        the test.
+
+        :type method: Function
+        :param method: The method that is going to be executed in a wrapped
+        fashion to properly handle exceptions.
+        :rtype Function
+        :return: The method wrapped on a try-catch for exceptions.
+        """
+
+        from selenium.common.exceptions import WebDriverException
+        try: return method(*args, **kwargs)
+        except (WebDriverException, AssertionError) as exception:
+            self.owner.breadcrumbs.debug("Got exception while waiting: %s" % exception)
+            return None
+
+    def _wait(self, timeout = None):
+        from selenium.webdriver.support.ui import WebDriverWait
+        kwargs = dict()
+        if self.poll_frequency: kwargs["poll_frequency"] = self.poll_frequency
+        if timeout == None: timeout = self.owner.timeout
+        return WebDriverWait(self.instance, timeout, **kwargs)
+
+    def wrap_outer(self, method, *args, **kwargs):
+        from selenium.common.exceptions import TimeoutException
+        try:
+            return method(*args, **kwargs)
+        except TimeoutException as exception:
+            raise errors.TimeoutError(message = exception.msg)
