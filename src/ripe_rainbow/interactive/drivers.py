@@ -1078,7 +1078,9 @@ class AppiumDriver(InteractiveDriver):
                 platformName = "Android",
                 deviceName = "Android Emulator",
                 appPackage = "com.platforme.ripe_robin",
-                appActivity = "com.platforme.ripe_robin.MainActivity"
+                appActivity = "com.platforme.ripe_robin.MainActivity",
+                app = "/Users/gcc/ripe-robin-revamp/android/app/build/outputs/apk/debug/app-debug.apk",
+                isHeadless = False
             )
         )
 
