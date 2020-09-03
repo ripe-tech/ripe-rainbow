@@ -179,7 +179,7 @@ class InteractionsPart(parts.Part):
         return self.driver.switch_tab(tab)
 
     def switch_context(self, name = "native", index = 0):
-        self.until(
+        self.waits.until(
             lambda d: self.driver.count_context(name) > index,
             "Expecting the number of contexts to be at least '%d' but is '%d'" % (
                 index,
