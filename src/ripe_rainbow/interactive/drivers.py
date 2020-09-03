@@ -1053,7 +1053,7 @@ class AppiumDriver(InteractiveDriver):
             return self.instance.switch_to.context(self.contexts[0])
         if context == "webview":
             index = kwargs.get("index", 0)
-            webview_contexts = [context for context in self.contexts if self._is_webview(context)]
+            webview_contexts = [context for context in self.contexts if context.startswith("WEBVIEW_")]
             return self.instance.switch_to.context(webview_contexts[index])
         raise appier.OperationalError(
             message = "Context not supported '%s'" % context
@@ -1255,6 +1255,9 @@ class AppiumDriver(InteractiveDriver):
         if self.poll_frequency: kwargs["poll_frequency"] = self.poll_frequency
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout, **kwargs)
+
+    def _move_to(self, element, pivot = "center"):
+        return element
 
     def _flush_log(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
