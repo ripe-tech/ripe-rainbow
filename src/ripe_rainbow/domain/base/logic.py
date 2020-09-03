@@ -167,7 +167,7 @@ class LogicPart(parts.Part):
         if not condition: condition = lambda e, s: True
 
         # runs the selection operation using the underlying driver
-        elements = self.driver.safe(self.driver.find_elements_by_css_selector, selector)
+        elements = self.driver.safe(self.driver.find_elements, selector)
 
         # in case no elements match the provided selector then returns the
         # empty sequence immediately
