@@ -1024,7 +1024,24 @@ class AppiumDriver(InteractiveDriver):
 
     def __init__(self, owner, **kwargs):
         InteractiveDriver.__init__(self, owner, **kwargs)
-        self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
+        self.server_url = appier.conf("APM_SERVER_URK", "http://localhost:4723/wd/hub")
+        self.avd = appier.conf("APM_AVD", "Nexus_5X_API_29_x86")
+        self.platform = appier.conf("APM_PLATFORM", "Android")
+        self.device = appier.conf("APM_DEVICE", "Android Emulator")
+        self.package = appier.conf("APM_PACKAGE", "com.platforme.ripe_robin")
+        self.activity = appier.conf("APM_ACTIVITY", "com.platforme.ripe_robin.MainActivity")
+        self.app_path = appier.conf("APM_APP_PATH", "/Users/gcc/ripe-robin-revamp/android/app/build/outputs/apk/debug/app-debug.apk")
+        self.headless = appier.conf("APM_HEADLESS", False, cast = bool)
+        self.poll_frequency = appier.conf("APM_POLL_FREQUENCY", None, cast = float)
+        self.server_url = kwargs.get("server_url", self.server_url)
+        self.avd = kwargs.get("avd", self.avd)
+        self.platform = kwargs.get("platform", self.platform)
+        self.device = kwargs.get("device", self.device)
+        self.package = kwargs.get("package", self.package)
+        self.activity = kwargs.get("activity", self.activity)
+        self.app_path = kwargs.get("app_path", self.app_path)
+        self.headless = kwargs.get("headless", self.headless)
+        self.poll_frequency = kwargs.get("poll_frequency", self.poll_frequency)
 
     @classmethod
     def label(cls):
@@ -1155,6 +1172,13 @@ class AppiumDriver(InteractiveDriver):
     @property
     def options(self):
         return dict(
+            avd = self.avd,
+            platform = self.platform,
+            device = self.device,
+            package = self.package,
+            activity = self.activity,
+            app_path = self.app_path,
+            headless = self.headless,
             poll_frequency = self.poll_frequency
         )
 
@@ -1181,15 +1205,15 @@ class AppiumDriver(InteractiveDriver):
         # creates the underlying instance of the Appium driver
         # that is going to be used in the concrete execution
         cls._instance = appium.webdriver.Remote(
-            "http://localhost:4723/wd/hub",
+            self.server_url,
             desired_capabilities = dict(
-                avd = "Nexus_5X_API_29_x86",
-                platformName = "Android",
-                deviceName = "Android Emulator",
-                appPackage = "com.platforme.ripe_robin",
-                appActivity = "com.platforme.ripe_robin.MainActivity",
-                app = "/Users/gcc/ripe-robin-revamp/android/app/build/outputs/apk/debug/app-debug.apk",
-                isHeadless = False
+                avd = self.avd,
+                platformName = self.platform,
+                deviceName = self.device,
+                appPackage = self.package,
+                appActivity = self.activity,
+                app = self.app_path,
+                isHeadless = self.headless
             )
         )
 
