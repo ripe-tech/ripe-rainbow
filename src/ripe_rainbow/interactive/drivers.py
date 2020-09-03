@@ -1071,107 +1071,6 @@ class AppiumDriver(InteractiveDriver):
     def find_elements_by_accessibility_id(self, id):
         return self.instance.find_elements_by_accessibility_id(id)
 
-    @property
-    def options(self):
-        return dict(
-            poll_frequency = self.poll_frequency
-        )
-
-    @property
-    def instance(self):
-        cls = self.__class__
-
-        # in case there's already an instance defined in the class
-        # and it is still considered valid then re-uses it
-        if hasattr(cls, "_instance") and cls._instance and\
-            hasattr(cls, "_options") and self.options == cls._options:
-            return cls._instance
-
-        import appium.webdriver
-
-        # in case there's an instance currently available destroys it
-        # to avoid possible collision (garbage collection)
-        self._destroy_instance()
-
-        # "saves" the currently set options so that they can be used
-        # in the definition of the instance to be created
-        cls._options = self.options
-
-        # creates the underlying instance of the Appium driver
-        # that is going to be used in the concrete execution
-        cls._instance = appium.webdriver.Remote(
-            "http://localhost:4723/wd/hub",
-            desired_capabilities = dict(
-                avd = "Nexus_5X_API_29_x86",
-                platformName = "Android",
-                deviceName = "Android Emulator",
-                appPackage = "com.platforme.ripe_robin",
-                appActivity = "com.platforme.ripe_robin.MainActivity",
-                app = "/Users/gcc/ripe-robin-revamp/android/app/build/outputs/apk/debug/app-debug.apk",
-                isHeadless = False
-            )
-        )
-
-        # registers the destroy instance method to be called once
-        # the runner is finished (proper cleanup)
-        self.owner.runner.add_on_finish(self._destroy_instance)
-
-        # returns the final instance of the driver to the caller
-        # so that it can be used for operation
-        return cls._instance
-
-    def _destroy_instance(self):
-        cls = self.__class__
-        if not hasattr(cls, "_instance") or not self._instance:
-            return
-        cls._instance.quit()
-        cls._instance = None
-        cls._options = None
-
-    @property
-    def context(self):
-        return self.instance.context
-
-    @property
-    def contexts(self):
-        return self.instance.contexts
-
-    @property
-    def in_native(self):
-        return self.context == "NATIVE_APP"
-
-    @property
-    def in_webview(self):
-        return self.context.startswith("WEBVIEW_")
-
-    def _flush_log(self):
-        from selenium.common.exceptions import WebDriverException
-
-        for name in ("driver", "server"):
-            try: log = self.instance.get_log(name)
-            except WebDriverException as exception:
-                self.owner.browser_logger.warn(exception)
-                log = []
-
-            for item in log:
-                if not item["level"] in levels: continue
-                if not "message" in item: continue
-                level, message = item["level"], item["message"]
-                level_n = LOG_LEVELS_M.get(level, "info")
-                level_m = getattr(self.owner.browser_logger, level_n)
-                level_m(message.strip())
-
-    # --------> TO DO
-    def ensure_visible(self, element, timeout = None):
-        return element
-
-    def scroll_to(self, element, position = "center", sleep = None):
-        return element
-
-    def _move_to(self, element, pivot = "center"):
-        pass
-
-    # --------> EXACT COPIES
     def press_key(self, element, key, ensure = True):
         # in case the ensure flag is set makes sure that the element
         # is visible in an interactable way
@@ -1221,6 +1120,19 @@ class AppiumDriver(InteractiveDriver):
         # be piped in a chain of operations
         return element
 
+    def ensure_visible(self, element, timeout = None):
+        return element
+
+    def scroll_to(self, element, position = "center", sleep = None):
+        return element
+
+    def wrap_outer(self, method, *args, **kwargs):
+        from selenium.common.exceptions import TimeoutException
+        try:
+            return method(*args, **kwargs)
+        except TimeoutException as exception:
+            raise errors.TimeoutError(message = exception.msg)
+
     def wrap_inner(self, method, *args, **kwargs):
         """
         Wraps the method being waited on to tolerate some exceptions since
@@ -1240,6 +1152,79 @@ class AppiumDriver(InteractiveDriver):
             self.owner.breadcrumbs.debug("Got exception while waiting: %s" % exception)
             return None
 
+    @property
+    def options(self):
+        return dict(
+            poll_frequency = self.poll_frequency
+        )
+
+    @property
+    def instance(self):
+        cls = self.__class__
+
+        # in case there's already an instance defined in the class
+        # and it is still considered valid then re-uses it
+        if hasattr(cls, "_instance") and cls._instance and\
+            hasattr(cls, "_options") and self.options == cls._options:
+            return cls._instance
+
+        import appium.webdriver
+
+        # in case there's an instance currently available destroys it
+        # to avoid possible collision (garbage collection)
+        self._destroy_instance()
+
+        # "saves" the currently set options so that they can be used
+        # in the definition of the instance to be created
+        cls._options = self.options
+
+        # creates the underlying instance of the Appium driver
+        # that is going to be used in the concrete execution
+        cls._instance = appium.webdriver.Remote(
+            "http://localhost:4723/wd/hub",
+            desired_capabilities = dict(
+                avd = "Nexus_5X_API_29_x86",
+                platformName = "Android",
+                deviceName = "Android Emulator",
+                appPackage = "com.platforme.ripe_robin",
+                appActivity = "com.platforme.ripe_robin.MainActivity",
+                app = "/Users/gcc/ripe-robin-revamp/android/app/build/outputs/apk/debug/app-debug.apk",
+                isHeadless = False
+            )
+        )
+
+        # registers the destroy instance method to be called once
+        # the runner is finished (proper cleanup)
+        self.owner.runner.add_on_finish(self._destroy_instance)
+
+        # returns the final instance of the driver to the caller
+        # so that it can be used for operation
+        return cls._instance
+
+    @property
+    def context(self):
+        return self.instance.context
+
+    @property
+    def contexts(self):
+        return self.instance.contexts
+
+    @property
+    def in_native(self):
+        return self.context == "NATIVE_APP"
+
+    @property
+    def in_webview(self):
+        return self.context.startswith("WEBVIEW_")
+
+    def _destroy_instance(self):
+        cls = self.__class__
+        if not hasattr(cls, "_instance") or not self._instance:
+            return
+        cls._instance.quit()
+        cls._instance = None
+        cls._options = None
+
     def _wait(self, timeout = None):
         from selenium.webdriver.support.ui import WebDriverWait
         kwargs = dict()
@@ -1247,9 +1232,19 @@ class AppiumDriver(InteractiveDriver):
         if timeout == None: timeout = self.owner.timeout
         return WebDriverWait(self.instance, timeout, **kwargs)
 
-    def wrap_outer(self, method, *args, **kwargs):
-        from selenium.common.exceptions import TimeoutException
-        try:
-            return method(*args, **kwargs)
-        except TimeoutException as exception:
-            raise errors.TimeoutError(message = exception.msg)
+    def _flush_log(self, levels = LOG_LEVELS):
+        from selenium.common.exceptions import WebDriverException
+
+        for name in ("driver", "server"):
+            try: log = self.instance.get_log(name)
+            except WebDriverException as exception:
+                self.owner.browser_logger.warn(exception)
+                log = []
+
+            for item in log:
+                if not item["level"] in levels: continue
+                if not "message" in item: continue
+                level, message = item["level"], item["message"]
+                level_n = LOG_LEVELS_M.get(level, "info")
+                level_m = getattr(self.owner.browser_logger, level_n)
+                level_m(message.strip())
