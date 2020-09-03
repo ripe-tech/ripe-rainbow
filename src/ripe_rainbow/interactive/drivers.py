@@ -51,6 +51,12 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def switch_context(self, name, *args, **kwargs):
+        raise appier.NotImplementedError()
+
+    def count_context(self, context, *args, **kwargs):
+        raise appier.NotImplementedError()
+
     def clear_storage(self):
         self.clear_cookies()
         self.clear_local_storage()
@@ -1010,6 +1016,12 @@ class SeleniumDriver(InteractiveDriver):
         if sleep: time.sleep(sleep)
 
 class AppiumDriver(InteractiveDriver):
+
+    CONTEXT_MAPPER = dict(
+        native = "NATIVE_APP",
+        webview = "WEBVIEW_"
+    )
+
     def __init__(self, owner, **kwargs):
         InteractiveDriver.__init__(self, owner, **kwargs)
         self.poll_frequency = appier.conf("SEL_POLL_FREQUENCY", None, cast = float)
@@ -1019,11 +1031,21 @@ class AppiumDriver(InteractiveDriver):
         import appium.version
         return "Appium %s" % appium.version.version
 
-    @property
-    def options(self):
-        return dict(
-            poll_frequency = self.poll_frequency
+    def switch_context(self, context, *args, **kwargs):
+        if context == "native":
+            return self.instance.switch_to.context(self.contexts[0])
+        if context == "webview":
+            index = kwargs.get("index", 0)
+            webview_contexts = [context for context in self.contexts if self._is_webview(context)]
+            return self.instance.switch_to.context(webview_contexts[index])
+        raise appier.OperationalError(
+            message = "Context not supported '%s'" % context
         )
+
+    def count_context(self, context, *args, **kwargs):
+        cls = self.__class__
+        context_n = cls.CONTEXT_MAPPER.get(context, None)
+        return len([context for context in self.contexts if context.startswith(context_n)])
 
     def find_element(self, selector):
         if self.in_native:
@@ -1048,6 +1070,12 @@ class AppiumDriver(InteractiveDriver):
 
     def find_elements_by_accessibility_id(self, id):
         return self.instance.find_elements_by_accessibility_id(id)
+
+    @property
+    def options(self):
+        return dict(
+            poll_frequency = self.poll_frequency
+        )
 
     @property
     def instance(self):
@@ -1100,14 +1128,6 @@ class AppiumDriver(InteractiveDriver):
         cls._instance = None
         cls._options = None
 
-    # -------> NEW METHODS
-    def to_context_webview(self, index = 0):
-        webview_contexts = [context for context in self.contexts if self._is_webview(context)]
-        self.instance.switch_to.context(webview_contexts[index])
-
-    def to_context_native(self):
-        self.instance.switch_to.context(self.contexts[0])
-
     @property
     def context(self):
         return self.instance.context
@@ -1117,19 +1137,12 @@ class AppiumDriver(InteractiveDriver):
         return self.instance.contexts
 
     @property
-    def count_contexts_webview(self):
-        return len([context for context in self.contexts if self._is_webview(context)])
-
-    @property
     def in_native(self):
         return self.context == "NATIVE_APP"
 
     @property
     def in_webview(self):
-        return self._is_webview(self.context)
-
-    def _is_webview(self, context):
-        return context.startswith("WEBVIEW_")
+        return self.context.startswith("WEBVIEW_")
 
     def _flush_log(self):
         from selenium.common.exceptions import WebDriverException

@@ -178,8 +178,15 @@ class InteractionsPart(parts.Part):
     def switch_tab(self, tab):
         return self.driver.switch_tab(tab)
 
-    def to_context_native(self):
-        return self.driver.to_context_native()
+    def switch_context(self, name = "native", index = 0):
+        self.until(
+            lambda d: self.driver.count_context(name) > index,
+            "Expecting the number of contexts to be at least '%d' but is '%d'" % (
+                index,
+                self.driver.count_context(name)
+            )
+        )
+        return self.driver.switch_context(name, dict(index = index))
 
     def close_tab(self, tab = None):
         return self.driver.close_tab(tab)
