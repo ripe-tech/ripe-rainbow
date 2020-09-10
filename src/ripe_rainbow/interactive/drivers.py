@@ -1066,13 +1066,27 @@ class AppiumDriver(InteractiveDriver):
 
     def find_element(self, selector):
         if self.in_native:
-            return self.find_element_by_accessibility_id(selector)
+            element = None
+            for method in (
+                self.find_element_by_accessibility_id,
+                self.find_element_by_id
+            ):
+                element = method(selector)
+                if element: break
+            return element
         else:
             return self.find_element_by_css_selector(selector)
 
     def find_elements(self, selector):
         if self.in_native:
-            return self.find_elements_by_accessibility_id(selector)
+            elements = []
+            for method in (
+                self.find_elements_by_accessibility_id,
+                self.find_elements_by_id
+            ):
+                elements = method(selector)
+                if len(elements) > 0: break
+            return elements
         else:
             return self.find_elements_by_css_selector(selector)
 
@@ -1087,6 +1101,12 @@ class AppiumDriver(InteractiveDriver):
 
     def find_elements_by_accessibility_id(self, id):
         return self.instance.find_elements_by_accessibility_id(id)
+
+    def find_element_by_id(self, id):
+        return self.instance.find_element_by_id(id)
+
+    def find_elements_by_id(self, id):
+        return self.instance.find_elements_by_id(id)
 
     def press_key(self, element, key, ensure = True):
         # in case the ensure flag is set makes sure that the element
