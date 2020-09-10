@@ -1066,17 +1066,27 @@ class AppiumDriver(InteractiveDriver):
 
     def find_element(self, selector):
         if self.in_native:
-            element = self.find_element_by_accessibility_id(selector)
-            if element: return element
-            return self.find_element_by_id(selector)
+            element = None
+            for method in (
+                self.find_element_by_accessibility_id,
+                self.find_element_by_id
+            ):
+                element = method(selector)
+                if element: break
+            return element
         else:
             return self.find_element_by_css_selector(selector)
 
     def find_elements(self, selector):
         if self.in_native:
-            elements = self.find_elements_by_accessibility_id(selector)
-            if len(elements) > 0: return elements
-            return self.find_elements_by_id(selector)
+            elements = []
+            for method in (
+                self.find_elements_by_accessibility_id,
+                self.find_elements_by_id
+            ):
+                elements = method(selector)
+                if len(elements) > 0: break
+            return elements
         else:
             return self.find_elements_by_css_selector(selector)
 
