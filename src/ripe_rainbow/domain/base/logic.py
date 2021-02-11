@@ -44,14 +44,19 @@ class LogicPart(parts.Part):
         params = self._normalize_params(params)
 
         # parses the current URL in the browser and reconstructs it with just
-        # the base scheme and the URL path
+        # the base scheme and the URL path, makes sure that the provided URL
+        # value is a valid and consistent string (avoids mixing bytes with strings)
+        url = appier.legacy.str(url)
         url_p = appier.legacy.urlparse(url)
         url_params = appier.http._params(url_p.query)
         url_base = url_p.scheme + "://" + url_p.netloc + url_p.path
 
         # in case the provided URL is not a sequence converts it into
-        # one so that it can be used in the underlying algorithm
+        # one so that it can be used in the underlying algorithm, then
+        # makes sure that all of its components are properly encoded
+        # as valid string values (avoiding byte related issues)
         if not isinstance(expected, (list, tuple)): expected = (expected,)
+        expected = tuple([appier.legacy.str(value) for value in expected])
 
         # iterates over the complete set of (expected) URLs to be tested and
         # sees if at least one of them validates against the provided base URL

@@ -3,6 +3,8 @@
 
 import unittest
 
+import appier
+
 import ripe_rainbow
 
 class LogicPartTest(unittest.TestCase):
@@ -82,3 +84,48 @@ class LogicPartTest(unittest.TestCase):
             fragment = "anchor1",
             strict = True
         ), False)
+
+    def test_match_url_bytes(self):
+        test_case = ripe_rainbow.TestCase()
+        logic_part = ripe_rainbow.LogicPart(test_case)
+
+        self.assertEqual(logic_part.match_url(
+            appier.legacy.bytes("http://www.platforme.com?param1=value1&param1=value2#anchor1"),
+            "http://www.platforme.com",
+            params = dict(param1 = ["value2", "value1"]),
+            fragment = "anchor1",
+            strict = True
+        ), False)
+        self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param1=value2#anchor1",
+            appier.legacy.bytes("http://www.platforme.com"),
+            params = dict(param1 = ["value2", "value1"]),
+            fragment = "anchor1",
+            strict = True
+        ), False)
+        self.assertEqual(logic_part.match_url(
+            appier.legacy.bytes("http://www.platforme.com?param1=value1&param1=value2#anchor1"),
+            appier.legacy.bytes("http://www.platforme.com"),
+            params = dict(param1 = ["value2", "value1"]),
+            fragment = "anchor1",
+            strict = True
+        ), False)
+
+        self.assertEqual(logic_part.match_url(
+            appier.legacy.bytes("http://www.platforme.com?param1=value1&param2=value2"),
+            "http://www.platforme.com",
+            params = dict(param1 = "value1", param2 = "value2"),
+            strict = True
+        ), True)
+        self.assertEqual(logic_part.match_url(
+            "http://www.platforme.com?param1=value1&param2=value2",
+            appier.legacy.bytes("http://www.platforme.com"),
+            params = dict(param1 = "value1", param2 = "value2"),
+            strict = True
+        ), True)
+        self.assertEqual(logic_part.match_url(
+            appier.legacy.bytes("http://www.platforme.com?param1=value1&param2=value2"),
+            appier.legacy.bytes("http://www.platforme.com"),
+            params = dict(param1 = "value1", param2 = "value2"),
+            strict = True
+        ), True)
