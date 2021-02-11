@@ -22,15 +22,6 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install -r extra.txt
-  - pip install coveralls
-script: coverage run --source=ripe_rainbow setup.py test
-after_success: coveralls
-deploy:
-  provider: pypi
-  user: platforme
-  password:
-    secure: ivEhdEapNOTqglQakx1W22zNXm/OQSEciS+6Sv+TX2qvyWMtmcPGkIMtoWzRbB9BrIpm8ZbRyHiw1tIlS/8cG4jgZfXfjuGoKPF8Ctq+cncpmbQO4swf9fHT4d6RczqLaexqsGDnVOMokLqjGJjvKI8POYNNcrvsJgUFh5ZKpt0eAUUtTFnn6y8N+ckQ0lQ4W38K6cqeqmUF9oHxKH0+eMS0321wBii+5dqk8rXIrkL3ISVSNsViYF740hg8W9ZhSZ9AJ3jHVmiCt8rl59jFDxeDCE+ZfAvIEvmrhE2aVOkMzao1dvLKDS62AmDpd+AUpnm339gyiZyKJKy4wAnFH4mGJ9xPbCFgY7WQA0xY9qYhl0R+XeUl6NDzWSYJWSfX7H/6cWYORomZwF9JbxAnS+n23JPEG5D4N0KvGl86hg79g3jtKwnGDxOmDWyUNOuQXNtU+h1uh+e+fxwmYjRwWiMR25ZIW1TmuJhYiVqcXoLqHkoPy7j/t8KaYT51gSQD2VwgxkBFi2g9Z0XjGWB3stTBbnGfe+pCbLaeqXr+rIWACOJrRXHJjkU+5rsJJQKFaHXjMYwK6thodEtkg4iiLlNbC/Rsev5URsxAuGF+/e24FhboGMiAHBLYP5Tnbj24RkbnSIggrDgfRW1j1/hWceIKq9Wid0EupKvSOeTLzdk=
-  distributions: sdist bdist_wheel
-  on:
-    tags: true
-    python: "2.7"
+  - if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then pip install coveralls; fi
+script: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coverage run --source=ripe_rainbow setup.py test; fi
+after_success: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coveralls; fi
