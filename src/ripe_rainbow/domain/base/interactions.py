@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import appier
 
 from .. import parts
@@ -151,6 +152,26 @@ class InteractionsPart(parts.Part):
             "Element '%s' found but never became clickable" % selector
         )
 
+    def send_file(self, selector, path):
+        """
+        Sends a file to a file input element when possible,
+        which happens when that element exists.
+
+        :type selector: String
+        :param selector: The selector for the file input element to send the file to.
+        :type path: String
+        :param path: The path to the file being sent.
+        :rtype: Element
+        :return: The file input element if there's any otherwise an invalid value.
+        """
+
+        # waits until the try send operation is possible meaning that
+        # the target element exists and the upload was successful
+        return self.waits.until(
+            lambda d: self._send_file(selector, path),
+            "Could not send '%s' to '%s'" % (path, selector)
+        )
+
     def highlight(self, selector, text = None):
         # waits until the element is visible for the selector and then
         # retrieves the reference to it to be able to press enter
@@ -219,3 +240,25 @@ class InteractionsPart(parts.Part):
         )
         if not element: return None
         return self.driver.safe(self.driver.click, element)
+
+    def _send_file(self, selector, path):
+        """
+        Inner method that tries to send the file given by path to
+        the file input element defined by the selector.
+
+        This method is ready to be used within a waits environment so that
+        proper repetition may happen.
+
+        :type selector: String
+        :param selector: The selector for the file input element to send the file to.
+        :type path: String
+        :param path: The path to the file being sent.
+        :rtype: Element
+        :return: The file input element if there's any otherwise an invalid value.
+        """
+
+        element = self.logic.get(selector)
+        if not element: return None
+        path = os.path.abspath(path) 
+        path = os.path.normpath(path) 
+        return self.driver.safe(self.driver.write_text, element, path, False)
