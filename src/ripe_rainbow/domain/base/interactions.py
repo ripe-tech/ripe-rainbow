@@ -172,6 +172,11 @@ class InteractionsPart(parts.Part):
         :return: The file input element if there's any otherwise an invalid value.
         """
 
+        # normalizes the path (that can be relative) so that it can
+        # be safely used by the de underlying element changing operations
+        path = os.path.abspath(path)
+        path = os.path.normpath(path)
+
         # waits until the try set operation is possible meaning that
         # the target element exists and the upload was successful
         return self.waits.until(
@@ -267,6 +272,4 @@ class InteractionsPart(parts.Part):
 
         element = self.logic.get(selector)
         if not element: return None
-        path = os.path.abspath(path)
-        path = os.path.normpath(path)
         return self.driver.safe(self.driver.write_text, element, path, False)
