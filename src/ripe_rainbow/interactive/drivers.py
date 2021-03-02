@@ -881,6 +881,8 @@ class SeleniumDriver(InteractiveDriver):
             down = Keys.DOWN,
             page_up = Keys.PAGE_UP,
             page_down = Keys.PAGE_DOWN,
+            end = Keys.END,
+            home = Keys.HOME,
             esc = Keys.ESCAPE,
             cmd = Keys.COMMAND,
             ctrl = Keys.CONTROL,
