@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
+## [0.8.1] - 2021-03-04
+
+### Added
+
+* Support for `home` and `end` keys
+
 ## [0.8.0] - 2021-03-01
 
 ### Added
