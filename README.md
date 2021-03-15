@@ -69,6 +69,8 @@ rainbow
 | **PULSE_URL**            | `str` | `http://localhost:3000` | Same as `RIPE_PULSE_URL`.                                                                                                 |
 | **RIPE_COPPER_URL**      | `str` | `http://localhost:3000` | The base URL to the RIPE Copper instance to be used for tests.                                                            |
 | **COPPER_URL**           | `str` | `http://localhost:3000` | Same as `RIPE_COPPER_URL`.                                                                                                |
+| **RIPE_UTIL_VUE_URL**    | `str` | `http://localhost:3000` | The base URL to the RIPE Util Vue instance to be used for tests.                                                          |
+| **UTIL_VUE_URL**         | `str` | `http://localhost:3000` | Same as `RIPE_UTIL_VUE_URL`.                                                                                              |
 | **RIPE_WHITE_URL**       | `str` | `http://localhost:3000` | The base URL to the RIPE White instance to be used for tests.                                                             |
 | **WHITE_URL**            | `str` | `http://localhost:3000` | Same as `RIPE_WHITE_URL`.                                                                                                 |
 
