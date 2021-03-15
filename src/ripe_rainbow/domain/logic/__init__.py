@@ -8,6 +8,7 @@ from . import ripe_core
 from . import ripe_id
 from . import ripe_pulse
 from . import ripe_retail
+from . import ripe_util_vue
 from . import ripe_white
 
 from .admin import AdminPart
@@ -17,4 +18,5 @@ from .ripe_copper import RipeCopperPart
 from .ripe_id import RipeIdPart
 from .ripe_pulse import RipePulsePart
 from .ripe_retail import RipeRetailPart
+from .ripe_util_vue import RipeUtilVuePart
 from .ripe_white import RipeWhitePart
