@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
+## [0.8.2] - 2021-03-17
+
+### Fixed
+
+* Support for none validation in URL
+
 ## [0.8.1] - 2021-03-04
 
 ### Added
