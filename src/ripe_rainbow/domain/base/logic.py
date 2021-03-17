@@ -39,6 +39,10 @@ class LogicPart(parts.Part):
         starts_with = False,
         strict = False
     ):
+        # in case the URL is not defined, it only matches if it is
+        # expected to be empty
+        if url == None: return expected == None
+
         # runs the normalization process for the provided parameters,
         # so that they can be readily compared with the parsed ones
         params = self._normalize_params(params)
