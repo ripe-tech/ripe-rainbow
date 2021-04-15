@@ -47,3 +47,7 @@ class RipeUtilVuePart(parts.Part):
     @property
     def delivery_url(self):
         return "%s/delivery" % self.base_url
+
+    @property
+    def order_url(self):
+        return "%s/order" % self.base_url
