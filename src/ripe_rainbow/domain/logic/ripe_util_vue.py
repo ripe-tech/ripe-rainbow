@@ -69,7 +69,7 @@ class RipeUtilVuePart(parts.Part):
         return "%s/orders" % self.base_url
     
     @property
-    def platforme-id_url(self):
+    def platforme_id_url(self):
         return "%s/platforme-id" % self.base_url
     
     @property
