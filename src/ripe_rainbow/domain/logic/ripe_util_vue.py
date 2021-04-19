@@ -51,10 +51,6 @@ class RipeUtilVuePart(parts.Part):
     @property
     def example_url(self):
         return "%s/example" % self.base_url
-
-    @property
-    def delivery_url(self):
-        return "%s/delivery" % self.base_url
     
     @property
     def locales_url(self):
