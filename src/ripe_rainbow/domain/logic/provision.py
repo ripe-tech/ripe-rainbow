@@ -39,7 +39,9 @@ class ProvisionPart(parts.Part):
 
         names = names or (
             "account.json",
+            "attachments.json",
             "availability_rule.json",
+            "chat.json",
             "country_group.json",
             "ddp_rules.json",
             "exchange_rate.json",
