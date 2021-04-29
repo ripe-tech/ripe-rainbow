@@ -16,7 +16,7 @@ class RipeUtilVuePart(parts.Part):
                 ("env", [environment])
             ]
         )
-        self.waits.visible(".top-bar .center .selector .title", text = environment)
+        self.waits.visible(".top-bar .center .selector .selection", text = environment)
 
     def logout_wait(self):
         self.interactions.goto_url(self.signout_url, redirect_url = (self.home_url, self.id.login_url))
