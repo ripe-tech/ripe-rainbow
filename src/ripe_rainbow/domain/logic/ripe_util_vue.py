@@ -7,7 +7,21 @@ from .. import parts
 
 class RipeUtilVuePart(parts.Part):
 
-    def login_wait(self, redirect_url = None):
+    def login_wait(self, environment = "ci", redirect_url = None):
+        self._login_wait(redirect_url)
+        self.waits.visible(".top-bar .center .selector .title")
+        self.interactions.goto_url(
+            redirect_url or self.home_url,
+            params = [
+                ("env", [environment])
+            ]
+        )
+        self.waits.visible(".top-bar .center .selector .title", text = environment)
+
+    def logout_wait(self):
+        self.interactions.goto_url(self.signout_url, redirect_url = (self.home_url, self.id.login_url))
+
+    def _login_wait(self, redirect_url = None):
         self.interactions.goto_url(self.home_url, redirect_url = (self.home_url, self.id.login_url))
         self.id.authorize(redirect_url = self.next_url)
 
@@ -17,12 +31,9 @@ class RipeUtilVuePart(parts.Part):
         self.interactions.click(".form .button-blue")
         self.waits.redirected_to(redirect_url)
 
-    def logout_wait(self):
-        self.interactions.goto_url(self.signout_url, redirect_url = (self.home_url, self.id.login_url))
-
     @property
     def util_vue_url(self):
-        util_vue_url = "http://localhost:3000"
+        util_vue_url = "https://ripe-util-vue.platforme.com"
         util_vue_url = appier.conf("BASE_URL", util_vue_url)
         util_vue_url = appier.conf("UTIL_VUE_URL", util_vue_url)
         util_vue_url = appier.conf("RIPE_UTIL_VUE_URL", util_vue_url)
