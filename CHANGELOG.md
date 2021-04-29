@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Switch env on `ripe-util-vue` login
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.8.3] - 2021-04-29
+
+### Added
+
+* Switch env on `ripe-util-vue` login
 
 ## [0.8.2] - 2021-03-17
 
