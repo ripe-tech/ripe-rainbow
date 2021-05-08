@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Support for diagnostics in test running 
+* Support for diagnostics in test running
 
 ## [0.8.3] - 2021-04-29
 

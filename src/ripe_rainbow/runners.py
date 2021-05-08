@@ -59,6 +59,10 @@ class Runner(object):
 
 class ConsoleRunner(Runner):
 
+    def __init__(self, *args, **kwrgs):
+        Runner.__init__(self, *args, **kwrgs)
+        self.diag = appier.conf("DIAG", True, cast = bool)
+
     def run(self):
         # sets the default result flag value to valid as the execution
         # is considered to be valid by default
@@ -226,22 +230,20 @@ class ConsoleRunner(Runner):
         if failures: print("")
         for failure in failures: failure.print_result()
 
-        diag_keys = appier.legacy.keys(diag)
-        diag_keys.sort()
-
-        if diag_keys: print("")
-
-        for diag_key in diag_keys:
-            diag_value = diag[diag_key]
-            diag_keys_s = diag_key.ljust(12)
-            print("  %s := %s" % (diag_keys_s, str(diag_value)))
-
         print("")
 
         if result:
             print("The sky is blue and the sun is shining ☀️")
         else:
             print("There are some clouds in the sky 🌧️")
+
+        # prints the table containing the diagnostics add a new
+        # line in case that's required (requested by configuration)
+        if self.diag and diag:
+            print("")
+            print ("Here are the diagnostics you've requested 👨‍⚕️")
+            print("")
+            print(appier_console.table(diag))
 
         return result
 
