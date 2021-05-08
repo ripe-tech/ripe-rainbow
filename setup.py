@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
     name = "ripe-rainbow",
-    version = "0.8.3",
+    version = "0.9.0",
     author = "Platforme International",
     author_email = "development@platforme.com",
     description = "RIPE Rainbow",
