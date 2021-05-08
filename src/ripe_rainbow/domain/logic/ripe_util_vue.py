@@ -58,11 +58,11 @@ class RipeUtilVuePart(parts.Part):
     @property
     def delivery_url(self):
         return "%s/delivery" % self.base_url
-    
+
     @property
     def example_url(self):
         return "%s/example" % self.base_url
-    
+
     @property
     def locales_url(self):
         return "%s/locales" % self.base_url
@@ -70,15 +70,15 @@ class RipeUtilVuePart(parts.Part):
     @property
     def order_url(self):
         return "%s/order" % self.base_url
-    
+
     @property
     def orders_url(self):
         return "%s/orders" % self.base_url
-    
+
     @property
     def platforme_id_url(self):
         return "%s/platforme-id" % self.base_url
-    
+
     @property
     def quote_url(self):
         return "%s/quote" % self.base_url
@@ -86,7 +86,7 @@ class RipeUtilVuePart(parts.Part):
     @property
     def rules_url(self):
         return "%s/rules" % self.base_url
-    
+
     @property
     def background_url(self):
         return "%s/background" % self.base_url

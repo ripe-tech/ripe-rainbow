@@ -49,6 +49,8 @@ class GoogleSearchTest(google_base.GoogleTest):
     def search_cosmetics(self):
         self.interactions.goto_url(self.google_url, wait = False)
 
+        self.interactions.click("#zV9nZe > div")
+
         element = self.waits.visible("div.a4bIc > input")
         element._attr("style.border", "6px solid blue")
 

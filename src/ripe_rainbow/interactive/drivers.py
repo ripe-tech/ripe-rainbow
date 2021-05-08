@@ -51,6 +51,11 @@ class InteractiveDriver(object):
     def stop(self):
         pass
 
+    def touch_diag(self, name, delta = 1):
+        if not hasattr(self.owner, "diag"): return
+        if self.owner.diag == None: return
+        self.owner.diag[name] = self.owner.diag.get(name, 0) + delta
+
     def switch_context(self, name, *args, **kwargs):
         raise appier.NotImplementedError()
 
@@ -267,6 +272,12 @@ class SeleniumDriver(InteractiveDriver):
         self.instance.execute_script("sessionStorage.clear();")
 
     def get(self, url):
+        # touches the diag values increment the number of operations
+        # performed for the current execution context
+        self.touch_diag("get")
+
+        # performs the get URL operation redirecting the underlying
+        # engine to the target web page
         return self.instance.get(url)
 
     def find_element(self, selector):
@@ -288,6 +299,10 @@ class SeleniumDriver(InteractiveDriver):
         return self.find_by_name(name)
 
     def press_key(self, element, key, ensure = True):
+        # touches the diag values increment the number of operations
+        # performed for the current execution context
+        self.touch_diag("press_key")
+
         # in case the ensure flag is set makes sure that the element
         # is visible in an interactable way
         if ensure: self.ensure_visible(element)
@@ -308,6 +323,10 @@ class SeleniumDriver(InteractiveDriver):
 
     def click(self, element, ensure = True):
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
+
+        # touches the diag values increment the number of operations
+        # performed for the current execution context
+        self.touch_diag("click")
 
         try:
             # in case the ensure flag is set makes sure that the element
@@ -1111,6 +1130,10 @@ class AppiumDriver(InteractiveDriver):
         return self.instance.find_elements_by_id(id)
 
     def press_key(self, element, key, ensure = True):
+        # touches the diag values increment the number of operations
+        # performed for the current execution context
+        self.touch_diag("press_key")
+
         # in case the ensure flag is set makes sure that the element
         # is visible in an interactable way
         if ensure: self.ensure_visible(element)
@@ -1131,6 +1154,10 @@ class AppiumDriver(InteractiveDriver):
 
     def click(self, element, ensure = True):
         from selenium.common.exceptions import ElementClickInterceptedException, ElementNotVisibleException, WebDriverException
+
+        # touches the diag values increment the number of operations
+        # performed for the current execution context
+        self.touch_diag("click")
 
         try:
             # in case the ensure flag is set makes sure that the element

@@ -20,7 +20,7 @@ class GoogleMobileTest(google_base.GoogleTest):
         self.interactions.write_text("div.a4bIc > input", "Platforme")
         self.interactions.press_enter("div.a4bIc > input")
 
-        self.waits.visible("#rso > div:nth-child(1) > div > div > a > div > div", text = "Platforme")
+        self.waits.visible("div:nth-child(1) > div > div > div > a > div > div", text = "Platforme")
 
     @ripe_rainbow.test()
     def search_highlight(self):
@@ -29,7 +29,8 @@ class GoogleMobileTest(google_base.GoogleTest):
         self.interactions.write_text("div.a4bIc > input", "Platforme")
         self.interactions.press_enter("div.a4bIc > input")
 
-        element = self.waits.visible("#rso > div:nth-child(1) > div")
+        element = self.waits.visible("div:nth-child(1) > div > div > div > a > div > div", text = "Platforme")
         element._highlight()
+        element._focus()
 
         time.sleep(2.5)

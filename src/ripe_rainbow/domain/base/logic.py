@@ -253,6 +253,9 @@ class LogicPart(parts.Part):
         def _lowlight():
             self.driver.lowlight(element)
 
+        def _scroll_to():
+            self.driver.scroll_to(element)
+
         element._selector = selector
         element._condition = condition
         element._condition_description = getattr(condition, "_description", None)
@@ -263,3 +266,5 @@ class LogicPart(parts.Part):
         element._attr = _attr
         element._highlight = _highlight
         element._lowlight = _lowlight
+        element._scroll_to = _scroll_to
+        element._focus = _scroll_to

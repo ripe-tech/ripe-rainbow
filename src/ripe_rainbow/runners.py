@@ -70,6 +70,7 @@ class ConsoleRunner(Runner):
         passes = []
         skips = []
         failures = []
+        diag = {}
 
         # prints the header information on the product to be used to indicate
         # the proper execution of then console
@@ -115,6 +116,12 @@ class ConsoleRunner(Runner):
                         # printing of the label for test execution
                         test_prefix = "[%d] " % (index + 1) if self.repeat > 1 else ""
 
+                        # updates the context of the test case so that it reflects the
+                        # current execution of text in the context of diagnostics, this
+                        # update effectively violates the non state requirement on the
+                        # test case, but allows effective state update from inside the test
+                        test_case.diag = diag
+
                         try:
                             # starts the appier console context loader so that an animation
                             # is executed while the test is running (where it's possible)
@@ -132,6 +139,7 @@ class ConsoleRunner(Runner):
                                     test,
                                     ctx = dict(
                                         index = index,
+                                        diag = diag,
                                         repeat = self.repeat
                                     )
                                 )
@@ -167,6 +175,8 @@ class ConsoleRunner(Runner):
                             if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
                             else: extra_s = ""
                             failed += 1
+                        finally:
+                            test_case.diag = None
 
                         # determines the kind of environment we're running on and taking that
                         # into account prints the proper output, standard is tty environment
@@ -215,6 +225,16 @@ class ConsoleRunner(Runner):
         # the underlying issues
         if failures: print("")
         for failure in failures: failure.print_result()
+
+        diag_keys = appier.legacy.keys(diag)
+        diag_keys.sort()
+
+        if diag_keys: print("")
+
+        for diag_key in diag_keys:
+            diag_value = diag[diag_key]
+            diag_keys_s = diag_key.ljust(12)
+            print("  %s := %s" % (diag_keys_s, str(diag_value)))
 
         print("")
 
