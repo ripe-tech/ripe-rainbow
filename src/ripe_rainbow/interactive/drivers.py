@@ -950,16 +950,25 @@ class SeleniumDriver(InteractiveDriver):
         Runs the garbage collection in the current window set, effectively
         closing all the extra windows currently visible.
 
-        This is done by percolating over the old windows and closing them.
+        This is done by percolating over the old windows and closing them,
+        and making sure that are the end the focus is at the main window.
+
+        Running this operation ensures that the state of the browser is kept
+        clean and ready to be used for new operations.
         """
 
-        for index in appier.legacy.xrange(1, len(self.instance.window_handles)):
-            handle = self.instance.window_handles[index]
-            self.instance.switch_to.window(handle)
+        for window_handle in self.instance.window_handles[1:]:
+            self.instance.switch_to.window(window_handle)
             self.instance.close()
 
-        handle = self.instance.window_handles[0]
-        self.instance.switch_to.window(handle)
+        # in case there's no remaining window handles, then there's
+        # nothing remaining to be done, returns the control flow
+        if len(self.instance.window_handles) < 1: return
+
+        # "grabs" the first (and main) window handle and switches
+        # the control to it so that it can be properly used
+        window_handle = self.instance.window_handles[0]
+        self.instance.switch_to.window(window_handle)
 
     def __is_visible(self, element):
         """
