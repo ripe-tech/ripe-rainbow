@@ -554,6 +554,8 @@ class SeleniumDriver(InteractiveDriver):
         # in case the browser should have a specific window size
         # then splits the window size around the specific values
         if self.window_size:
+            # unpacks the size into the integer components and runs
+            # the set size operation at the driver level
             width, height = (int(value) for value in self.window_size.split("x"))
             cls._instance.set_window_size(width, height)
 
