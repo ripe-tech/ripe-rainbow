@@ -557,6 +557,15 @@ class SeleniumDriver(InteractiveDriver):
             width, height = (int(value) for value in self.window_size.split("x"))
             cls._instance.set_window_size(width, height)
 
+            # tries to obtain the new window size to make sure that
+            # a proper resize operation has been performed
+            size = cls._instance.get_window_size()
+            appier.verify(
+                size["width"] == width and size["height"] == height,
+                message = "Invalid size, expected %s got %sx%s" %\
+                    (self.window_size, size["width"] , size["height"])
+            )
+
         # registers the destroy instance method to be called once
         # the runner is finished (proper cleanup)
         self.owner.runner.add_on_finish(self._destroy_instance)
