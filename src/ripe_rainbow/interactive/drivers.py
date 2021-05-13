@@ -259,6 +259,7 @@ class SeleniumDriver(InteractiveDriver):
         os.environ["PATH"] = separator.join(path_s)
 
     def stop(self):
+        self._gc_tabs()
         self._flush_log()
         InteractiveDriver.stop(self)
 
@@ -943,6 +944,22 @@ class SeleniumDriver(InteractiveDriver):
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
                 level_m(message.strip())
+
+    def _gc_tabs(self):
+        """
+        Runs the garbage collection in the current window set, effectively
+        closing all the extra windows currently visible.
+
+        This is done by percolating over the old windows and closing them.
+        """
+
+        for index in appier.legacy.xrange(1, len(self.instance.window_handles)):
+            handle = self.instance.window_handles[index]
+            self.instance.switch_to.window(handle)
+            self.instance.close()
+
+        handle = self.instance.window_handles[0]
+        self.instance.switch_to.window(handle)
 
     def __is_visible(self, element):
         """
