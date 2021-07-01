@@ -32,6 +32,7 @@ RETAIL_TUPLES = (
 )
 
 UTIL_VUE_TUPLES = (
+    ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
     ("util_vue", logic.RipeUtilVuePart)
