@@ -80,7 +80,7 @@ RIPE Rainbow is currently licensed under the [Apache License, Version 2.0](http:
 
 ## Build Automation
 
-[![Build Status](https://travis-ci.com/ripe-tech/ripe-rainbow.svg?branch=master)](https://travis-ci.com/ripe-tech/ripe-rainbow)
+[![Build Status](https://app.travis-ci.com/ripe-tech/ripe-rainbow.svg?branch=master)](https://travis-ci.com/github/ripe-tech/ripe-rainbow)
 [![Build Status GitHub](https://github.com/ripe-tech/ripe-rainbow/workflows/Main%20Workflow/badge.svg)](https://github.com/ripe-tech/ripe-rainbow/actions)
 [![Coverage Status](https://coveralls.io/repos/ripe-tech/ripe-rainbow/badge.svg?branch=master)](https://coveralls.io/r/ripe-tech/ripe-rainbow?branch=master)
 [![PyPi Status](https://img.shields.io/pypi/v/ripe-rainbow.svg)](https://pypi.python.org/pypi/ripe-rainbow)
