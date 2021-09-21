@@ -923,6 +923,7 @@ class SeleniumDriver(InteractiveDriver):
         return KEYS[name]
 
     def _flush_log(self, levels = LOG_LEVELS, browser = None):
+        self._flush_network_log()
         browser = browser or self.browser
         if not hasattr(self, "_flush_log_%s" % browser): return
         return getattr(self, "_flush_log_%s" % browser)()
@@ -944,6 +945,18 @@ class SeleniumDriver(InteractiveDriver):
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
                 level_m(message.strip())
+
+    def _flush_network_log(self, levels = LOG_LEVELS):
+        from selenium.common.exceptions import WebDriverException
+
+        script = "return window.performance.getEntries() || {};"
+        try: log = self.instance.execute_script(script)
+        except WebDriverException as exception:
+            self.owner.browser_logger.warn(exception)
+            log = []
+
+        for item in log:
+            self.owner.browser_logger.debug(item)
 
     def _gc_tabs(self):
         """
