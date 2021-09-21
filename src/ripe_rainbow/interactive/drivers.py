@@ -3,6 +3,7 @@
 
 import os
 import sys
+import json
 import time
 
 import appier
@@ -669,7 +670,7 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
         capabilities = DesiredCapabilities.CHROME
-        capabilities["loggingPrefs"] = dict(
+        capabilities["goog:loggingPrefs"] = dict(
             browser = "ALL",
             driver = "ALL",
             client = "ALL",
@@ -923,13 +924,13 @@ class SeleniumDriver(InteractiveDriver):
         return KEYS[name]
 
     def _flush_log(self, levels = LOG_LEVELS, browser = None):
-        self._flush_network_log()
         browser = browser or self.browser
         if not hasattr(self, "_flush_log_%s" % browser): return
         return getattr(self, "_flush_log_%s" % browser)()
 
     def _flush_log_chrome(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
+        from json.decoder import JSONDecodeError
 
         for name in ("browser", "client", "driver", "performance"):
 
@@ -942,21 +943,15 @@ class SeleniumDriver(InteractiveDriver):
                 if not item["level"] in levels: continue
                 if not "message" in item: continue
                 level, message = item["level"], item["message"]
+
+                try: message_j = json.loads(message)["message"]
+                except JSONDecodeError as exception: message_j = None
+                if message_j and message_j["method"] == "Network.responseReceived":
+                    netdata = self.instance.execute_cdp_cmd('Network.getResponseBody', {'requestId': message_j["params"]["requestId"]})
+
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
                 level_m(message.strip())
-
-    def _flush_network_log(self, levels = LOG_LEVELS):
-        from selenium.common.exceptions import WebDriverException
-
-        script = "return window.performance.getEntries() || {};"
-        try: log = self.instance.execute_script(script)
-        except WebDriverException as exception:
-            self.owner.browser_logger.warn(exception)
-            log = []
-
-        for item in log:
-            self.owner.browser_logger.debug(item)
 
     def _gc_tabs(self):
         """
