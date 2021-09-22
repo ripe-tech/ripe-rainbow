@@ -1354,7 +1354,7 @@ class AppiumDriver(InteractiveDriver):
         cls._options = None
 
     def _wait(self, timeout = None):
-        from seleniumwire.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support.ui import WebDriverWait
         kwargs = dict()
         if self.poll_frequency: kwargs["poll_frequency"] = self.poll_frequency
         if timeout == None: timeout = self.owner.timeout
