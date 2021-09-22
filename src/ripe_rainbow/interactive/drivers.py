@@ -8,6 +8,8 @@ import time
 
 import appier
 
+from .events import EVENT_STRINGIFIERS
+
 from .. import info
 from .. import errors
 
@@ -944,11 +946,18 @@ class SeleniumDriver(InteractiveDriver):
                 if not "message" in item: continue
                 level, message = item["level"], item["message"]
 
-                try: message_j = json.loads(message)["message"]
-                except JSONDecodeError as exception: message_j = None
-                if message_j and message_j["method"] == "Network.responseReceived":
-                    response = message_j["params"]["response"]
-                    message = '%s %s %s' % (response["url"], response["status"], response["headers"])
+                # in case this log relates to an interesting event
+                # use a custom stringifier to display relevant info
+                # in a more human readable fashion in the logs
+                try:
+                    message_j = json.loads(message)
+                    message_j = message_j.get("message", None)
+                    event = message_j and message_j.get("method", None)
+                    if event not in EVENT_STRINGIFIERS: continue
+                    format_m = EVENT_STRINGIFIERS[event]
+                    message = format_m(message_j)
+                except JSONDecodeError as exception:
+                    continue
 
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
