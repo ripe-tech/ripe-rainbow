@@ -931,7 +931,7 @@ class SeleniumDriver(InteractiveDriver):
     def _flush_log_chrome(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
         from json.decoder import JSONDecodeError
-
+                
         for name in ("browser", "client", "driver", "performance"):
 
             try: log = self.instance.get_log(name)
@@ -947,8 +947,9 @@ class SeleniumDriver(InteractiveDriver):
                 try: message_j = json.loads(message)["message"]
                 except JSONDecodeError as exception: message_j = None
                 if message_j and message_j["method"] == "Network.responseReceived":
-                    netdata = self.instance.execute_cdp_cmd('Network.getResponseBody', {'requestId': message_j["params"]["requestId"]})
-
+                    response = message_j["params"]["response"]
+                    message = '%s %s %s' % (response["url"], response["status"], response["headers"])
+                
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
                 level_m(message.strip())
@@ -1344,7 +1345,7 @@ class AppiumDriver(InteractiveDriver):
         cls._options = None
 
     def _wait(self, timeout = None):
-        from selenium.webdriver.support.ui import WebDriverWait
+        from seleniumwire.webdriver.support.ui import WebDriverWait
         kwargs = dict()
         if self.poll_frequency: kwargs["poll_frequency"] = self.poll_frequency
         if timeout == None: timeout = self.owner.timeout
