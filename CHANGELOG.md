@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-*
+* Capture network logs as well (`_flush_log_chrome`)
 
 ### Fixed
 
