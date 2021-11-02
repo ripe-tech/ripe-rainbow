@@ -92,5 +92,5 @@ class RipeUtilVuePart(parts.Part):
         return "%s/background" % self.base_url
 
     @property
-    def collection_url(self):
+    def collection_viewer_url(self):
         return "%s/collection-viewer" % self.base_url
