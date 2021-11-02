@@ -94,4 +94,3 @@ class RipeUtilVuePart(parts.Part):
     @property
     def collection_url(self):
         return "%s/collection-viewer" % self.base_url
-        
