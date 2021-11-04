@@ -19,7 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
-## [0.9.4] - 2021-05-13
+## [0.9.5] - 2021-11-04
+
+### Added
+
+* Support for the `collection_viewer_url` attribute
+
+## [0.9.4] - 2021-10-22
 
 ### Fixed
 
