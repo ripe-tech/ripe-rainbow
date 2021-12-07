@@ -946,18 +946,19 @@ class SeleniumDriver(InteractiveDriver):
                 if not "message" in item: continue
                 level, message = item["level"], item["message"]
 
+                try:
+                    message_j = json.loads(message)
+                except JSONDecodeError as exception:
+                    continue
+
                 # in case this log relates to an interesting event
                 # use a custom stringifier to display relevant info
                 # in a more human readable fashion in the logs
-                try:
-                    message_j = json.loads(message)
-                    message_j = message_j.get("message", None)
-                    event = message_j and message_j.get("method", None)
-                    if event not in EVENT_STRINGIFIERS: continue
-                    format_m = EVENT_STRINGIFIERS[event]
-                    message = format_m(message_j)
-                except JSONDecodeError as exception:
-                    continue
+                message_j = message_j.get("message", None)
+                event = message_j and message_j.get("method", None)
+                if event not in EVENT_STRINGIFIERS: continue
+                format_m = EVENT_STRINGIFIERS[event]
+                message = format_m(message_j)
 
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
