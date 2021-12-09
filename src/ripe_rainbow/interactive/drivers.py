@@ -3,9 +3,12 @@
 
 import os
 import sys
+import json
 import time
 
 import appier
+
+from .events import EVENT_STRINGIFIERS
 
 from .. import info
 from .. import errors
@@ -669,7 +672,7 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
         capabilities = DesiredCapabilities.CHROME
-        capabilities["loggingPrefs"] = dict(
+        capabilities["goog:loggingPrefs"] = dict(
             browser = "ALL",
             driver = "ALL",
             client = "ALL",
@@ -941,9 +944,27 @@ class SeleniumDriver(InteractiveDriver):
                 if not item["level"] in levels: continue
                 if not "message" in item: continue
                 level, message = item["level"], item["message"]
+                message = self._prettify_message(message)
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
                 level_m(message.strip())
+
+    def _prettify_message(self, message):
+        try:
+            message_j = json.loads(message)
+        except json.decoder.JSONDecodeError as exception:
+            return message
+
+        # in case this log relates to an interesting event
+        # use a custom stringifier to display relevant info
+        # in a more human readable fashion in the logs
+        message_j = message_j.get("message", None)
+        event = message_j and message_j.get("method", None)
+        if event not in EVENT_STRINGIFIERS: return message
+        format_m = EVENT_STRINGIFIERS[event]
+        message = format_m(message_j)
+
+        return message
 
     def _gc_tabs(self):
         """

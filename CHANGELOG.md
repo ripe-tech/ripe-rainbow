@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-*
+* Capture network logs - [#121](https://github.com/ripe-tech/ripe-rainbow/issues/121)
 
 ### Changed
 
