@@ -25,8 +25,7 @@ class EventsTest(unittest.TestCase):
                 response = dict(
                     connectionId = 11,
                     headers = {
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "text/html"
+                        "Access-Control-Allow-Origin": "*"
                     },
                     status = 200,
                     url = "https://platforme.com",
@@ -34,7 +33,7 @@ class EventsTest(unittest.TestCase):
             )
         )
         log = ripe_rainbow.interactive.events.stringify_response_received(message_j)
-        self.assertEqual(log, "Network.responseReceived 3D8A8C5C9832597801E08A06FA29E4C0 200 https://platforme.com {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/html'}")
+        self.assertEqual(log, "Network.responseReceived 3D8A8C5C9832597801E08A06FA29E4C0 200 https://platforme.com {'Access-Control-Allow-Origin': '*'}")
 
     def test_stringify_request_will_be_sent(self):
         message_j = dict(
