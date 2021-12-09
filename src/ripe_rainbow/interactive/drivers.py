@@ -932,7 +932,6 @@ class SeleniumDriver(InteractiveDriver):
 
     def _flush_log_chrome(self, levels = LOG_LEVELS):
         from selenium.common.exceptions import WebDriverException
-        from json.decoder import JSONDecodeError
 
         for name in ("browser", "client", "driver", "performance"):
 
@@ -945,24 +944,27 @@ class SeleniumDriver(InteractiveDriver):
                 if not item["level"] in levels: continue
                 if not "message" in item: continue
                 level, message = item["level"], item["message"]
-
-                try:
-                    message_j = json.loads(message)
-                except JSONDecodeError as exception:
-                    continue
-
-                # in case this log relates to an interesting event
-                # use a custom stringifier to display relevant info
-                # in a more human readable fashion in the logs
-                message_j = message_j.get("message", None)
-                event = message_j and message_j.get("method", None)
-                if event not in EVENT_STRINGIFIERS: continue
-                format_m = EVENT_STRINGIFIERS[event]
-                message = format_m(message_j)
-
+                message = self._prettify_message(message)
                 level_n = LOG_LEVELS_M.get(level, "info")
                 level_m = getattr(self.owner.browser_logger, level_n)
                 level_m(message.strip())
+
+    def _prettify_message(self, message):
+        try:
+            message_j = json.loads(message)
+        except json.decoder.JSONDecodeError as exception:
+            return message
+
+        # in case this log relates to an interesting event
+        # use a custom stringifier to display relevant info
+        # in a more human readable fashion in the logs
+        message_j = message_j.get("message", None)
+        event = message_j and message_j.get("method", None)
+        if event not in EVENT_STRINGIFIERS: return message
+        format_m = EVENT_STRINGIFIERS[event]
+        message = format_m(message_j)
+
+        return message
 
     def _gc_tabs(self):
         """
