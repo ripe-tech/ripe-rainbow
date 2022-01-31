@@ -66,12 +66,13 @@ class InteractiveDriver(object):
         raise appier.NotImplementedError()
 
     def clear_storage(self):
-        self.clear_cookies()
+        # determines if the current page protocol is "compatible" with
+        # local storage (allow proper exception prevention)
+        storage_protocol = self.instance.execute_script("return !['data:'].includes(location.protocol);")
 
-        has_storage = self.instance.execute_script("return location.protocol !== 'data:';")
-        if has_storage:
-            self.clear_local_storage()
-            self.clear_session_storage()
+        self.clear_cookies()
+        if storage_protocol: self.clear_local_storage()
+        if storage_protocol: self.clear_session_storage()
 
     def clear_cookies(self):
         raise appier.NotImplementedError()
