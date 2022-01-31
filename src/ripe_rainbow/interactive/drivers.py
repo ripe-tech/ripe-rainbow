@@ -67,8 +67,11 @@ class InteractiveDriver(object):
 
     def clear_storage(self):
         self.clear_cookies()
-        self.clear_local_storage()
-        self.clear_session_storage()
+
+        has_storage = self.instance.execute_script("return location.protocol !== 'data:';")
+        if has_storage:
+            self.clear_local_storage()
+            self.clear_session_storage()
 
     def clear_cookies(self):
         raise appier.NotImplementedError()
