@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Clear local and session storage only when they exist (not for `"data:"` protocols) - [#126](https://github.com/ripe-tech/ripe-rainbow/issues/126)
 
 ## [0.9.5] - 2021-11-04
 
