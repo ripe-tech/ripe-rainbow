@@ -5,8 +5,8 @@ import appier
 
 from .. import parts
 
-class RipeRetailPart(parts.Part):
 
+class RipeRetailPart(parts.Part):
     def login(self, username, password):
         self.interactions.goto_url(self.login_url)
 
@@ -18,7 +18,7 @@ class RipeRetailPart(parts.Part):
         self.login(username, password)
         self.waits.redirected_to(self.next_url)
 
-    def select_size(self, size, gender = None, scale = None, open = True):
+    def select_size(self, size, gender=None, scale=None, open=True):
         """
         Opens the size selection window, selects the proper scale and size and
         applies that configuration by clicking 'Apply' and closing the window.
@@ -35,11 +35,14 @@ class RipeRetailPart(parts.Part):
         :param open: If the size modal window should be opened before selection.
         """
 
-        if open: self.interactions.click(".size:not(.disabled) > .button-size")
-        if gender: self.interactions.click(".size .button-gender", text = gender)
-        if scale: self.interactions.click(".size .button-scale", text = str(scale))
+        if open:
+            self.interactions.click(".size:not(.disabled) > .button-size")
+        if gender:
+            self.interactions.click(".size .button-gender", text=gender)
+        if scale:
+            self.interactions.click(".size .button-scale", text=str(scale))
 
-        self.interactions.click(".size .button-size", text = str(size))
+        self.interactions.click(".size .button-size", text=str(size))
         self.interactions.click(".size .button.button-apply")
         self.waits.not_visible(".size .modal")
 
@@ -48,15 +51,16 @@ class RipeRetailPart(parts.Part):
 
     def select_color(self, material, color):
         self.interactions.click(
-            ".pickers .button-color-option[data-material='%s'][data-color='%s']" % (material, color)
+            ".pickers .button-color-option[data-material='%s'][data-color='%s']"
+            % (material, color)
         )
 
-    def assert_no_part(self, part, timeout = None):
+    def assert_no_part(self, part, timeout=None):
         self.waits.not_visible(
             ".pickers .button-part > p",
-            text = part.upper(),
-            message = "The selector for the part '%s' didn't disappear" % part,
-            timeout = timeout
+            text=part.upper(),
+            message="The selector for the part '%s' didn't disappear" % part,
+            timeout=timeout,
         )
 
     def assert_no_material(self, part, material):
@@ -75,11 +79,11 @@ class RipeRetailPart(parts.Part):
         part,
         material,
         color,
-        part_text = None,
-        material_text = None,
-        color_text = None,
-        verify = True,
-        has_swatch = True
+        part_text=None,
+        material_text=None,
+        color_text=None,
+        verify=True,
+        has_swatch=True,
     ):
         """
         Makes a change to the customization of a part and checks that the pages
@@ -122,10 +126,10 @@ class RipeRetailPart(parts.Part):
                 part,
                 material,
                 color,
-                part_text = part_text,
-                material_text = material_text,
-                color_text = color_text,
-                has_swatch = has_swatch
+                part_text=part_text,
+                material_text=material_text,
+                color_text=color_text,
+                has_swatch=has_swatch,
             )
 
     def assert_part(
@@ -135,10 +139,10 @@ class RipeRetailPart(parts.Part):
         part,
         material,
         color,
-        part_text = None,
-        material_text = None,
-        color_text = None,
-        has_swatch = True
+        part_text=None,
+        material_text=None,
+        color_text=None,
+        has_swatch=True,
     ):
         """
         Checks that the part pickers have the expected state, meaning that the
@@ -173,32 +177,43 @@ class RipeRetailPart(parts.Part):
 
         self.select_part(part)
 
-        if part_text: self.waits.visible(".button-part.active", text = part_text)
-        if color_text: self.waits.visible(".button-color-option.active", text = color_text)
-        if material_text: self.waits.visible(".button-material.active", text = material_text)
+        if part_text:
+            self.waits.visible(".button-part.active", text=part_text)
+        if color_text:
+            self.waits.visible(".button-color-option.active", text=color_text)
+        if material_text:
+            self.waits.visible(".button-material.active", text=material_text)
 
         if has_swatch:
             self.waits.until(
                 lambda d: self.core.assert_swatch(
                     ".pickers .button-part.active .swatch > img",
-                    brand, model, material, color
+                    brand,
+                    model,
+                    material,
+                    color,
                 ),
-                "Part swatch didn't have the expected image"
+                "Part swatch didn't have the expected image",
             )
 
             self.waits.until(
                 lambda d: self.core.assert_swatch(
                     ".pickers .button-color-option.active .swatch > img",
-                    brand, model, material, color
+                    brand,
+                    model,
+                    material,
+                    color,
                 ),
-                "Color swatch didn't have the expected image"
+                "Color swatch didn't have the expected image",
             )
 
     @property
     def retail_url(self):
         ripe_suffix = appier.conf("RIPE_SUFFIX", None)
-        if ripe_suffix: retail_url = "https://ripe-retail-%s.platforme.com" % ripe_suffix
-        else: retail_url = "http://localhost:8080"
+        if ripe_suffix:
+            retail_url = "https://ripe-retail-%s.platforme.com" % ripe_suffix
+        else:
+            retail_url = "http://localhost:8080"
         retail_url = appier.conf("BASE_URL", retail_url)
         retail_url = appier.conf("RETAIL_URL", retail_url)
         retail_url = appier.conf("RIPE_RETAIL_URL", retail_url)

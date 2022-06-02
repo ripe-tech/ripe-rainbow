@@ -9,19 +9,14 @@ import appier
 
 from . import test_cases
 
-class Loader(object):
 
+class Loader(object):
     def test_suite(self, **kwargs):
         raise appier.NotImplementedError()
 
-class PathLoader(Loader):
 
-    def __init__(
-        self,
-        path = ".",
-        extension = ".py",
-        exclusion = ("setup.py",)
-    ):
+class PathLoader(Loader):
+    def __init__(self, path=".", extension=".py", exclusion=("setup.py",)):
         self.path = path
         self.extension = extension
         self.exclusion = exclusion
@@ -30,14 +25,16 @@ class PathLoader(Loader):
         self.path = os.path.normpath(self.path)
 
     def test_suite(self, **kwargs):
-        return [test_cls(loader = self, **kwargs) for test_cls in self._load_classes(self.path)]
+        return [
+            test_cls(loader=self, **kwargs) for test_cls in self._load_classes(self.path)
+        ]
 
-    def _load_classes(self, path, recursive = True):
+    def _load_classes(self, path, recursive=True):
         classes = []
 
         # runs the loading of the modules for the current path using
         # a possible recursive approach
-        modules = self._load_modules(path, recursive = recursive)
+        modules = self._load_modules(path, recursive=recursive)
 
         # iterates over the complete set of loaded modules to try
         # to load all of the test classes contained in them
@@ -47,14 +44,16 @@ class PathLoader(Loader):
 
             for name in dir(module):
                 value = getattr(module, name)
-                if not inspect.isclass(value): continue
-                if not issubclass(value, test_cases.TestCase): continue
+                if not inspect.isclass(value):
+                    continue
+                if not issubclass(value, test_cases.TestCase):
+                    continue
                 value.ctx = ctx
                 classes.append(value)
 
         return classes
 
-    def _load_packages(self, path, recursive = True):
+    def _load_packages(self, path, recursive=True):
         packages = []
 
         if os.path.isdir(path):
@@ -73,19 +72,20 @@ class PathLoader(Loader):
         for name in names:
             full_path = os.path.join(path, name)
             if os.path.isdir(full_path) and recursive:
-                packages += self._load_packages(full_path, recursive = recursive)
+                packages += self._load_packages(full_path, recursive=recursive)
 
         return packages
 
-    def _load_modules(self, path, recursive = True):
+    def _load_modules(self, path, recursive=True):
         modules = []
         names = os.listdir(path)
-        if not "." in sys.path: sys.path.insert(0, ".")
+        if not "." in sys.path:
+            sys.path.insert(0, ".")
         for name in names:
             base_name = os.path.splitext(name)[0]
             full_path = os.path.join(path, name)
             if os.path.isdir(full_path) and recursive:
-                modules += self._load_modules(full_path, recursive = recursive)
+                modules += self._load_modules(full_path, recursive=recursive)
             elif not name in self.exclusion and name.endswith(self.extension):
                 sys.path.insert(0, path)
                 try:
@@ -118,12 +118,15 @@ class PathLoader(Loader):
             # (considering that a package is a directory that contains `__init__.py`)
             # until one that is not a parent one is found
             while True:
-                if not module_dir_path: break
-                if not "__init__.py" in os.listdir(module_dir_path): break
+                if not module_dir_path:
+                    break
+                if not "__init__.py" in os.listdir(module_dir_path):
+                    break
                 ctx_l.insert(0, os.path.basename(module_dir_path))
                 _module_dir_path = os.path.join(module_dir_path, "..")
                 _module_dir_path = os.path.normpath(os.path.abspath(_module_dir_path))
-                if _module_dir_path == module_dir_path: break
+                if _module_dir_path == module_dir_path:
+                    break
                 module_dir_path = _module_dir_path
 
             # creates the context by joining the list of chunks present
