@@ -1,0 +1,2 @@
+selenium
+Appium-Python-Client<2.0.0
