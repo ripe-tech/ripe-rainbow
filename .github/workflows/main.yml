@@ -12,5 +12,14 @@ jobs:
       - uses: actions/checkout@v1
       - run: python --version
       - run: pip install -r requirements.txt
-      - run: pip install -r extra.txt
+        if: matrix.python-version != '2.7' && matrix.python-version != '3.5'
+      - run: |
+          pip install pylint
+          curl https://raw.githubusercontent.com/ripe-tech/pylint-config/master/pylintrc --output pylintrc
+          PYTHONPATH=src pylint src/ripe_rainbow
+        if: matrix.python-version != '2.7' && matrix.python-version != '3.5'
+      - run: |
+          pip install black
+          black . --check --config ./pyproject.toml
+        if: matrix.python-version != '2.7' && matrix.python-version != '3.5'
       - run: python setup.py test

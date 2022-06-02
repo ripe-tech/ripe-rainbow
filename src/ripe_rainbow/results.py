@@ -8,15 +8,9 @@ import appier
 
 from . import util
 
-class Result(object):
 
-    def __init__(
-        self,
-        test,
-        result = "success",
-        exception = None,
-        stacktrace = None
-    ):
+class Result(object):
+    def __init__(self, test, result="success", exception=None, stacktrace=None):
         object.__init__(self)
         self.test = test
         self.result = result
@@ -25,28 +19,26 @@ class Result(object):
 
     @classmethod
     def build_success(cls, test):
-        return cls(test, result = "success")
+        return cls(test, result="success")
 
     @classmethod
     def build_skip(cls, test):
-        return cls(test, result = "skip")
+        return cls(test, result="skip")
 
     @classmethod
     def build_failure(cls, test, exception):
         lines = traceback.format_exc().splitlines()
-        lines = [line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else\
-            line for line in lines]
-        return cls(
-            test,
-            result = "failure",
-            exception = exception,
-            stacktrace = lines
-        )
+        lines = [
+            line.decode("utf-8", "ignore") if appier.legacy.is_bytes(line) else line
+            for line in lines
+        ]
+        return cls(test, result="failure", exception=exception, stacktrace=lines)
 
-    def print_result(self, file = sys.stdout):
+    def print_result(self, file=sys.stdout):
         file.write("----------------------------\n")
         file.write(util.test_fullname(self.test) + "\n")
-        if self.exception: file.write(str(self.exception) + "\n")
+        if self.exception:
+            file.write(str(self.exception) + "\n")
         for line in self.stacktrace if self.stacktrace else []:
             file.write(line + "\n")
 

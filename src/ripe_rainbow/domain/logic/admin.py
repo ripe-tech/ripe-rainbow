@@ -5,8 +5,8 @@ import appier
 
 from .. import parts
 
-class AdminPart(parts.Part):
 
+class AdminPart(parts.Part):
     def login(self, username, password):
         self.interactions.goto_url(self.signin_url)
 
@@ -32,8 +32,10 @@ class AdminPart(parts.Part):
     @property
     def root_url(self):
         ripe_suffix = appier.conf("RIPE_SUFFIX", None)
-        if ripe_suffix: root_url = "https://ripe-core-%s.platforme.com" % ripe_suffix
-        else: root_url = "http://localhost:8080"
+        if ripe_suffix:
+            root_url = "https://ripe-core-%s.platforme.com" % ripe_suffix
+        else:
+            root_url = "http://localhost:8080"
         root_url = appier.conf("BASE_URL", root_url)
         root_url = appier.conf("CORE_URL", root_url)
         root_url = appier.conf("RIPE_CORE_URL", root_url)

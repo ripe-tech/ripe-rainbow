@@ -5,8 +5,8 @@ import appier
 
 from .. import parts
 
-class RipeCorePart(parts.Part):
 
+class RipeCorePart(parts.Part):
     def assert_swatch(self, selector, brand, model, material, color):
         """
         Checks that the img element identified by the selector points to the
@@ -30,39 +30,38 @@ class RipeCorePart(parts.Part):
         :return: If the assertion was successful or not (propagation).
         """
 
-        element = self.waits.visible(selector, ensure = False)
+        element = self.waits.visible(selector, ensure=False)
         return self.logic.match_url(
             element.get_attribute("src"),
             self.swatch_url,
-            params = dict(
-                brand = brand,
-                model = model,
-                material = material,
-                color = color
-            )
+            params=dict(brand=brand, model=model, material=material, color=color),
         )
 
-    def wait_initials_image(self, selector, model, initials, profile = None):
-        params = dict(model = model, initials = initials)
-        if profile: params["initials_profile"] = profile
-        return self.wait_image(selector, params = params)
+    def wait_initials_image(self, selector, model, initials, profile=None):
+        params = dict(model=model, initials=initials)
+        if profile:
+            params["initials_profile"] = profile
+        return self.wait_image(selector, params=params)
 
-    def wait_image(self, selector, params = None):
-        return self.waits.has_src(selector, self.compose_url, params = params)
+    def wait_image(self, selector, params=None):
+        return self.waits.has_src(selector, self.compose_url, params=params)
 
     def order_url(self, number):
         return "%s/orders/%d" % (self.api_url, number)
 
-    def report_pdf_url(self, number, key = None):
+    def report_pdf_url(self, number, key=None):
         url = "%s/orders/%d/report.pdf" % (self.api_url, number)
-        if key: url += "?key=%s" % appier.util.quote(key)
+        if key:
+            url += "?key=%s" % appier.util.quote(key)
         return url
 
     @property
     def core_url(self):
         ripe_suffix = appier.conf("RIPE_SUFFIX", None)
-        if ripe_suffix: core_url = "https://ripe-core-%s.platforme.com" % ripe_suffix
-        else: core_url = "http://localhost:8080"
+        if ripe_suffix:
+            core_url = "https://ripe-core-%s.platforme.com" % ripe_suffix
+        else:
+            core_url = "http://localhost:8080"
         core_url = appier.conf("CORE_URL", core_url)
         core_url = appier.conf("RIPE_CORE_URL", core_url)
         return core_url

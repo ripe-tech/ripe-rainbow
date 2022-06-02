@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-class Part(object):
 
+class Part(object):
     def __init__(self, owner):
         self.owner = owner
 

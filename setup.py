@@ -5,16 +5,16 @@ import os
 import setuptools
 
 setuptools.setup(
-    name = "ripe-rainbow",
-    version = "0.10.1",
-    author = "Platforme International",
-    author_email = "development@platforme.com",
-    description = "RIPE Rainbow",
-    license = "Apache License, Version 2.0",
-    keywords = "ripe rainbow test",
-    url = "http://www.platforme.com",
-    zip_safe = False,
-    packages = [
+    name="ripe-rainbow",
+    version="0.10.1",
+    author="Platforme International",
+    author_email="development@platforme.com",
+    description="RIPE Rainbow",
+    license="Apache License, Version 2.0",
+    keywords="ripe rainbow test",
+    url="http://www.platforme.com",
+    zip_safe=False,
+    packages=[
         "ripe_rainbow",
         "ripe_rainbow.domain",
         "ripe_rainbow.domain.base",
@@ -22,24 +22,18 @@ setuptools.setup(
         "ripe_rainbow.interactive",
         "ripe_rainbow.unit",
         "ripe_rainbow.unit.domain",
-        "ripe_rainbow.unit.domain.base"
+        "ripe_rainbow.unit.domain.base",
     ],
-    test_suite = "ripe_rainbow.unit",
-    package_dir = {
-        "" : os.path.normpath("src")
-    },
-    entry_points = {
-        "console_scripts" : [
+    test_suite="ripe_rainbow.unit",
+    package_dir={"": os.path.normpath("src")},
+    entry_points={
+        "console_scripts": [
             "rainbow = ripe_rainbow.main:main",
-            "ripe-rainbow = ripe_rainbow.main:main"
+            "ripe-rainbow = ripe_rainbow.main:main",
         ]
     },
-    install_requires = [
-        "appier",
-        "appier_console",
-        "appier_extras_api"
-    ],
-    classifiers = [
+    install_requires=["appier", "appier_console", "appier_extras_api"],
+    classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Utilities",
         "License :: OSI Approved :: Apache Software License",
@@ -54,6 +48,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7"
-    ]
+        "Programming Language :: Python :: 3.7",
+    ],
 )

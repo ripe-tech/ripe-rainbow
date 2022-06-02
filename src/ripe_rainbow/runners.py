@@ -15,13 +15,13 @@ from . import loaders
 from . import results
 from . import interactive
 
-class Runner(object):
 
-    def __init__(self, loader = None, filter = None):
+class Runner(object):
+    def __init__(self, loader=None, filter=None):
         # sets the global configuration driven values in the current
         # instance, to be used internally
         self.filter = appier.conf("FILTER", filter)
-        self.repeat = appier.conf("REPEAT", 1, cast = int)
+        self.repeat = appier.conf("REPEAT", 1, cast=int)
         self.tests_path = appier.conf("TESTS_PATH", ".")
 
         # updates the current loader with the default loader if required
@@ -31,18 +31,22 @@ class Runner(object):
 
         # creates the regular expression object that is going to
         # be used for test (method) name matching at runtime
-        if self.filter: self.regex = re.compile("^.*%s.*$" % self.filter)
-        else: self.regex = None
+        if self.filter:
+            self.regex = re.compile("^.*%s.*$" % self.filter)
+        else:
+            self.regex = None
 
     def run(self):
         raise appier.NotImplementedError()
 
-    def add_on_finish(self, method, safe = True):
-        if safe and method in self.on_finish: return
+    def add_on_finish(self, method, safe=True):
+        if safe and method in self.on_finish:
+            return
         self.on_finish.append(method)
 
-    def remove_on_finish(self, method, safe = True):
-        if safe and not method in self.on_finish: return
+    def remove_on_finish(self, method, safe=True):
+        if safe and not method in self.on_finish:
+            return
         self.on_finish.remove(method)
 
     def run_on_finish(self):
@@ -51,17 +55,17 @@ class Runner(object):
 
     @property
     def test_suite(self):
-        return self.loader.test_suite(runner = self)
+        return self.loader.test_suite(runner=self)
 
     @property
     def loader_default(self):
         return None
 
-class ConsoleRunner(Runner):
 
+class ConsoleRunner(Runner):
     def __init__(self, *args, **kwrgs):
         Runner.__init__(self, *args, **kwrgs)
-        self.diag = appier.conf("DIAG", True, cast = bool)
+        self.diag = appier.conf("DIAG", True, cast=bool)
 
     def run(self):
         # sets the default result flag value to valid as the execution
@@ -130,10 +134,11 @@ class ConsoleRunner(Runner):
                             # starts the appier console context loader so that an animation
                             # is executed while the test is running (where it's possible)
                             with appier_console.ctx_loader(
-                                spinner = "dots3",
-                                template = "        %s%s {{spinner}}" % (test_prefix, test_name),
-                                single = True,
-                                eol = ""
+                                spinner="dots3",
+                                template="        %s%s {{spinner}}"
+                                % (test_prefix, test_name),
+                                single=True,
+                                eol="",
                             ):
                                 # executes the concrete logic of the test, making sure
                                 # that an overall spinner is making the UI interactive
@@ -141,32 +146,50 @@ class ConsoleRunner(Runner):
                                 # some of the details of the current execution session
                                 test_case.run_test(
                                     test,
-                                    ctx = dict(
-                                        index = index,
-                                        diag = diag,
-                                        repeat = self.repeat
-                                    )
+                                    ctx=dict(index=index, diag=diag, repeat=self.repeat),
                                 )
 
-                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
-                            mark_s = appier_console.colored("√", color = appier_console.COLOR_GREEN)
+                            test_name_s = appier_console.colored(
+                                test_name, color=appier_console.COLOR_CYAN
+                            )
+                            mark_s = appier_console.colored(
+                                "√", color=appier_console.COLOR_GREEN
+                            )
                             extra_s = ""
                             success = results.Result.build_success(test)
                             passes.append(success)
                             passed += 1
                         except errors.SkipError as exception:
-                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_CYAN)
-                            mark_s = appier_console.colored("~", color = appier_console.COLOR_CYAN)
-                            extra_s = " (" + exception.reason + ")" if exception.reason else ""
+                            test_name_s = appier_console.colored(
+                                test_name, color=appier_console.COLOR_CYAN
+                            )
+                            mark_s = appier_console.colored(
+                                "~", color=appier_console.COLOR_CYAN
+                            )
+                            extra_s = (
+                                " (" + exception.reason + ")" if exception.reason else ""
+                            )
                             skip = results.Result.build_skip(test)
                             skips.append(skip)
                             skipped += 1
                         except appier.AssertionError as exception:
                             result = False
-                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                            mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                            if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
-                            else: extra_s = ""
+                            test_name_s = appier_console.colored(
+                                test_name, color=appier_console.COLOR_RED
+                            )
+                            mark_s = appier_console.colored(
+                                "✗", color=appier_console.COLOR_RED
+                            )
+                            if test.bugs:
+                                extra_s = (
+                                    " ("
+                                    + ", ".join(
+                                        bug["url"] for bug in test.bugs if "url" in bug
+                                    )
+                                    + ")"
+                                )
+                            else:
+                                extra_s = ""
                             failure = results.Result.build_failure(test, exception)
                             failures.append(failure)
                             failed += 1
@@ -174,10 +197,22 @@ class ConsoleRunner(Runner):
                             result = False
                             failure = results.Result.build_failure(test, exception)
                             failures.append(failure)
-                            test_name_s = appier_console.colored(test_name, color = appier_console.COLOR_RED)
-                            mark_s = appier_console.colored("✗", color = appier_console.COLOR_RED)
-                            if test.bugs: extra_s = " (" + ", ".join(bug["url"] for bug in test.bugs if "url" in bug) + ")"
-                            else: extra_s = ""
+                            test_name_s = appier_console.colored(
+                                test_name, color=appier_console.COLOR_RED
+                            )
+                            mark_s = appier_console.colored(
+                                "✗", color=appier_console.COLOR_RED
+                            )
+                            if test.bugs:
+                                extra_s = (
+                                    " ("
+                                    + ", ".join(
+                                        bug["url"] for bug in test.bugs if "url" in bug
+                                    )
+                                    + ")"
+                                )
+                            else:
+                                extra_s = ""
                             failed += 1
                         finally:
                             test_case.diag = None
@@ -186,7 +221,10 @@ class ConsoleRunner(Runner):
                         # into account prints the proper output, standard is tty environment
                         # meaning that proper interaction is allowed
                         if appier_console.is_tty():
-                            print("        %s %s%s%s" % (test_name_s, mark_s, extra_s, self._duration(start)))
+                            print(
+                                "        %s %s%s%s"
+                                % (test_name_s, mark_s, extra_s, self._duration(start))
+                            )
 
                         # otherwise we're in a textual environment and only the extra part of
                         # the line is expected to be printed (not possible to go back in the line)
@@ -198,37 +236,51 @@ class ConsoleRunner(Runner):
                         sys.stdout.flush()
                         sys.stderr.flush()
 
-                if printed: print("")
+                if printed:
+                    print("")
         finally:
             self.run_on_finish()
 
-        passed_s = appier_console.colored(
-            "%d passing" % passed,
-            color = appier_console.COLOR_GREEN
-        ) if passed else ""
-        skipped_s = appier_console.colored(
-            "%d skipped" % skipped,
-            color = appier_console.COLOR_CYAN
-        ) if skipped else ""
-        failed_s = appier_console.colored(
-            "%d failing" % failed,
-            color = appier_console.COLOR_RED
-        ) if failed else ""
-        duration_s = self._duration(start_g, info = 0.0, warning = 3600.0, error = 14400.0)
-        print("  %s%s%s%s%s" % (
+        passed_s = (
+            appier_console.colored(
+                "%d passing" % passed, color=appier_console.COLOR_GREEN
+            )
+            if passed
+            else ""
+        )
+        skipped_s = (
+            appier_console.colored(
+                "%d skipped" % skipped, color=appier_console.COLOR_CYAN
+            )
+            if skipped
+            else ""
+        )
+        failed_s = (
+            appier_console.colored("%d failing" % failed, color=appier_console.COLOR_RED)
+            if failed
+            else ""
+        )
+        duration_s = self._duration(start_g, info=0.0, warning=3600.0, error=14400.0)
+        print(
+            "  %s%s%s%s%s"
+            % (
                 " " + passed_s if passed_s else "",
                 " " + skipped_s if skipped_s else "",
                 " " + failed_s if failed_s else "",
-                "No tests executed" + failed_s if not passed_s and not skipped_s and not failed_s else "",
-                duration_s
+                "No tests executed" + failed_s
+                if not passed_s and not skipped_s and not failed_s
+                else "",
+                duration_s,
             )
         )
 
         # iterates over the complete set of failures to print
         # their description for better understanding of the
         # the underlying issues
-        if failures: print("")
-        for failure in failures: failure.print_result()
+        if failures:
+            print("")
+        for failure in failures:
+            failure.print_result()
 
         print("")
 
@@ -241,19 +293,23 @@ class ConsoleRunner(Runner):
         # line in case that's required (requested by configuration)
         if self.diag and diag:
             print("")
-            print ("Here are the diagnostics you've requested 👨‍⚕️")
+            print("Here are the diagnostics you've requested 👨‍⚕️")
             print("")
             print(appier_console.table(diag))
 
         return result
 
-    def _duration(self, start, info = 5.0, warning = 5.0, error = 10.0):
+    def _duration(self, start, info=5.0, warning=5.0, error=10.0):
         duration = time.time() - start
-        if duration < info: return ""
-        if duration >= error: color = appier_console.COLOR_RED
-        elif duration >= warning: color = appier_console.COLOR_YELLOW
-        else: color = appier_console.COLOR_CYAN
-        return appier_console.colored(" (%.02fs)" % duration, color = color)
+        if duration < info:
+            return ""
+        if duration >= error:
+            color = appier_console.COLOR_RED
+        elif duration >= warning:
+            color = appier_console.COLOR_YELLOW
+        else:
+            color = appier_console.COLOR_CYAN
+        return appier_console.colored(" (%.02fs)" % duration, color=color)
 
     @property
     def loader_default(self):

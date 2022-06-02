@@ -7,46 +7,46 @@ from . import logic
 BASE_TUPLES = (
     ("logic", base.LogicPart),
     ("interactions", base.InteractionsPart),
-    ("waits", base.WaitsPart)
+    ("waits", base.WaitsPart),
 )
 
 COPPER_TUPLES = (
     ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
-    ("copper", logic.RipeCopperPart)
+    ("copper", logic.RipeCopperPart),
 )
 
 PULSE_TUPLES = (
     ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
-    ("pulse", logic.RipePulsePart)
+    ("pulse", logic.RipePulsePart),
 )
 
 RETAIL_TUPLES = (
     ("provision", logic.ProvisionPart),
     ("admin", logic.AdminPart),
     ("core", logic.RipeCorePart),
-    ("retail", logic.RipeRetailPart)
+    ("retail", logic.RipeRetailPart),
 )
 
 UTIL_VUE_TUPLES = (
     ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
-    ("util_vue", logic.RipeUtilVuePart)
+    ("util_vue", logic.RipeUtilVuePart),
 )
 
 WHITE_TUPLES = (
     ("provision", logic.ProvisionPart),
     ("id", logic.RipeIdPart),
     ("core", logic.RipeCorePart),
-    ("white", logic.RipeWhitePart)
+    ("white", logic.RipeWhitePart),
 )
 
-class DomainWrapper(object):
 
+class DomainWrapper(object):
     @classmethod
     def wrap(cls, instance, tuples):
         for name, _cls in tuples:

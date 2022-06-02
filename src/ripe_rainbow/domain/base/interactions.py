@@ -6,9 +6,9 @@ import appier
 
 from .. import parts
 
-class InteractionsPart(parts.Part):
 
-    def goto_url(self, url, redirect_url = None, params = [], fragment = "", wait = True):
+class InteractionsPart(parts.Part):
+    def goto_url(self, url, redirect_url=None, params=[], fragment="", wait=True):
         """
         Navigates to a certain URL with given GET parameters and to
         the request fragment.
@@ -51,12 +51,15 @@ class InteractionsPart(parts.Part):
 
         params_s = "&".join(params_s) if params_s else ""
 
-        if params_s: url += "?" + params_s
-        if fragment: url += "#" + fragment
+        if params_s:
+            url += "?" + params_s
+        if fragment:
+            url += "#" + fragment
 
         self.driver.get(url)
 
-        if not wait: return
+        if not wait:
+            return
 
         return self.waits.redirected_to(redirect_url or url)
 
@@ -81,7 +84,7 @@ class InteractionsPart(parts.Part):
         # overcomes limitations with non interactable elements
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.write_text, element, text),
-            "Element '%s' found but never became writable" % selector
+            "Element '%s' found but never became writable" % selector,
         )
 
     def press_key(self, selector, key):
@@ -107,7 +110,7 @@ class InteractionsPart(parts.Part):
         # overcomes limitations with non interactable elements
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.press_key, element, key),
-            "Element '%s' found but never became interactable" % selector
+            "Element '%s' found but never became interactable" % selector,
         )
 
     def press_enter(self, selector):
@@ -130,10 +133,10 @@ class InteractionsPart(parts.Part):
         # overcomes limitations with non interactable elements
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.press_enter, element),
-            "Element '%s' found but never became interactable" % selector
+            "Element '%s' found but never became interactable" % selector,
         )
 
-    def click(self, selector, text = None):
+    def click(self, selector, text=None):
         """
         Clicks an element when possible, which happens when that element is both
         visible and "clickable".
@@ -149,8 +152,8 @@ class InteractionsPart(parts.Part):
         # waits until the try click operation is possible meaning that a
         # proper click has been "done" by the driver
         return self.waits.until(
-            lambda d: self._click(selector, text = text),
-            "Element '%s' found but never became clickable" % selector
+            lambda d: self._click(selector, text=text),
+            "Element '%s' found but never became clickable" % selector,
         )
 
     def set_file(self, selector, path):
@@ -181,54 +184,52 @@ class InteractionsPart(parts.Part):
         # the target element exists and the upload was successful
         return self.waits.until(
             lambda d: self._set_file(selector, path),
-            "Could not set '%s' to '%s'" % (path, selector)
+            "Could not set '%s' to '%s'" % (path, selector),
         )
 
-    def highlight(self, selector, text = None):
+    def highlight(self, selector, text=None):
         # waits until the element is visible for the selector and then
         # retrieves the reference to it to be able to press enter
-        element = self.waits.visible(selector, text = text)
+        element = self.waits.visible(selector, text=text)
 
         # waits until the highlight operation is possible for the element
         # that has just been ensured as visible
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.highlight, element),
-            "Element '%s' found but was not possible to highlight it" % selector
+            "Element '%s' found but was not possible to highlight it" % selector,
         )
 
-    def lowlight(self, selector, text = None):
+    def lowlight(self, selector, text=None):
         # waits until the element is visible for the selector and then
         # retrieves the reference to it to be able to press enter
-        element = self.waits.visible(selector, text = text)
+        element = self.waits.visible(selector, text=text)
 
         # waits until the lowlight operation is possible for the element
         # that has just been ensured as visible
         return self.waits.until(
             lambda d: self.driver.safe(self.driver.lowlight, element),
-            "Element '%s' found but was not possible to lowlight it" % selector
+            "Element '%s' found but was not possible to lowlight it" % selector,
         )
 
     def switch_tab(self, tab):
         return self.driver.switch_tab(tab)
 
-    def switch_context(self, name = "native", index = 0):
+    def switch_context(self, name="native", index=0):
         self.waits.until(
             lambda d: self.driver.count_context(name) > index,
-            "Expecting the number of contexts to be at least '%d' but is '%d'" % (
-                index,
-                self.driver.count_context(name)
-            )
+            "Expecting the number of contexts to be at least '%d' but is '%d'"
+            % (index, self.driver.count_context(name)),
         )
-        return self.driver.switch_context(name, dict(index = index))
+        return self.driver.switch_context(name, dict(index=index))
 
-    def close_tab(self, tab = None):
+    def close_tab(self, tab=None):
         return self.driver.close_tab(tab)
 
     @property
     def url(self):
         return self.driver.current_url
 
-    def _click(self, selector, text = None):
+    def _click(self, selector, text=None):
         """
         Inner method that takes the selector and the possible text value of
         a target element and tries to run a click operation in it.
@@ -245,12 +246,10 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.waits._get_element(
-            selector,
-            text = text,
-            displayed = False,
-            visible = False
+            selector, text=text, displayed=False, visible=False
         )
-        if not element: return None
+        if not element:
+            return None
         return self.driver.safe(self.driver.click, element)
 
     def _set_file(self, selector, path):
@@ -271,5 +270,6 @@ class InteractionsPart(parts.Part):
         """
 
         element = self.logic.get(selector)
-        if not element: return None
+        if not element:
+            return None
         return self.driver.safe(self.driver.write_text, element, path, False)
