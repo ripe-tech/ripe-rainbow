@@ -8,6 +8,8 @@ import time
 
 import appier
 
+from selenium.webdriver.common.by import By
+
 from .events import EVENT_STRINGIFIERS
 
 from .. import info
@@ -284,10 +286,10 @@ class SeleniumDriver(InteractiveDriver):
         return self.instance.get(url)
 
     def find_element(self, selector):
-        return self.instance.find_element_by_css_selector(selector)
+        return self.instance.find_element(By.CSS_SELECTOR, selector)
 
     def find_elements(self, selector):
-        return self.instance.find_elements_by_css_selector(selector)
+        return self.instance.find_elements(By.CSS_SELECTOR, selector)
 
     def find_by_name(self, name):
         return self.instance.find_element_by_name(name)
@@ -1191,10 +1193,10 @@ class AppiumDriver(InteractiveDriver):
             return self.find_elements_by_css_selector(selector)
 
     def find_element_by_css_selector(self, selector):
-        return self.instance.find_element_by_css_selector(selector)
+        return self.instance.find_element(By.CSS_SELECTOR, selector)
 
     def find_elements_by_css_selector(self, selector):
-        return self.instance.find_elements_by_css_selector(selector)
+        return self.instance.find_elements(By.CSS_SELECTOR, selector)
 
     def find_element_by_accessibility_id(self, id):
         return self.instance.find_element_by_accessibility_id(id)
@@ -1203,10 +1205,10 @@ class AppiumDriver(InteractiveDriver):
         return self.instance.find_elements_by_accessibility_id(id)
 
     def find_element_by_id(self, id):
-        return self.instance.find_element_by_id(id)
+        return self.instance.find_element(By.ID, id)
 
     def find_elements_by_id(self, id):
-        return self.instance.find_elements_by_id(id)
+        return self.instance.find_elements(By.ID, id)
 
     def press_key(self, element, key, ensure=True):
         # touches the diag values increment the number of operations
