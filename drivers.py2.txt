@@ -1,0 +1,2 @@
+selenium<3
+Appium-Python-Client<1
