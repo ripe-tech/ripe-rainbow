@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.10.2] - 2022-11-03
+
+### Fixed
+
 * Update deprecated methods `find_element_by_*` and `find_elements_by_*` to their respective replacements - [#130](https://github.com/ripe-tech/ripe-rainbow/issues/130)
 
 ## [0.10.1] - 2022-02-01
