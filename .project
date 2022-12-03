@@ -4,8 +4,8 @@
 	<comment></comment>
 	<projects>
 		<project>appier</project>
-		<project>appier_console</project>
-		<project>appier_extras_api</project>
+		<project>appier-console</project>
+		<project>appier-extras-api</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
