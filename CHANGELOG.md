@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-*
+* Add VSCode devcontainer setup - [ripe-compose/#199](https://github.com/ripe-tech/ripe-compose/issues/199)
 
 ### Changed
 
