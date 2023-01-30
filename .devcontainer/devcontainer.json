@@ -1,0 +1,8 @@
+{
+    "name": "RIPE Rainbow",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "postCreateCommand": "sh ./.devcontainer/postCreateCommand.sh",
+    "postStartCommand": "sh ./.devcontainer/postStartCommand.sh"
+}
