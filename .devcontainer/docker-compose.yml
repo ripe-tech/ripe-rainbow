@@ -2,6 +2,7 @@ version: "3.0"
 
 services:
   app:
+    shm_size: "1gb"
     build:
       context: .
       dockerfile: ./Dockerfile
