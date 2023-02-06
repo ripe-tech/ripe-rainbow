@@ -39,7 +39,6 @@ class PathLoader(Loader):
         # iterates over the complete set of loaded modules to try
         # to load all of the test classes contained in them
         for module in modules:
-
             ctx = self._resolve_ctx(module)
 
             for name in dir(module):

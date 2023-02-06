@@ -42,7 +42,7 @@ class InteractionsPart(parts.Part):
 
         params_s = []
 
-        for (key, value) in params:
+        for key, value in params:
             key_q = appier.util.quote(key)
             for _value in value:
                 value_q = appier.util.quote(_value)
