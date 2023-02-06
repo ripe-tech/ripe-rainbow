@@ -91,7 +91,6 @@ class ConsoleRunner(Runner):
             # suite that has been provided by the current loader to run
             # their respective tests, under the current runner
             for test_case in self.test_suite:
-
                 # sets the printed (overhead) flag as false indicating that
                 # the name of the class is still pending printing
                 printed = False
@@ -99,11 +98,9 @@ class ConsoleRunner(Runner):
                 # iterates over the complete set of test (methods) in the
                 # test case to run then (if they are required)
                 for test in test_case.tests:
-
                     # iterates over the amount of time the test should be run
                     # this is relevant for stress testing based execution
                     for index in appier.legacy.xrange(self.repeat):
-
                         # "gathers" the complete name for the test and verifies
                         # that it represents a valid one, against the regex
                         test_name = util.test_fullname(test)

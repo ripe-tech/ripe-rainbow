@@ -11,7 +11,6 @@ from .. import parts
 
 
 class ProvisionPart(parts.Part):
-
     _CACHE = {}
 
     @classmethod
