@@ -938,7 +938,6 @@ class SeleniumDriver(InteractiveDriver):
         from selenium.common.exceptions import WebDriverException
 
         for name in ("browser", "client", "driver", "performance"):
-
             try:
                 log = self.instance.get_log(name)
             except WebDriverException as exception:
@@ -1113,7 +1112,6 @@ class SeleniumDriver(InteractiveDriver):
 
 
 class AppiumDriver(InteractiveDriver):
-
     CONTEXT_MAPPER = dict(native="NATIVE_APP", webview="WEBVIEW_")
 
     def __init__(self, owner, **kwargs):

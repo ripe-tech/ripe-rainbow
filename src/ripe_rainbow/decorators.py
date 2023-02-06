@@ -5,7 +5,6 @@ import functools
 
 
 def test(description=None, script_url=None, bug=None, bugs=[]):
-
     # in case the bugs are not defined tries to fallback
     # to the (single) bug parameter (convenience) and then
     # ensures that the bugs are set as a sequence
@@ -15,7 +14,6 @@ def test(description=None, script_url=None, bug=None, bugs=[]):
         bugs = [bugs]
 
     def decorator(function):
-
         function.test = True
         function.description = description or function.__name__
         function.script_url = script_url
