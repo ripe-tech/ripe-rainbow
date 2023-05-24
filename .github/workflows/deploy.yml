@@ -8,14 +8,14 @@ jobs:
     name: Build
     strategy:
       matrix:
-        python-version: [2.7]
+        python-version: [3.5]
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v1
       - run: python --version
       - run: pip install -r requirements.txt
-      - run: pip install -r drivers.py2.txt
+      - run: pip install -r drivers.txt
       - run: python setup.py test
       - run: pip install twine wheel
       - run: python setup.py sdist bdist_wheel
